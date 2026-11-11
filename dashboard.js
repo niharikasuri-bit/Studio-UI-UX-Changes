@@ -319,6 +319,7 @@
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
         <h2 class="dc-vd-title" id="db-src-t">Add Visualisation</h2>
         <p class="dc-vd-desc" id="db-src-d">Choose the module this visualisation takes its data from and give it a title. You can change both later.</p>
+        <div class="db-src-row">
         <div class="dc-vd-field">
           <label class="dc-vd-label" for="db-src-sel">Module <span class="req" aria-hidden="true">*</span></label>
           <select class="input" id="db-src-sel">${opts(Object.entries(MODULES), 'all')}</select>
@@ -327,6 +328,7 @@
           <label class="dc-vd-label" for="db-src-title">Title <span class="req" aria-hidden="true">*</span></label>
           <input class="input" id="db-src-title" type="text" maxlength="${LIMIT.title}" autocomplete="off" required aria-describedby="db-src-title-e">
           <p class="fp-error" id="db-src-title-e"></p>
+        </div>
         </div>
         <div class="dc-vd-actions">
           <button type="button" class="btn btn-secondary" data-close>Cancel</button>

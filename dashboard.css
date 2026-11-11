@@ -397,3 +397,6 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 /* Preview Dashboard: 40px page heading (editing mode has no title above the visualisations) */
 .db-prev-title { display: none; margin: 0; font-size: 40px; line-height: 1.14; font-weight: 700; color: #0B4B66; }
 .db-previewing .db-prev-title { display: block; }
+/* Add Visualisation popup: Module (left) and Title (right) side by side */
+#db-src-dlg.modal.dc-vd { width: min(640px, calc(100vw - 32px)); }
+.db-src-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
