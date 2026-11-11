@@ -264,7 +264,7 @@
            display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
 .fpp-back { height: 24px; padding: 0 8px; gap: 4px; font-size: 14px; }
 .fpp-back svg { width: 16px; height: 16px; }
-.fpp-title { font-size: 16px; line-height: var(--lh-heading); font-weight: 700; color: var(--heading); }
+.fpp-title { font-size: 20px; line-height: var(--lh-heading); font-weight: 700; color: var(--heading); }
 .fpp-with-tip { display: inline-flex; align-items: center; gap: 4px; }
 .fpp-tabs { display: flex; width: 100%; border: 1px solid var(--border); border-radius: var(--radius-btn); background: #fff; }
 /* Tabs sit on white, below the grey header band; 34px tall overall (32 + 1px border top/bottom) */
