@@ -403,7 +403,7 @@
           ${w.desc ? `<p class="db-card-desc">${esc(w.desc)}</p>` : ''}
         </div>
         ${preview ? '' : `<div class="db-card-acts" role="group" aria-label="${esc(w.title || t.name)} tools">
-          ${data.widgets.length > 1 ? `<span class="db-grip-wrap"><button type="button" class="grip db-grip" draggable="true" data-grip="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Move ${esc(w.title || t.name)}" title="Drag, or click to move">${I.grip}</button></span>` : ''}
+          <span class="db-grip-wrap"><button type="button" class="grip db-grip" draggable="true" data-grip="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Move ${esc(w.title || t.name)}" title="Drag, or click to move">${I.grip}</button></span>
           <span class="db-grip-wrap"><button type="button" class="db-act" data-rsz="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Resize ${esc(w.title || t.name)}" title="Resize">${I.resize}</button></span>
           <button type="button" class="db-act" data-copy="${w.id}" aria-label="Copy ${esc(w.title || t.name)}" title="Copy">${I.copy}</button>
           <button type="button" class="db-act" data-del="${w.id}" aria-label="Delete ${esc(w.title || t.name)}" title="Delete">${I.trash}</button>
@@ -697,8 +697,8 @@
     const sizes = [['Make wider', 'w+', wi === ORDER.length - 1], ['Make narrower', 'w-', wi === 0]].concat(chart ? [['Make taller', 'h+', hi === hs.length - 1], ['Make shorter', 'h-', hi === 0]] : []);
     const el = document.createElement('div'); el.className = 'move-menu'; el.setAttribute('role', 'menu'); el.setAttribute('aria-label', `${sizeMenu ? 'Resize' : 'Move'} ${w.title}`);
     el.innerHTML = sizeMenu   // ⋮⋮ = move only; the Resize button = sizes (click alternative to dragging the handles, WCAG 2.5.7)
-      ? sizes.filter(x => !x[2]).map(([t, sz]) => `<button type="button" role="menuitem" data-size="${sz}" tabindex="-1">${t}</button>`).join('')
-      : items.filter(x => !x[2]).map(([t, to]) => `<button type="button" role="menuitem" data-to="${to}" tabindex="-1">${t}</button>`).join('');
+      ? sizes.map(([t, sz, dis]) => `<button type="button" role="menuitem" data-size="${sz}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('')
+      : items.map(([t, to, dis]) => `<button type="button" role="menuitem" data-to="${to}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('');
     g.parentElement.appendChild(el); g.setAttribute('aria-expanded', 'true'); menu = { el, grip: g, from: i };
     el.querySelector('[role="menuitem"]:not([aria-disabled])')?.focus();
   }
