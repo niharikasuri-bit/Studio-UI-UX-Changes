@@ -136,8 +136,8 @@
     const cs = getComputedStyle(st);
     const h = st.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     const w = st.clientWidth - 32;
-    // always fill the space between the title and the footer (the 50% zoom look), at every zoom
-    const k = window.innerWidth >= 1100 ? Math.max(0.3, Math.min(h / PH, w / PW)) : 1;
+    // fixed height: the phone is always shown at its full size (320 × 592); the centre scrolls if the window is shorter
+    const k = 1;
     fit.style.width = PW * k + 'px'; fit.style.height = PH * k + 'px';
     fit.firstElementChild.style.transform = `scale(${k})`;
   }

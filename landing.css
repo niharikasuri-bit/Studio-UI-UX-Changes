@@ -222,5 +222,10 @@ button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff;
   .lp-main { min-height: 0; }
   .lp-stage { min-height: 0; overflow: hidden; padding: 8px 0 32px; }
 }
+/* v28: phone has a fixed height (full size); when the window is shorter, the centre column scrolls instead of shrinking the phone */
+@media (min-width: 1100px) {
+  .lp-main { overflow-y: auto; }
+  .lp-stage { flex: none; overflow: visible; }
+}
 .lp-fit { position: relative; flex: none; }
 .lp-fit > .lp-phone { position: absolute; top: 0; left: 0; width: 320px; height: 592px; min-height: 0; max-height: none; aspect-ratio: auto; transform-origin: 0 0; }
