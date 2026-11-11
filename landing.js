@@ -222,9 +222,9 @@
       </div>
       <div class="fp-section">
         <div class="lp-tc${f.on ? ' is-on' : ''}">
-          <div class="lp-tc-head"><h4 class="lp-tc-title" id="lp-fq-sw">FAQ's</h4>
+          <div class="lp-tc-head"><h4 class="lp-tc-title" id="lp-fq-sw">Frequently Asked Questions</h4>
             <button type="button" class="switch" role="switch" data-lsw="faq" aria-checked="${f.on}" aria-labelledby="lp-fq-sw"><span class="switch-knob" aria-hidden="true"></span></button></div>
-          ${f.on ? `${f.list.length ? `<ul class="lp-ll" aria-label="FAQs">${f.list.map((x, i) => `<li class="lp-li">
+          ${f.on ? `${f.list.length ? `<ul class="lp-ll" aria-label="Frequently Asked Questions">${f.list.map((x, i) => `<li class="lp-li">
               <button type="button" class="lp-li-open" data-editfaq="${i}" aria-label="Edit FAQ ${i + 1}: ${esc(x.q)}">FAQ ${i + 1}</button>
               <button type="button" class="lp-li-btn" data-rmfaq="${i}" aria-label="Delete FAQ ${i + 1}">${I.trash}</button></li>`).join('')}</ul>` : ''}
             <button type="button" class="btn btn-secondary lp-ic-add" id="lp-add-faq">${I.plus} Add FAQ</button>` : ''}
