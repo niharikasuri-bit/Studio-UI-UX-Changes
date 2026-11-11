@@ -454,7 +454,7 @@ button.dp-var:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .dc-vd-list .check-row { min-height: 40px; }
 /* System Variable / Application Variable headings in the upload panel: bold */
 .dc-uv-title { font-weight: 700; color: #363636; }
-.dc-uv-title { color: #767676; }   /* bold, secondary grey (4.54:1 on white) */
+.dc-uv-title { color: #363636; }   /* bold; grey made it look disabled */
 
 /* Upload canvas: positioned QR code, selection, nudge arrows (process-flow style, kept ~28px on screen via --uz = 1/zoom) */
 .dp-qr-pos { position: absolute; padding: 0; border: 0; background: none; display: block; }
@@ -509,7 +509,7 @@ button.dp-qr-pos:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .dc-click-box:hover { border-color: var(--primary); }
 .dc-uv-item { padding: 0; cursor: pointer; }
 .dc-uv-item:hover { border-color: var(--primary); }
-.dc-uv-item .dc-uv-open { width: 100%; min-height: 40px; padding: 0 12px; color: #767676; }
+.dc-uv-item .dc-uv-open { width: 100%; min-height: 40px; padding: 0 12px; color: #363636; }   /* #767676 was 4.17:1 on the grey row */
 .dc-uv-item .dc-uv-open:hover { text-decoration: none; color: #363636; }
 .dc-uv-open-t:hover { text-decoration: none; }
 

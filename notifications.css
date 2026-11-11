@@ -72,7 +72,7 @@
 .ntw-radio:has(input:checked) .ntw-rdot { border-color: var(--primary); }
 .ntw-radio:has(input:checked) .ntw-rdot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
 .ntw-rlabel { display: block; font-size: 14px; font-weight: 700; color: #0B4B66; }
-.ntw-rtext { display: block; margin-top: 4px; font-size: 13px; color: #767676; }
+.ntw-rtext { display: block; margin-top: 4px; font-size: 14px; color: #363636; }   /* sits on grey: #767676 was 4.35:1 */
 
 .ntw-tiles { margin: 20px 0 0; padding: 0; border: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
 .ntw-tile { position: relative; flex: 0 1 248px; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 24px 20px;
@@ -223,3 +223,6 @@
 .nt-filters .nt-clear.nt-clear-btn { height: 32px; min-width: 0; padding: 0 16px; margin-bottom: 4px; }
 /* Disabled Clear Search: grey stroke + grey text only, white background */
 .nt-filters .nt-clear.nt-clear-btn:disabled { background: #fff; color: #767676; border-color: #C5C5C5; }
+
+/* selected tile has the orange tint: secondary grey would be 4.33:1 there */
+.ntw-tile:has(input:checked) .ntw-tile-text { color: #363636; }

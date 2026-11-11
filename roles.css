@@ -38,7 +38,7 @@
 .rm-card input:checked + .rm-box { border-color: var(--primary);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C84C0E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
 .rm-label { display: block; font-size: 14px; font-weight: 700; color: var(--heading); }
-.rm-text { display: block; margin-top: 4px; font-size: 13px; line-height: 1.4; color: #767676; }
+.rm-text { display: block; margin-top: 4px; font-size: 14px; line-height: 1.4; color: #363636; }   /* on grey/tint: #767676 was 4.3:1 */
 .rm-foot { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px 24px; border-top: 1px solid var(--divider); }
 .rm-foot .btn { height: 40px; min-width: 132px; font-size: var(--buttonM); }
 @media (forced-colors: active) { .rm-card input { position: static; opacity: 1; width: auto; height: auto; } .rm-box { display: none; } }
@@ -66,7 +66,7 @@
 .role-modal .rm-card:hover { border-color: #5E5E5E; }
 .role-modal .rm-card:has(input:checked) { border-color: #C84C0E; background: #FFF8F5; }
 .role-modal .rm-label { font-size: 14px; font-weight: 700; color: #0B4B66; }
-.role-modal .rm-text { margin-top: 4px; font-size: 13px; color: #767676; line-height: 1.4; }
+.role-modal .rm-text { margin-top: 4px; font-size: 14px; color: #363636; line-height: 1.4; }
 .role-modal .rm-foot { gap: 8px; padding: 14px 24px; background: #FAFAFA; border-top: 1px solid #D6D5D4; border-radius: 0 0 12px 12px; }
 .role-modal .rm-foot .btn { height: auto; min-height: 40px; min-width: 0; padding: 0 16px; font-size: 14px; font-weight: 500; }
 .role-modal .label { line-height: 20px; display: block; }   /* label → input exactly 4px */
