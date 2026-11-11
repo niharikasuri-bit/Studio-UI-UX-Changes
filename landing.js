@@ -142,7 +142,8 @@
     const w = st.clientWidth - 32;
     // phone keeps its normal width and text size; its height = the space available (max 592) and the screen scrolls inside the phone
     const big = window.innerWidth >= 1100;
-    const k = big ? Math.min(1, w / PW) : 1;
+    // same on-screen size at every zoom: 310 screen pixels wide (the reference screenshot) = 0.97 × devicePixelRatio⁻¹ of the 320px design
+    const k = big ? Math.min(0.97 / (window.devicePixelRatio || 1), w / PW) : 1;
     const ph = big ? Math.max(200, Math.min(PH, h / k)) : PH;
     fit.style.width = PW * k + 'px'; fit.style.height = ph * k + 'px';
     fit.firstElementChild.style.height = ph + 'px';
