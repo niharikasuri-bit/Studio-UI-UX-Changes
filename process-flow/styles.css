@@ -1462,3 +1462,6 @@ button { cursor: pointer; }
 .toggle-card:not(.is-on) .toggle-card__title { color: #767676; }
 .toggle-card.is-on .toggle-card__title { color: var(--secondary); }
 .logic-item__input, .logic-item { color: #363636; }
+
+/* Side panel: Notification / Payment row names in #363636 */
+.logic-list[data-kind="notify"] .logic-item > .logic-item__name, .logic-list[data-kind="payment"] .logic-item > .logic-item__name { color: #363636; }

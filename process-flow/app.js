@@ -2237,7 +2237,7 @@
               'div',
               { class: 'inner-card' },
               el('div', { class: 'inner-card__head' }, el('h5', { class: 'inner-card__title' }, cfg.listTitle)),
-              data.items.length ? el('ul', { class: 'logic-list' }, data.items.map(row)) : emptyNote(cfg.empty),
+              data.items.length ? el('ul', { class: 'logic-list', 'data-kind': key }, data.items.map(row)) : emptyNote(cfg.empty),
               // Like the checklist on an action: a state has at most one payment.
               cfg.single && data.items.length
                 ? null
