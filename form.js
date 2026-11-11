@@ -292,7 +292,7 @@
             : `<button type="button" class="switch" role="switch" data-toggle="${i}" aria-checked="${f.enabled !== false}"
                   aria-label="Show ${esc(f.label)} in the form"><span class="switch-knob" aria-hidden="true"></span></button>`}
         </span>
-      </li>`).join('') : `<li class="field-empty"><svg class="field-empty-ico" aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4M4 13l2.5-7h11L20 13v5a1 1 0 01-1 1H5a1 1 0 01-1-1z"/></svg><span>No fields added yet.</span></li>`;
+      </li>`).join('') : `<li class="field-empty"><svg class="field-empty-ico" aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4M4 13l2.5-7h11L20 13v5a1 1 0 01-1 1H5a1 1 0 01-1-1z"/></svg><span>You don’t have any fields at the moment.</span></li>`;
   }
 
   function renderAll() { form.sections.forEach(sec => sec.fields.forEach(normField)); renderSteps(); renderPreview(); renderPanel(); }

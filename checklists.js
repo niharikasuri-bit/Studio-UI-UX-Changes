@@ -157,7 +157,7 @@
     $('cl-new').hidden = !list.length;   // nothing created yet → only the empty-state CTA
     if (!shown.length) list.length
       ? S.setEmpty($('cl-empty'), false, 'No results found', 'Nothing matches your search or filter. Check the spelling, or change the filter.')
-      : S.setEmpty($('cl-empty'), true, 'No checklists yet', 'Create a checklist of questions for users to answer when they take an action in the process flow.');
+      : S.setEmpty($('cl-empty'), true, 'Create your first checklist', 'You don’t have any checklists at the moment. Start by creating one to ask users questions when they take an action in the process flow.');
     $('cl-count').textContent = (qq || f.action) ? `${shown.length} checklist${shown.length === 1 ? '' : 's'} found.` : '';
     $('cl-results').hidden = !(qq || f.action);
     $('cl-clear').disabled = !(qq || f.action);
