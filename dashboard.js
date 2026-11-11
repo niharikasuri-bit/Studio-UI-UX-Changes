@@ -321,10 +321,6 @@
         <p class="dc-vd-desc" id="db-src-d">Choose the module this visualisation counts records from, and give it a title to show on the dashboard. You can change both later in Item Properties.</p>
         <div class="db-src-row">
         <div class="dc-vd-field">
-          <span class="dc-vd-label" id="db-src-type-l">Type</span>
-          <p class="db-src-type" id="db-src-type" aria-labelledby="db-src-type-l db-src-type"></p>
-        </div>
-        <div class="dc-vd-field">
           <label class="dc-vd-label" for="db-src-sel">Data Source <span class="req" aria-hidden="true">*</span></label>
           <select class="input" id="db-src-sel">${opts(Object.entries(MODULES), 'all')}</select>
         </div>
@@ -630,7 +626,6 @@
     $('db-src-sel').value = lastSrc;
     srcTitle.value = '';   // no default title: the user names every visualisation
     titleErr('');
-    $('db-src-type').innerHTML = `<span class="db-src-ico" aria-hidden="true">${LOOK[type]}</span><span>${TYPES[type].name}</span>`;
     srcDlg.showModal(); $('db-src-sel').focus();
   }
   // Titles always start with a capital letter (caret position kept)
