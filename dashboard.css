@@ -35,7 +35,7 @@
 .db-card:hover { box-shadow: 0 0 0 1px #C84C0E, 0 4px 12px rgba(0,0,0,.12); border-color: #C84C0E; }
 .db-card.is-sel { box-shadow: 0 0 0 2px #C84C0E; border-color: #C84C0E; }
 .db-card.is-sel:hover { box-shadow: 0 0 0 2px #C84C0E, 0 4px 12px rgba(0,0,0,.12); }
-.db-card.is-dragging { opacity: .4; }
+.db-card.is-dragging { display: none; }   /* only the dashed drop spot shows while dragging (no faded copy left behind) */
 .db-drop { grid-column: span var(--span, 6); min-height: 120px; border: 2px dashed #C84C0E; border-radius: 8px; background: #FFF8F5; }
 .db-card-head { display: flex; align-items: flex-start; gap: 4px; padding: 10px 8px 8px 8px; border-bottom: 1px solid #EEEEEE; }
 .db-grip-wrap { position: relative; flex: none; }
@@ -385,4 +385,11 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 /* Open Move / Resize menu sits above every resize handle (its own card's and the neighbours') */
 .db-card:has(.move-menu) { z-index: 10; }
 .db-card-acts:has(.move-menu) { z-index: 10; opacity: 1; }
+
+
+/* Whole card can be dragged to a new place (grip, Move menu and Ctrl+arrows still work) */
+.db-card[draggable="true"] { cursor: grab; }
+.db-card[draggable="true"]:active { cursor: grabbing; }
+.db-card button, .db-card .db-rz, .db-card .db-resize { cursor: pointer; }
+.db-card .db-rz-x { cursor: ew-resize; } .db-card .db-rz-y { cursor: ns-resize; } .db-card .db-resize { cursor: nwse-resize; }
 

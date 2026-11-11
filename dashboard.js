@@ -387,7 +387,7 @@
             : `<li><span class="db-sw" style="background:${COLOURS[0]}"></span>${MEASURES[w.measure]}</li>`}</ul>` : ''}
         </div>${table(w)}`;
     }
-    return `<article class="db-card${sel ? ' is-sel' : ''}" data-w="${w.id}" data-span="${w.w}" style="--span:${w.w}" aria-labelledby="db-t-${w.id}">
+    return `<article class="db-card${sel ? ' is-sel' : ''}"${preview ? '' : ' draggable="true"'} data-w="${w.id}" data-span="${w.w}" style="--span:${w.w}" aria-labelledby="db-t-${w.id}">
       <header class="db-card-head">
         <div class="db-card-tt">
           ${preview ? `<h3 class="db-card-title" id="db-t-${w.id}">${esc(w.title || t.name)}</h3>`
@@ -836,10 +836,13 @@
   /* ---------- Drag: palette → dashboard, and grip → new place (pointer only; click / Move menu do the same) ---------- */
   let drag = null; const ph = document.createElement('div'); ph.className = 'db-drop'; ph.setAttribute('aria-hidden', 'true');
   view.addEventListener('dragstart', e => {
-    const p = e.target.closest('[data-add]'), g = e.target.closest('[data-grip]');
-    if (p) drag = { add: p.dataset.add, preset: p.dataset.preset, span: TYPES[p.dataset.add].kind === 'kpi' ? 3 : 6 };
-    else if (g) { const i = +g.dataset.grip; drag = { from: i, span: data.widgets[i].w }; closeMenu(false);
-      e.dataTransfer.setDragImage(g.closest('.db-card'), 24, 20); setTimeout(() => g.closest('.db-card')?.classList.add('is-dragging')); }
+    const p = e.target.closest('[data-add]'), g = e.target.closest('[data-grip]'), card = e.target.closest?.('.db-card');
+    if (p) { ph.style.minHeight = ''; drag = { add: p.dataset.add, preset: p.dataset.preset, span: TYPES[p.dataset.add].kind === 'kpi' ? 3 : 6 }; }
+    else if (card && !preview) {   // drag by the ⋮⋮ grip OR anywhere on the card (not its other buttons / resize handles)
+      if (!g && e.target.closest('button, a, input, select, textarea, [data-rs]')) { e.preventDefault(); return; }
+      const i = data.widgets.findIndex(x => x.id === card.dataset.w); drag = { from: i, span: data.widgets[i].w }; closeMenu(false);
+      const r = card.getBoundingClientRect();
+      e.dataTransfer.setDragImage(card, Math.max(0, e.clientX - r.left), Math.max(0, e.clientY - r.top)); setTimeout(() => { ph.style.setProperty('--span', drag.span); ph.style.minHeight = r.height + 'px'; card.before(ph); card.classList.add('is-dragging'); }); }
     else return;
     e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', 'db');
     ph.style.setProperty('--span', drag.span);
@@ -864,7 +867,7 @@
     if (d.add) return add(d.add, at, d.preset);
     move(d.from, at > d.from ? at : at, 'sel');   // index counted without the dragged card
   });
-  view.addEventListener('dragend', () => { if (!drag) return; drag = null; ph.remove(); grid.classList.remove('is-over'); grid.querySelectorAll('.is-dragging').forEach(c => c.classList.remove('is-dragging')); if (!data.widgets.length) drawGrid(); });
+  view.addEventListener('dragend', () => { grid.querySelectorAll('.is-dragging').forEach(c => c.classList.remove('is-dragging')); if (!drag) return; drag = null; ph.remove(); grid.classList.remove('is-over'); grid.querySelectorAll('.is-dragging').forEach(c => c.classList.remove('is-dragging')); if (!data.widgets.length) drawGrid(); });
 
   // Palette click = add at the end
   // Clicking the empty grey canvas (not a visualisation, menu or control) deselects
