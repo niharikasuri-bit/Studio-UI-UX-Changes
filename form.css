@@ -274,7 +274,7 @@
 .fpp-tabs [role="tab"]:last-child { border-radius: 0 3px 3px 0; }
 .fpp-tabs [role="tab"]:hover { background: #FAFAFA; color: #363636; }
 .fpp-tabs [role="tab"][aria-selected="true"] { background: var(--primary); color: #fff; font-weight: 700; }   /* 4.6:1 */
-.fpp-tabs [role="tab"]:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--heading), inset 0 0 0 4px #fff; }
+.fpp-tabs [role="tab"]:focus-visible { outline: none; position: relative; z-index: 1; box-shadow: var(--focus-ring); }   /* inset ring was under 3:1 on the orange selected tab */
 .fpp-body { padding: 16px 24px 24px; display: flex; flex-direction: column; gap: 16px; }
 /* Intro stays pinned at the top of the scrolling area (both tabs) */
 .fpp-intro { position: sticky; top: 0; z-index: 3; margin: -16px -24px 0; padding: 16px 24px 12px; background: #fff;

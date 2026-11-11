@@ -1183,8 +1183,8 @@ button { cursor: pointer; }
 .digit-employeeCard-input::placeholder,
 .digit-employee-card-textarea-field::placeholder { color: #767676; }
 .digit-employeeCard-input:focus, .digit-employeeCard-input:focus-visible,
-.digit-employee-card-textarea-field:focus, .digit-employee-card-textarea-field:focus-visible {
-  outline: none; box-shadow: none; border: 1.5px solid var(--primary);
+.digit-employee-card-textarea-field:focus-visible {
+  outline: none; border: 1.5px solid var(--primary); box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--primary);
 }
 .digit-employeeCard-input[aria-invalid='true'],
 .digit-employee-card-textarea-field[aria-invalid='true'] { border: 1.5px solid var(--error); }
@@ -1439,3 +1439,17 @@ button { cursor: pointer; }
 .btn { font-weight: 700; }
 .btn--small { font-size: 14px; }
 .stat strong { color: #363636; }
+
+/* Accessibility pass (full crawl): #767676 only on white — on grey / tint use #363636; 13px -> 14px */
+.type-tile:has(input:checked) .type-tile__text { color: #363636; }
+.panel-head__desc { font-size: 14px; color: #363636; }
+.toggle-card__title { color: #363636; }
+.toggle-card.is-on .toggle-card__title { color: var(--secondary); }
+.nf-count { color: #363636; }
+.menu__item:hover .menu__hint, .menu__item:focus-visible .menu__hint { color: #363636; }
+.empty-note, .state-note, .toggle-card .muted { font-size: 14px; color: #363636; }
+/* visible keyboard focus on the state palette cards */
+.palette-item:focus-visible { outline: none; box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--primary); }
+/* required asterisk: same as Studio */
+.req { font-weight: 400; }
+.empty-note p { font-size: 14px; color: #363636; }

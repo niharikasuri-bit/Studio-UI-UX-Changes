@@ -375,3 +375,7 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 
 /* the sticky counts bar stays above cards, their toolbars and the resize preview while scrolling */
 .db-bar { z-index: 20; }
+
+/* visible keyboard focus on the visualisation tiles (a later hover rule was flattening it) */
+.db-pal-list .db-pal-item:focus-visible { outline: none; border-color: #C84C0E; box-shadow: var(--focus-ring); }
+.db-pal-item .db-pal-ico { color: #363636; }
