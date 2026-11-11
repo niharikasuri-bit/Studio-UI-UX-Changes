@@ -728,6 +728,11 @@
     <div class="form-body">
       <div class="form-main dc-main">
         ${editorHead(d)}
+        <div class="dc-zoom" role="group" aria-label="Zoom">
+          <button type="button" class="icon-btn" data-zoom="out" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <button type="button" class="dc-zoom-l" data-zoom="fit" id="dc-zoom-l" title="Fit the page" aria-label="Zoom level. Select to fit the page">Fit</button>
+          <button type="button" class="icon-btn" data-zoom="in" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        </div>
         <div class="dc-stage" id="dc-stage">${templatePage(d, W.sel)}</div>
       </div>
       <aside class="form-panel" aria-label="Document items">
@@ -773,11 +778,24 @@
     const stage = $('dc-stage'), main = view.querySelector('.dc-main'), page = stage && stage.querySelector('.dp-page');
     if (!page || (screen !== 'template' && screen !== 'upload')) return;
     const availH = main.clientHeight - stage.offsetTop - 32, availW = stage.clientWidth;
-    const k = Math.max(0.3, Math.min(1, availH / 842, availW / 595));
+    const fit = Math.max(0.3, Math.min(1, availH / 842, availW / 595));
+    const k = W.zf ? W.zf : fit;   // W.zf = zoom chosen with − / +; none = fit the page
     W.zoom = k; page.style.transform = `scale(${k})`; page.style.transformOrigin = 'top center'; page.style.setProperty('--uz', String(1 / k));
-    stage.style.height = Math.ceil(842 * k) + 'px'; stage.style.overflow = 'visible'; stage.style.padding = '0'; main.style.overflow = 'hidden';
+    stage.style.height = Math.ceil(842 * k) + 'px'; stage.style.padding = '0';
+    stage.style.width = k * 595 > availW ? Math.ceil(595 * k) + 'px' : ''; stage.style.overflow = 'visible';
+    main.style.overflow = k > fit + 0.001 ? 'auto' : 'hidden';   // zoomed past the fit: the centre scrolls
+    const l = view.querySelector('#dc-zoom-l'); if (l) { l.textContent = W.zf ? Math.round(k * 100) + '%' : 'Fit'; l.setAttribute('aria-label', `Zoom ${Math.round(k * 100)} percent${W.zf ? '. Select to fit the page' : ', fitted to the space'}`); }
   }
   addEventListener('resize', () => fitTemplate());
+  // − / Fit / + : steps of 25%, from 50% to 200%
+  view.addEventListener('click', e => {
+    const b = e.target.closest('[data-zoom]'); if (!b || !W) return;
+    const cur = W.zoom || 1, steps = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+    if (b.dataset.zoom === 'fit') W.zf = null;
+    else if (b.dataset.zoom === 'in') W.zf = steps.find(z => z > cur + 0.01) || 2;
+    else W.zf = [...steps].reverse().find(z => z < cur - 0.01) || 0.5;
+    fitTemplate(); placeResize && placeResize(); S.announce(W.zf ? `Zoom ${Math.round(W.zoom * 100)} percent.` : 'Page fitted to the space.');
+  });
   function selectEl(k) {
     W.sel = k; W.elTab = W.elTab || 'element';
     view.querySelectorAll('[data-row]').forEach(r => { const on = r.dataset.row === W.sel; r.classList.toggle('is-sel', on); r.querySelector('[data-pick]').setAttribute('aria-pressed', String(on)); });
@@ -935,6 +953,11 @@
       </aside>
       <div class="form-main dc-main">
         ${editorHead(d)}
+        <div class="dc-zoom" role="group" aria-label="Zoom">
+          <button type="button" class="icon-btn" data-zoom="out" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <button type="button" class="dc-zoom-l" data-zoom="fit" id="dc-zoom-l" title="Fit the page" aria-label="Zoom level. Select to fit the page">Fit</button>
+          <button type="button" class="icon-btn" data-zoom="in" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        </div>
         <div class="dc-stage" id="dc-stage"></div>
       </div>
       <aside class="form-panel" aria-label="Document items">
