@@ -369,7 +369,6 @@ body.db-resizing-y, body.db-resizing-y * { cursor: ns-resize !important; }
 body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 @media (prefers-reduced-motion: reduce) { .db-ghost { transition: none; } }
 
-/* While resizing: faint 12-column guides so it is clear where the card will snap */
-.db-grid.db-cols { background-image: repeating-linear-gradient(to right, rgba(200, 76, 14, .08) 0 var(--db-col), transparent var(--db-col) calc(var(--db-col) + var(--db-gap)));
-                   background-origin: content-box; background-clip: content-box; }
 .db-card.is-resizing .db-card-body { opacity: 1; }
+
+.move-menu .move-sep { height: 1px; margin: 4px 0; background: #D6D5D4; }

@@ -55,9 +55,7 @@
   const OPS = [['eq', 'Is equal to', 'is'], ['ne', 'Is not equal to', 'is not']];
   // a filter = conditions joined by "And" (same as the form's Display Logic); older saved filters are converted
   const normFilters = w => { w.filters = (w.filters || []).map((f, i) => f.conds ? f : { name: `Filter ${i + 1}`, conds: f.field ? [{ field: f.field, op: 'eq', value: f.value }] : [] }); return w.filters; };
-  // every column from 3 to 12 of the 12-column grid; the common ones keep their names
-  const WNAME = { 3: 'Quarter', 4: 'One Third', 6: 'Half', 8: 'Two Thirds', 9: 'Three Quarters', 12: 'Full Width' };
-  const WIDTHS = Object.fromEntries([3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => [n, WNAME[n] ? `${WNAME[n]} (${n} of 12)` : `${n} of 12 columns`]));
+  const WIDTHS = { 3: 'Quarter', 4: 'One Third', 6: 'Half', 8: 'Two Thirds', 12: 'Full Width' };
   const HEIGHTS = { small: ['Small', 200], medium: ['Medium', 280], large: ['Large', 360] };
   // 3:1+ against white, white text 4.5:1+ on each
   const COLOURS = ['#0B4B66', '#C84C0E', '#00703C', '#5B3FC4', '#9E5F00', '#0057BD'];
@@ -396,7 +394,7 @@
           ${w.desc ? `<p class="db-card-desc">${esc(w.desc)}</p>` : ''}
         </div>
         ${preview ? '' : `<div class="db-card-acts" role="group" aria-label="${esc(w.title || t.name)} tools">
-          <span class="db-grip-wrap"><button type="button" class="grip db-grip" draggable="true" data-grip="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Move ${esc(w.title || t.name)}" title="Drag, or click to move">${I.grip}</button></span>
+          <span class="db-grip-wrap"><button type="button" class="grip db-grip" draggable="true" data-grip="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Move or resize ${esc(w.title || t.name)}" title="Drag to move, or click to move or resize">${I.grip}</button></span>
           <button type="button" class="db-act" data-copy="${w.id}" aria-label="Copy ${esc(w.title || t.name)}" title="Copy">${I.copy}</button>
           <button type="button" class="db-act" data-del="${w.id}" aria-label="Delete ${esc(w.title || t.name)}" title="Delete">${I.trash}</button>
         </div>`}
@@ -439,8 +437,7 @@
     const cnt = k => `<div class="fp-meta"><span class="fp-error"></span><span class="fp-count" data-dcnt="${k}">${(data[k] || '').length}/${DL[k]}<span class="sr-only"> characters</span></span></div>`;
     $('db-items').innerHTML = `<div class="fp-section">
       <div class="fp-field"><span class="fp-label"><label for="db-dname">Dashboard Title</label>${tip('db-tip-dn', 'dashboard title', 'The name shown at the top of the dashboard.')}</span>
-        <input class="fp-input" id="db-dname" type="text" maxlength="${DL.name}" data-dk="name" value="${esc(data.name || '')}" autocomplete="off" aria-describedby="db-dname-m">
-        <div id="db-dname-m">${cnt('name')}</div></div>
+        <input class="fp-input" id="db-dname" type="text" maxlength="${DL.name}" data-dk="name" value="${esc(data.name || '')}" autocomplete="off"></div>
       <div class="fp-field"><span class="fp-label"><label for="db-ddesc">Dashboard Description</label>${tip('db-tip-dd', 'dashboard description', 'Short text shown under the dashboard name.')}</span>
         <textarea class="fp-textarea" id="db-ddesc" maxlength="${DL.desc}" data-dk="desc" aria-describedby="db-ddesc-m">${esc(data.desc || '')}</textarea>
         <div id="db-ddesc-m">${cnt('desc')}</div></div>
@@ -499,10 +496,8 @@
     const k = TYPES[w.type].kind;
     const cnt = (key, max) => `<div class="fp-meta"><span class="fp-error"></span><span class="fp-count" data-cnt="${key}">${(w[key] || '').length}/${max}<span class="sr-only"> characters</span></span></div>`;
     let h = box('Title',
-      field('db-ttl', 'Title', `<input class="fp-input" id="db-ttl" type="text" maxlength="${LIMIT.title}" data-k="title" value="${esc(w.title)}" autocomplete="off">${cnt('title', LIMIT.title)}`));
-    // Size without dragging (WCAG 2.5.7): same options the resize handles snap to
-    h += box('Size', field('db-sz-w', 'Width', sel('db-sz-w', 'w', Object.entries(WIDTHS).map(([v, n]) => [v, n]), String(w.w)))
-      + (k !== 'kpi' ? field('db-sz-h', 'Height', sel('db-sz-h', 'h', Object.entries(HEIGHTS).map(([v, n]) => [v, n[0]]), w.h)) : ''));
+      field('db-ttl', 'Title', `<input class="fp-input" id="db-ttl" type="text" maxlength="${LIMIT.title}" data-k="title" value="${esc(w.title)}" autocomplete="off">`));   // limit kept, counter not shown
+    // (Size is not in the panel: resize by dragging the handles, Ctrl+Shift+arrows, or the card's ⋮⋮ menu)
     if (k === 'kpi') h += numBox(w) + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Comparison</h3>${sw('compare', w.compare, 'Comparison')}</div>
       ${w.compare ? field('db-cw', 'Compare With', sel('db-cw', 'cmpWith', [['month', 'Previous month'], ['quarter', 'Previous 3 months'], ['year', 'Same month last year']], w.cmpWith || 'month'))
         + field('db-ca', 'Show Change As', sel('db-ca', 'cmpAs', [['pct', 'Percentage'], ['num', 'Number']], w.cmpAs || 'pct'))
@@ -680,8 +675,12 @@
     const was = menu && menu.grip === g; closeMenu(false); if (was) return;
     const i = +g.dataset.grip, n = data.widgets.length;
     const items = [['Move to start', 0, i === 0], ['Move earlier', i - 1, i === 0], ['Move later', i + 1, i === n - 1], ['Move to end', n - 1, i === n - 1]];
-    const el = document.createElement('div'); el.className = 'move-menu'; el.setAttribute('role', 'menu'); el.setAttribute('aria-label', `Move ${data.widgets[i].title}`);
-    el.innerHTML = items.map(([t, to, dis]) => `<button type="button" role="menuitem" data-to="${to}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('');
+    const w = data.widgets[i], wi = ORDER.indexOf(w.w), hs = Object.keys(HEIGHTS), hi = hs.indexOf(w.h), chart = TYPES[w.type].kind !== 'kpi';
+    const sizes = [['Make wider', 'w+', wi === ORDER.length - 1], ['Make narrower', 'w-', wi === 0]].concat(chart ? [['Make taller', 'h+', hi === hs.length - 1], ['Make shorter', 'h-', hi === 0]] : []);
+    const el = document.createElement('div'); el.className = 'move-menu'; el.setAttribute('role', 'menu'); el.setAttribute('aria-label', `Move or resize ${w.title}`);
+    el.innerHTML = items.map(([t, to, dis]) => `<button type="button" role="menuitem" data-to="${to}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('')
+      + '<div class="move-sep" role="separator"></div>'
+      + sizes.map(([t, sz, dis]) => `<button type="button" role="menuitem" data-size="${sz}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('');
     g.parentElement.appendChild(el); g.setAttribute('aria-expanded', 'true'); menu = { el, grip: g, from: i };
     el.querySelector('[role="menuitem"]:not([aria-disabled])')?.focus();
   }
@@ -698,7 +697,9 @@
   grid.addEventListener('click', e => {
     const t = e.target;
     const it = t.closest('.move-menu [role="menuitem"]');
-    if (it) { if (it.getAttribute('aria-disabled') === 'true') return; const from = menu.from; closeMenu(false); return move(from, +it.dataset.to); }
+    if (it) { if (it.getAttribute('aria-disabled') === 'true') return; const from = menu.from; closeMenu(false);
+      if (it.dataset.size) return resizeBy(data.widgets[from], it.dataset.size);
+      return move(from, +it.dataset.to); }
     const g = t.closest('[data-grip]'); if (g) return openMenu(g);
     const c = t.closest('[data-copy]'); if (c) return copy(c.dataset.copy);
     const d = t.closest('[data-del]'); if (d) return askDelete(d.dataset.del, d);
@@ -707,6 +708,13 @@
     if (mb) { tab = 'data'; select(mb.dataset.mod, { keepTab: true }); $('db-module')?.focus(); return; }
     const card = t.closest('.db-card'); if (card) select(card.dataset.w, { focusPanel: false });
   });
+  function resizeBy(w, sz) {
+    snap();
+    if (sz[0] === 'w') { const k = ORDER.indexOf(w.w); w.w = ORDER[Math.max(0, Math.min(ORDER.length - 1, (k < 0 ? 2 : k) + (sz[1] === '+' ? 1 : -1)))]; }
+    else { const hs = Object.keys(HEIGHTS), k = hs.indexOf(w.h); w.h = hs[Math.max(0, Math.min(hs.length - 1, k + (sz[1] === '+' ? 1 : -1)))]; }
+    redraw(`[data-sel="${w.id}"]`);
+    S.announce(`${w.title} is now ${WIDTHS[w.w].toLowerCase()}${TYPES[w.type].kind !== 'kpi' ? `, ${HEIGHTS[w.h][0].toLowerCase()} height` : ''}.`);
+  }
   // Delete key on a selected card's title button
   /* ---------- Keyboard shortcuts ---------- */
   const mod = e => e.ctrlKey || e.metaKey;
@@ -715,7 +723,7 @@
   kbDlg.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => kbDlg.close()));
   kbDlg.addEventListener('click', e => { if (e.target === kbDlg) kbDlg.close(); });
   kbDlg.addEventListener('close', () => { kbBack && document.contains(kbBack) && kbBack.focus(); });
-  const ORDER = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const ORDER = [3, 4, 6, 8, 12];
   // On a visualisation (its title button)
   grid.addEventListener('keydown', e => {
     const b = e.target.closest('.db-sel'); if (!b || menu) return;
@@ -796,14 +804,14 @@
     const { ghost, span, h, col, gap, height, isChart, w } = rs;
     ghost.style.width = (span * col + (span - 1) * gap) + 'px';
     ghost.style.height = (isChart ? height + HEIGHTS[h][1] - HEIGHTS[w.h][1] : height) + 'px';   // grows / shrinks from the card's current height
-    ghost.firstChild.textContent = WIDTHS[span] + (isChart ? ' · ' + HEIGHTS[h][0] + ' height' : '');
+    ghost.firstChild.textContent = WIDTHS[span] + (isChart ? ' · ' + HEIGHTS[h][0] : '');
     ghost.classList.toggle('is-same', span === w.w && h === w.h);
   }
   grid.addEventListener('pointermove', e => {
     if (!rs) return;
     if (rs.axis !== 'y') {
       const want = (rs.width + e.clientX - rs.x + rs.gap) / (rs.col + rs.gap);
-      rs.span = Math.max(3, Math.min(12, Math.round(want)));
+      rs.span = ORDER.reduce((a, b) => (Math.abs(b - want) < Math.abs(a - want) ? b : a));
     }
     if (rs.axis !== 'x' && rs.isChart) {
       const hh = HEIGHTS[rs.w.h][1] + e.clientY - rs.y;
