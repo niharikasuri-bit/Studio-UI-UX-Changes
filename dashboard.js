@@ -93,8 +93,8 @@
   let data = DEFAULT();
   try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.widgets)) data = s; } catch (e) {}
   // data source is chosen per visualisation (older saves that used a dashboard-wide source are converted)
-  data.widgets.forEach(w => { if (!w.module) w.module = data.module || 'application'; }); delete data.module;
-  const modOf = w => w.module || 'application';
+  data.widgets.forEach(w => { if (!w.module) w.module = data.module || 'all'; }); delete data.module;
+  const modOf = w => w.module || 'all';
   data.widgets.forEach(w => { if (TYPES[w.type] && TYPES[w.type].kind === 'pie' && !ADDS_UP.includes(w.measure)) w.measure = 'count'; });
   let saved = JSON.stringify(data);
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {} saved = JSON.stringify(data); };
@@ -147,6 +147,10 @@
     const d = decOf(w, m), num = w.numFmt === 'short' ? compact(+v, d) : (+v).toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d });
     return m === 'fees' ? '₹' + num : m === 'days' ? num + ' days' : m === 'rate' ? num + '%' : num;
   }
+  // Data labels: Number or Percentage of the total (percentage only for values that add up; pie / donut default to percentage)
+  const canPct = w => ADDS_UP.includes(w.measure);
+  const labelAs = w => (canPct(w) ? (w.sliceAs || (TYPES[w.type].kind === 'pie' ? 'pct' : 'value')) : 'value');
+  const labelOf = (w, m, v, total) => (labelAs(w) === 'pct' ? (v / (total || 1) * 100).toFixed(decOf(w, 'pct')) + '%' : fmtW(w, m, v));
 
   /* ---------- Charts (SVG) ---------- */
   const tx = (x, y, s, a = {}) => `<text x="${x}" y="${y}" ${Object.entries(a).map(([k, v]) => `${k}="${v}"`).join(' ')}>${esc(String(s))}</text>`;
@@ -166,7 +170,7 @@
   function chartSVG(w, W0, H) {
     const t = TYPES[w.type], d = series(w), m = w.measure;
     if (t.kind === 'pie') return pieSVG(w, d, W0, H);
-    const max = niceMax(Math.max(...d.map(x => x.value)));
+    const max = niceMax(Math.max(...d.map(x => x.value))), sum = d.reduce((a, x) => a + x.value, 0);
     const xl = w.xLabel || (w.type === 'hbar' ? MEASURES[w.measure] : BY[w.by][0]), yl = w.yLabel || (w.type === 'hbar' ? BY[w.by][0] : MEASURES[w.measure]);
     w = { ...w, xLabel: xl, yLabel: yl };
     const ax = (w.xLabel ? 18 : 0), ay = (w.yLabel ? 18 : 0);
@@ -178,7 +182,7 @@
       for (let k = 0; k <= 4; k++) { const x = L + iw * k / 4; s += `<line x1="${x}" y1="${T}" x2="${x}" y2="${T + ih}" class="db-gl"/>` + tx(x, T + ih + 16, fmt(m, max * k / 4, true), { 'text-anchor': 'middle', class: 'db-tick' }); }
       d.forEach((p, i) => { const y = T + band * i + (band - bh) / 2, bw = iw * p.value / max;
         s += `<rect x="${L}" y="${y}" width="${Math.max(1, bw)}" height="${bh}" rx="3" fill="${COLOURS[0]}"/>` + (() => { const ln = wrap2(p.label, L - 10 - ayh); return txLines(L - 8, y + bh / 2 + 4 - (ln.length - 1) * 6.5, ln, { 'text-anchor': 'end', class: 'db-tick' }); })();
-        if (w.values) s += tx(L + bw + 6, y + bh / 2 + 4, fmtW(w, m, p.value), { class: 'db-val' }); });
+        if (w.values) s += tx(L + bw + 6, y + bh / 2 + 4, labelOf(w, m, p.value, sum), { class: 'db-val' }); });
       if (w.xLabel) s += tx(L + iw / 2, H - 4, w.xLabel, { 'text-anchor': 'middle', class: 'db-axis' });
       if (w.yLabel) s += yTitle(w.yLabel, ih, T);
       return s;
@@ -201,7 +205,7 @@
       const bw = Math.min(48, band * 0.6);
       d.forEach((p, i) => { const x = L + band * i + (band - bw) / 2, bh = ih * p.value / max;
         s += `<rect x="${x}" y="${T + ih - bh}" width="${bw}" height="${Math.max(1, bh)}" rx="3" fill="${COLOURS[0]}"/>`;
-        if (w.values) s += tx(x + bw / 2, T + ih - bh - 6, fmtW(w, m, p.value), { 'text-anchor': 'middle', class: 'db-val' });
+        if (w.values) s += tx(x + bw / 2, T + ih - bh - 6, labelOf(w, m, p.value, sum), { 'text-anchor': 'middle', class: 'db-val' });
         s += nameAt(L + band * i + band / 2, T + ih + 16, i); });
     } else {
       const pts = d.map((p, i) => [L + band * i + band / 2, T + ih - ih * p.value / max]);
@@ -209,7 +213,7 @@
       s += `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="${COLOURS[0]}" stroke-width="2.5" stroke-linejoin="round"/>`;
       d.forEach((p, i) => {
         if (w.points) s += `<circle cx="${pts[i][0]}" cy="${pts[i][1]}" r="4" fill="#fff" stroke="${COLOURS[0]}" stroke-width="2"/>`;
-        if (w.values) s += tx(pts[i][0], pts[i][1] - 9, fmtW(w, m, p.value), { 'text-anchor': 'middle', class: 'db-val' });
+        if (w.values) s += tx(pts[i][0], pts[i][1] - 9, labelOf(w, m, p.value, sum), { 'text-anchor': 'middle', class: 'db-val' });
         s += nameAt(pts[i][0], T + ih + 16, i); });
     }
     s += `<line x1="${L}" y1="${T + ih}" x2="${L + iw}" y2="${T + ih}" class="db-axisline"/>`;
@@ -228,7 +232,7 @@
         : `M${cx},${cy} L${x0},${y0} A${r},${r} 0 ${big} 1 ${x1},${y1}Z`;
       s += `<path d="${path}" fill="${COLOURS[i % COLOURS.length]}" stroke="#fff" stroke-width="2"/>`;
       const pct = Math.round(p.value / total * 100);
-      if (w.values && pct >= 6) { const [lx, ly] = P(ir ? (r + ir) / 2 : r * 0.62, (a0 + a1) / 2); s += tx(lx, ly + 4, w.sliceAs === 'value' ? fmtW({ ...w, numFmt: 'short' }, w.measure, p.value) : pct + '%', { 'text-anchor': 'middle', class: 'db-slice' }); }
+      if (w.values && pct >= 6) { const [lx, ly] = P(ir ? (r + ir) / 2 : r * 0.62, (a0 + a1) / 2); s += tx(lx, ly + 4, labelAs(w) === 'value' ? fmtW(w, w.measure, p.value) : labelOf(w, w.measure, p.value, total), { 'text-anchor': 'middle', class: 'db-slice' }); }
       a0 = a1;
     });
     if (ir) s += tx(cx, cy - 2, fmtW(w, w.measure, Math.round(total * 10) / 10), { 'text-anchor': 'middle', class: 'db-centre' }) + tx(cx, cy + 16, 'Total', { 'text-anchor': 'middle', class: 'db-tick' });
@@ -531,8 +535,7 @@
       h += sizeBox   // (no Chart Style box: the chart type is the one picked from the Visualisations panel)
         + (k !== 'pie' ? box('Axis Titles', w.type === 'hbar' ? yT + xT : xT + yT) : '')
         + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Data Labels</h3>${sw('values', w.values, 'Data Labels')}</div>
-            ${k === 'pie' && w.values ? field('db-sla', 'Slice Labels Show', sel('db-sla', 'sliceAs', [['pct', 'Percentage of the total'], ['value', 'Value']], w.sliceAs || 'pct')) : ''}
-            ${w.values ? numFields(w) : ''}</div>`
+            ${w.values && canPct(w) ? field('db-sla', 'Show Labels As', sel('db-sla', 'sliceAs', [['pct', 'Percentage'], ['value', 'Number']], labelAs(w))) : ''}</div>`   // only this question (user)
         + (k === 'line' ? `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Data Points</h3>${sw('points', w.points, 'Data Points')}</div></div>` : '')
         + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title" id="db-lg-t">Legend</h3>${sw('legend', w.legend, 'Legend')}</div>
             ${w.legend ? field('db-lpos', 'Legend Position', sel('db-lpos', 'legendPos', [['bottom', 'Below the chart'], ['right', 'Right of the chart']], w.legendPos)) : ''}</div>`;
@@ -637,13 +640,13 @@
     if (!selId) (grid.querySelector('.db-sel') || document.querySelector('.db-pal-item'))?.focus();
     S.announce(`${word} done.`);
   }
-  /* Adding (click, drag or keyboard) always asks the data source and title; the last data source chosen is preselected */
+  /* Adding (click, drag or keyboard) always asks the data source and title; Data Source starts on All modules every time */
   let lastSrc = 'all', pending = null;
   const srcDlg = $('db-src-dlg'), srcTitle = $('db-src-title'), srcErr = $('db-src-title-e');
   const titleErr = msg => { srcErr.textContent = msg; if (msg) srcTitle.setAttribute('aria-invalid', 'true'); else srcTitle.removeAttribute('aria-invalid'); };
   function add(type, at = data.widgets.length, preset) {
     pending = { type, at, preset, opener: document.activeElement };
-    $('db-src-sel').value = lastSrc;
+    $('db-src-sel').value = 'all';   // Data Source always starts on All modules
     srcTitle.value = '';   // no default title: the user names every visualisation
     titleErr('');
     srcDlg.showModal(); $('db-src-sel').focus();
