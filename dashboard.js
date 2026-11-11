@@ -400,7 +400,7 @@
         </div>`}
       </header>
       <div class="db-card-body">${body}</div>
-      ${preview ? '' : `<span class="db-resize" data-rs="${w.id}" aria-hidden="true" title="Drag to resize"></span>`}
+      ${preview ? '' : `<span class="db-rz db-rz-x" data-rs="${w.id}" data-axis="x" aria-hidden="true" title="Drag to change the width"></span>${t.kind !== 'kpi' ? `<span class="db-rz db-rz-y" data-rs="${w.id}" data-axis="y" aria-hidden="true" title="Drag to change the height"></span>` : ''}<span class="db-resize" data-rs="${w.id}" data-axis="${t.kind !== 'kpi' ? 'xy' : 'x'}" aria-hidden="true" title="Drag to resize"></span>`}
     </article>`;
   }
   function drawStats() {
@@ -771,28 +771,45 @@
   });
 
   /* ---------- Resize: drag the bottom-right corner (snaps to the grid widths and the chart heights) ---------- */
+  // Right edge = width, bottom edge = height (charts), corner = both. While dragging, a dashed outline shows the size the card
+  // will snap to, with its name; the card and its neighbours only change when the pointer is released.
   let rs = null;
   grid.addEventListener('pointerdown', e => {
     const hd = e.target.closest('[data-rs]'); if (!hd || preview) return;
-    e.preventDefault(); const card = hd.closest('.db-card'), w = W(hd.dataset.rs), r = card.getBoundingClientRect();
+    e.preventDefault(); e.stopPropagation();
+    const card = hd.closest('.db-card'), w = W(hd.dataset.rs), r = card.getBoundingClientRect();
     const gs = getComputedStyle(grid), gap = parseFloat(gs.columnGap) || 16, col = (grid.clientWidth - parseFloat(gs.paddingLeft) - parseFloat(gs.paddingRight) - gap * 11) / 12;
-    const ch = card.querySelector('.db-chart');
-    rs = { w, card, x: e.clientX, y: e.clientY, width: r.width, col, gap, ch, h0: ch ? ch.getBoundingClientRect().height : 0, span: w.w, h: w.h };
-    hd.setPointerCapture(e.pointerId); card.classList.add('is-resizing'); select(w.id, { keepTab: true });
+    const ch = card.querySelector('.db-chart'), chartH = ch ? ch.getBoundingClientRect().height : 0;
+    const ghost = document.createElement('div'); ghost.className = 'db-ghost'; ghost.setAttribute('aria-hidden', 'true');
+    ghost.innerHTML = '<span class="db-ghost-l"></span>'; card.appendChild(ghost);
+    rs = { w, card, ghost, axis: hd.dataset.axis || 'xy', x: e.clientX, y: e.clientY, width: r.width, height: r.height, col, gap, chartH,
+           isChart: !!ch && TYPES[w.type].kind !== 'kpi', span: w.w, h: w.h };
+    hd.setPointerCapture(e.pointerId); card.classList.add('is-resizing'); document.body.classList.add('db-resizing-' + rs.axis);
+    select(w.id, { keepTab: true }); paintGhost();
   });
+  function paintGhost() {
+    const { ghost, span, h, col, gap, height, isChart, w } = rs;
+    ghost.style.width = (span * col + (span - 1) * gap) + 'px';
+    ghost.style.height = (isChart ? height + HEIGHTS[h][1] - HEIGHTS[w.h][1] : height) + 'px';   // grows / shrinks from the card's current height
+    ghost.firstChild.textContent = WIDTHS[span] + (isChart ? ' · ' + HEIGHTS[h][0] : '');
+    ghost.classList.toggle('is-same', span === w.w && h === w.h);
+  }
   grid.addEventListener('pointermove', e => {
     if (!rs) return;
-    const want = (rs.width + e.clientX - rs.x + rs.gap) / (rs.col + rs.gap);
-    rs.span = [3, 4, 6, 8, 12].reduce((a, b) => (Math.abs(b - want) < Math.abs(a - want) ? b : a));
-    rs.card.style.setProperty('--span', rs.span); rs.card.dataset.span = rs.span;
-    if (rs.ch && TYPES[rs.w.type].kind !== 'kpi') {
-      const hh = rs.h0 + e.clientY - rs.y; rs.h = Object.entries(HEIGHTS).reduce((a, b) => (Math.abs(b[1][1] - hh) < Math.abs(HEIGHTS[a][1] - hh) ? b[0] : a), rs.w.h);
-      rs.ch.style.height = HEIGHTS[rs.h][1] + 'px';
+    if (rs.axis !== 'y') {
+      const want = (rs.width + e.clientX - rs.x + rs.gap) / (rs.col + rs.gap);
+      rs.span = [3, 4, 6, 8, 12].reduce((a, b) => (Math.abs(b - want) < Math.abs(a - want) ? b : a));
     }
+    if (rs.axis !== 'x' && rs.isChart) {
+      const hh = HEIGHTS[rs.w.h][1] + e.clientY - rs.y;
+      rs.h = Object.keys(HEIGHTS).reduce((a, b) => (Math.abs(HEIGHTS[b][1] - hh) < Math.abs(HEIGHTS[a][1] - hh) ? b : a));
+    }
+    paintGhost();
   });
   const endResize = () => {
-    if (!rs) return; const { w, span, h, card } = rs; rs = null; card.classList.remove('is-resizing');
-    if (span === w.w && h === w.h) return drawCharts();
+    if (!rs) return; const { w, span, h, card, ghost, axis } = rs; rs = null;
+    ghost.remove(); card.classList.remove('is-resizing'); document.body.classList.remove('db-resizing-' + axis);
+    if (span === w.w && h === w.h) return;
     snap(); w.w = span; w.h = h; redraw(`[data-sel="${w.id}"]`);
     S.announce(`${w.title} resized to ${WIDTHS[span].toLowerCase()}${TYPES[w.type].kind !== 'kpi' ? `, ${HEIGHTS[h][0].toLowerCase()} height` : ''}.`);
   };

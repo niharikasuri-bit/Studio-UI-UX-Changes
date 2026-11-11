@@ -345,3 +345,29 @@
 
 /* palette item names #363636, same as the process flow's state names */
 .db-pal-name { color: #363636; }
+
+/* Resize v2: right edge = width, bottom edge = height, corner = both; handles show on hover / selected */
+.db-rz { position: absolute; z-index: 3; opacity: 0; touch-action: none; transition: opacity .12s; }
+.db-rz::after { content: ""; position: absolute; border-radius: 2px; background: #C84C0E; }
+.db-rz-x { top: 12px; bottom: 12px; right: -6px; width: 12px; cursor: ew-resize; }
+.db-rz-x::after { top: 50%; left: 4px; width: 4px; height: 32px; margin-top: -16px; }
+.db-rz-y { left: 12px; right: 12px; bottom: -6px; height: 12px; cursor: ns-resize; }
+.db-rz-y::after { left: 50%; top: 4px; height: 4px; width: 32px; margin-left: -16px; }
+.db-resize { right: -2px; bottom: -2px; width: 24px; height: 24px; z-index: 4; border-radius: 0 0 8px 0;
+             background: linear-gradient(135deg, transparent 45%, #C84C0E 45%, #C84C0E 55%, transparent 55%, transparent 66%, #C84C0E 66%, #C84C0E 76%, transparent 76%); }
+.db-resize[data-axis="x"] { cursor: ew-resize; }
+.db-card:hover .db-rz, .db-card.is-sel .db-rz, .db-card:focus-within .db-rz, .db-card.is-resizing .db-rz { opacity: 1; }
+.db-rz:hover::after { background: #A33E0B; }
+/* the dashed outline of the size the card will snap to */
+.db-ghost { position: absolute; left: -1px; top: -1px; z-index: 6; pointer-events: none; border: 2px dashed #C84C0E; border-radius: 8px;
+            background: rgba(200, 76, 14, .06); transition: width .12s ease, height .12s ease; }
+.db-ghost.is-same { border-color: #767676; background: rgba(0, 0, 0, .03); }
+.db-ghost-l { position: absolute; right: 8px; bottom: 8px; padding: 4px 10px; border-radius: 4px; background: #C84C0E; color: #fff;
+              font-size: 14px; font-weight: 700; line-height: 1.37; white-space: nowrap; }
+.db-ghost.is-same .db-ghost-l { background: #363636; }
+.db-card.is-resizing { box-shadow: none; border-color: #D6D5D4; user-select: none; }
+.db-card.is-resizing .db-card-body { opacity: .55; }
+body.db-resizing-x, body.db-resizing-x * { cursor: ew-resize !important; }
+body.db-resizing-y, body.db-resizing-y * { cursor: ns-resize !important; }
+body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
+@media (prefers-reduced-motion: reduce) { .db-ghost { transition: none; } }
