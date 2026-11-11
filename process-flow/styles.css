@@ -1428,3 +1428,6 @@ button { cursor: pointer; }
 /* Popup tags = Studio Notifications tags: 28px, 14px / 500, 4px radius. Type (SMS / Email / document type) amber, state blue */
 #addDialog .tag, #docDialog .tag { height: 28px; padding: 0 10px; font-size: 14px; font-weight: 500; border-radius: 4px; }
 #addDialog .tag--channel, #docDialog .tag--channel { background: var(--warning-bg); color: var(--warning); }
+
+/* Left panel description matches the dashboard's Visualisations panel: 14px, #505A5F */
+.sidebar__head .muted { font-size: 14px; line-height: 1.37; color: #505A5F; }

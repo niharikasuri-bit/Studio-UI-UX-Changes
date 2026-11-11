@@ -47,7 +47,7 @@
     </div>
     <main class="content nt-main">
       <div class="roles-head">
-        <h1 class="page-title" id="cl-title" tabindex="-1">Manage Checklists</h1>
+        <h1 class="page-title" id="cl-title" tabindex="-1">Checklists</h1>
         <button type="button" class="btn btn-primary roles-new" id="cl-new" aria-haspopup="dialog">${I.plusW} Create New Checklist</button>
       </div>
       <section class="section nt-filters" aria-label="Filter checklists">

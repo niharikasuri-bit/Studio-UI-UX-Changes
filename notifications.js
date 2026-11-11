@@ -44,7 +44,7 @@
     </div>
     <main class="content nt-main">
       <div class="roles-head">
-        <h1 class="page-title" id="nt-title" tabindex="-1">Manage Notifications</h1>
+        <h1 class="page-title" id="nt-title" tabindex="-1">Notifications</h1>
         <button type="button" class="btn btn-primary roles-new" id="nt-new" aria-haspopup="dialog">${I.plusW} Create New Notification</button>
       </div>
       <section class="section nt-filters" aria-label="Filter notifications">

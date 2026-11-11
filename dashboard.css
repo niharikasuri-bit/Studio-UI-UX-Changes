@@ -342,3 +342,6 @@
 /* hover = orange stroke only, no tint (document / form cards) */
 #db-items .lp-fc:has(.lp-fc-open):hover { border-color: var(--primary); }
 .db-pal-item:hover { border-color: #C84C0E; box-shadow: none; }
+
+/* palette item names #363636, same as the process flow's state names */
+.db-pal-name { color: #363636; }

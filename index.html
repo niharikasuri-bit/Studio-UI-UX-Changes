@@ -345,8 +345,8 @@
 <link rel="stylesheet" href="checklists.css?v=1794331601" />
 <link rel="stylesheet" href="payments.css?v=1794331601" />
 <link rel="stylesheet" href="documents.css?v=1794401139" />
-<link rel="stylesheet" href="landing.css?v=1794404511" />
-<link rel="stylesheet" href="dashboard.css?v=1794401139" />
+<link rel="stylesheet" href="landing.css?v=1794405228" />
+<link rel="stylesheet" href="dashboard.css?v=1794405228" />
 </head>
 <body>
 <a class="skip" href="#content">Skip to main content</a>
@@ -988,14 +988,14 @@
     if (clView) {
       if (!window.StudioChecklists) { addEventListener('load', route, { once: true }); return; }
       window.StudioChecklists.render(m, started);
-      document.title = `Manage Checklists – ${m.name} – Studio Prototype – Studio`;
+      document.title = `Checklists – ${m.name} – Studio Prototype – Studio`;
       started = true;
       return;
     }
     if (ntView) {
       if (!window.StudioNotifications) { addEventListener('load', route, { once: true }); return; }
       window.StudioNotifications.render(m, started);
-      document.title = `Manage Notifications – ${m.name} – Studio Prototype – Studio`;
+      document.title = `Notifications – ${m.name} – Studio Prototype – Studio`;
       started = true;
       return;
     }
@@ -1014,7 +1014,7 @@
       return;
     }
     if (flow) {
-      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794401714';   // version forces a fresh copy after edits
+      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794405228';   // version forces a fresh copy after edits
       if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
       frame.title = `Process flow designer for ${m.name}`;
       document.title = `Process Flow – ${m.name} – Studio Prototype – Studio`;
@@ -1144,8 +1144,8 @@
 })();
 </script>
 <script src="roles.js?v=1794376479"></script>
-<script src="notifications.js?v=1794390390"></script>
-<script src="checklists.js?v=1794381483"></script>
+<script src="notifications.js?v=1794405228"></script>
+<script src="checklists.js?v=1794405228"></script>
 <script src="payments.js?v=1794381483"></script>
 <script src="documents.js?v=1794390863"></script>
 <script src="landing.js?v=1794404609"></script>
