@@ -1983,7 +1983,7 @@
       cardTitle: 'Send Notification',
       info: 'Automatic messages (SMS or email) sent to the people involved when something happens in this state.',
       listTitle: 'Notifications for this state',
-      empty: 'Notification yet to be added',
+      empty: 'Notification yet to be created',
       noun: 'Notification',
       wizard: true,
     },
@@ -1992,7 +1992,7 @@
       cardTitle: 'Generate Document',
       info: 'Files the system creates automatically when work reaches this state, such as a receipt, certificate or letter.',
       listTitle: 'Documents for this state',
-      empty: 'Document yet to be added',
+      empty: 'Document yet to be created',
       noun: 'Document',
     },
     payment: {
@@ -2000,7 +2000,7 @@
       cardTitle: 'Collect Payment',
       info: 'Fees collected at this state, such as an application or inspection fee. Work can be held here until they are paid.',
       listTitle: 'Payment for this state',
-      empty: 'Payment yet to be added',
+      empty: 'Payment yet to be created',
       noun: 'Payment',
       single: true,
     },
@@ -2553,7 +2553,7 @@
         )
       );
     } else {
-      body = emptyNote('Checklist yet to be added');
+      body = emptyNote('Checklist yet to be created');
     }
 
     return el(
