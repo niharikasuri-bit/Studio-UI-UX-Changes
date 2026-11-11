@@ -1458,8 +1458,7 @@ button { cursor: pointer; }
 .info-btn, .inner-card .info-btn, .cl-nested .info-btn { color: inherit; }
 .panel-section__head .info-btn { color: var(--secondary); }   /* same blue as the heading beside it */
 
-/* Toggle cards (Collect Payment, Notification…): off = #767676 title on white (4.54:1), on = blue title on grey; rows #363636 */
-.toggle-card:not(.is-on) { background: var(--surface); }
+/* Toggle cards (Collect Payment, Notification…): container stays #FAFAFA; off = #767676 title, on = blue title; rows #363636 */
 .toggle-card:not(.is-on) .toggle-card__title { color: #767676; }
 .toggle-card.is-on .toggle-card__title { color: var(--secondary); }
 .logic-item__input, .logic-item { color: #363636; }

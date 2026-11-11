@@ -189,10 +189,10 @@
       const bx = sel.t === 'qr' ? (d.qr ? q : null) : d.vars[sel.i];
       if (bx) {
       // keep the arrow bar inside the page: clamp left, and flip above the element if there is no room below
-      const z = (W && W.zoom) || 1, bw = 58 / z, bh = 58 / z;   // compact + cross, centred under the element
+      const z = (W && W.zoom) || 1, bw = 134 / z, bh = 38 / z;   // horizontal bar, centred under the element (placeResize refines it)
       const nl = Math.max(0, Math.min(bx.x + (bx.w || 40) / 2 - bw / 2, 595 - bw)), below = bx.y + (bx.h || 24) + 8, nt = below + bh > 842 ? Math.max(0, bx.y - bh - 8) : below;
       if (bx && (sel.t === 'qr' || bx.page === i)) nudge = `<div class="dc-nudge" role="group" aria-label="Move ${sel.t === 'qr' ? 'QR code' : esc(bx.name)}" style="left:${nl}px;top:${nt}px">
-        ${[['up', 'Move up'], ['left', 'Move left'], ['right', 'Move right'], ['down', 'Move down']].map(([k, l]) => `<button type="button" data-nudge="${k}" aria-label="${l}">${ARW[k]}</button>`).join('')}</div>`;
+        ${[['left', 'Move left'], ['up', 'Move up'], ['down', 'Move down'], ['right', 'Move right']].map(([k, l]) => `<button type="button" data-nudge="${k}" aria-label="${l}">${ARW[k]}</button>`).join('')}</div>`;
       }
     }
     return `<div class="dp-page dp-up"><img src="${p.src}" alt="">
@@ -1021,6 +1021,10 @@
     const h = $('dc-stage')?.querySelector('[data-resize]'), z = W.zoom || 1;
     // leave room for the resize handle (half of it hangs below the corner) so the arrows never overlap it
     if (el && nb) {
+      // bar size follows the item's size on screen: small item → small bar, so the arrows never dwarf the item
+      // (arrow keys + the X/Y fields in the panel stay the accessible way to move it)
+      const big = Math.max(el.offsetWidth, el.offsetHeight) * z, tier = big < 60 ? 's' : big < 120 ? 'm' : 'l';
+      nb.classList.remove('is-s', 'is-m', 'is-l'); nb.classList.add('is-' + tier);
       const gap = (h ? 11 + 10 : 8) / z, below = el.offsetTop + el.offsetHeight + gap;
       nb.style.top = (below + nb.offsetHeight <= 842 ? below : Math.max(0, el.offsetTop - nb.offsetHeight - 8 / z)) + 'px';
       nb.style.left = Math.max(0, Math.min(el.offsetLeft + el.offsetWidth / 2 - nb.offsetWidth / 2, 595 - nb.offsetWidth)) + 'px';   // centred under the element

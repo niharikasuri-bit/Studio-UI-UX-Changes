@@ -534,6 +534,7 @@ button.dp-qr-pos:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .dc-uv-item { padding-right: 4px; }
 .dc-uv-item .dc-uv-del { flex: none; width: 32px; height: 32px; color: var(--primary); border-radius: 4px; }
 .dc-uv-item .dc-uv-del:hover { background: var(--primary-tint); }
+.dc-uv-item .dc-uv-del svg { width: 20px; height: 20px; }   /* bin icon 16 → 20px (user: too small) */
 
 /* ===== File card (arrange screen + canvas "Uploaded Documents") — one design =====
    white card, fixed-height preview with the image centred and fully visible (any orientation), order badge,
@@ -589,19 +590,19 @@ button.dc-fcard-img:focus-visible { outline: none; box-shadow: inset 0 0 0 2px v
 .dc-fcard.dc-fcard:hover { border: 1px solid var(--primary); box-shadow: 0 0 0 1px var(--primary); }
 .dc-fcard.dc-fcard.is-sel { border: 1px solid var(--primary); box-shadow: 0 0 0 1px var(--primary); }
 
-/* Canvas arrows = a compact + cross (24px buttons on screen) centred under the element, so it never looks bigger than the element */
-.dc-nudge { display: grid; grid-template-columns: repeat(3, calc(24px * var(--uz, 1))); grid-template-rows: repeat(3, calc(24px * var(--uz, 1)));
-            grid-template-areas: ". up ." "left . right" ". down ."; gap: calc(2px * var(--uz, 1)); padding: calc(4px * var(--uz, 1));
-            border-radius: calc(8px * var(--uz, 1)); }
-.dc-nudge button { width: calc(24px * var(--uz, 1)); height: calc(24px * var(--uz, 1)); }
-.dc-nudge button svg { width: calc(14px * var(--uz, 1)); height: calc(14px * var(--uz, 1)); }
-.dc-nudge [data-nudge="up"] { grid-area: up; } .dc-nudge [data-nudge="left"] { grid-area: left; }
-.dc-nudge [data-nudge="right"] { grid-area: right; } .dc-nudge [data-nudge="down"] { grid-area: down; }
-/* smaller cross: 16px buttons, 2px gaps — centres 25px apart, so WCAG 2.5.8 is met by the spacing exception; arrow keys also move the item */
-.dc-nudge { grid-template-columns: repeat(3, calc(16px * var(--uz, 1))); grid-template-rows: repeat(3, calc(16px * var(--uz, 1)));
-            gap: calc(2px * var(--uz, 1)); padding: calc(3px * var(--uz, 1)); border-radius: calc(6px * var(--uz, 1)); }
-.dc-nudge button { width: calc(16px * var(--uz, 1)); height: calc(16px * var(--uz, 1)); border-radius: calc(3px * var(--uz, 1)); }
-.dc-nudge button svg { width: calc(12px * var(--uz, 1)); height: calc(12px * var(--uz, 1)); }
+/* Canvas arrows = the process-flow nudge bar: one horizontal row ◀ ▲ ▼ ▶ (large = 28px buttons, 4px gap/padding on screen, via --uz),
+   centred under the element and kept inside the page (placeResize) */
+.dc-nudge { display: flex; align-items: center; gap: calc(4px * var(--uz, 1)); padding: calc(4px * var(--uz, 1)); border-radius: calc(6px * var(--uz, 1)); }
+.dc-nudge button { width: calc(28px * var(--uz, 1)); height: calc(28px * var(--uz, 1)); border-radius: calc(4px * var(--uz, 1)); }
+.dc-nudge button svg { width: calc(16px * var(--uz, 1)); height: calc(16px * var(--uz, 1)); }
+.dc-nudge button:hover { background: #FBEEE8; }
+/* Small / Medium / Large bar, picked from the selected item's size on screen (placeResize) */
+.dc-nudge.is-s { gap: calc(2px * var(--uz, 1)); padding: calc(2px * var(--uz, 1)); border-radius: calc(4px * var(--uz, 1)); }
+.dc-nudge.is-s button { width: calc(18px * var(--uz, 1)); height: calc(18px * var(--uz, 1)); border-radius: calc(3px * var(--uz, 1)); }
+.dc-nudge.is-s button svg { width: calc(12px * var(--uz, 1)); height: calc(12px * var(--uz, 1)); }
+.dc-nudge.is-m { gap: calc(3px * var(--uz, 1)); padding: calc(3px * var(--uz, 1)); border-radius: calc(5px * var(--uz, 1)); }
+.dc-nudge.is-m button { width: calc(22px * var(--uz, 1)); height: calc(22px * var(--uz, 1)); }
+.dc-nudge.is-m button svg { width: calc(14px * var(--uz, 1)); height: calc(14px * var(--uz, 1)); }
 
 /* 'Browse in my files' keeps a 24px target even though it sits in a sentence (WCAG 2.5.8) */
 .dc-browse { display: inline-flex; align-items: center; min-height: 24px; vertical-align: middle; }

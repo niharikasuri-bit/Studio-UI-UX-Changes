@@ -530,4 +530,4 @@ body .tip-btn { color: inherit; }
 body .tip-btn:hover { color: inherit; }
 
 /* Section fields items in the form panel: primary text #363636 (user) */
-body #view-form .field-card .field-name { color: #363636; }
+body #view-form .field-card .field-name { font-size: 14px; color: #363636; }

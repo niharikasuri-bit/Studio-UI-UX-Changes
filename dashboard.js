@@ -688,7 +688,7 @@
   }
   grid.addEventListener('keydown', e => {
     if (!menu || !menu.el.contains(e.target)) return;
-    const its = [...menu.el.querySelectorAll('[role="menuitem"]')]; let k = its.indexOf(e.target);
+    const its = [...menu.el.querySelectorAll('[role^="menuitem"]')]; let k = its.indexOf(e.target);
     if (e.key === 'Escape' || e.key === 'Tab') { e.preventDefault(); closeMenu(true); return; }
     if (e.key === 'ArrowDown') k = (k + 1) % its.length; else if (e.key === 'ArrowUp') k = (k - 1 + its.length) % its.length;
     else if (e.key === 'Home') k = 0; else if (e.key === 'End') k = its.length - 1; else return;
@@ -698,7 +698,7 @@
 
   grid.addEventListener('click', e => {
     const t = e.target;
-    const it = t.closest('.move-menu [role="menuitem"]');
+    const it = t.closest('.move-menu [role^="menuitem"]');
     if (it) { if (it.getAttribute('aria-disabled') === 'true') return; const from = menu.from; closeMenu(false);
       if (it.dataset.size) return resizeBy(data.widgets[from], it.dataset.size);
       return move(from, +it.dataset.to); }
@@ -867,6 +867,11 @@
   view.addEventListener('dragend', () => { if (!drag) return; drag = null; ph.remove(); grid.classList.remove('is-over'); grid.querySelectorAll('.is-dragging').forEach(c => c.classList.remove('is-dragging')); if (!data.widgets.length) drawGrid(); });
 
   // Palette click = add at the end
+  // Clicking the empty grey canvas (not a visualisation, menu or control) deselects
+  $('db-main').addEventListener('click', e => {
+    if (preview || !selId || e.target.closest('.db-card, .move-menu, button, a, input, select, textarea, label')) return;
+    select(null); S.announce('Visualisation deselected.');
+  });
   view.querySelector('.db-palette').addEventListener('click', e => { const p = e.target.closest('[data-add]'); if (p) add(p.dataset.add, undefined, p.dataset.preset); });
 
   /* ---------- Right panel events ---------- */
