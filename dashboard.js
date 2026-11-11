@@ -433,7 +433,7 @@
             <path d="M48 90l0 20 5-5 4 9 4-2-4-9 7 0z" fill="#fff" stroke="#363636" stroke-width="1.5" stroke-linejoin="round"/>
           </svg>
           <h2 class="db-empty-t">Add your first visualisation</h2>
-          <p class="db-empty-d">Drag a KPI card or chart from the visualisations offered to here, or click one to add it.</p></div>`;
+          <p class="db-empty-d">Drag or click a KPI card or chart from the visualisations offered to the canvas.</p></div>`;
     view.classList.toggle('db-is-empty', !data.widgets.length);
     drawCharts();
   }
@@ -460,7 +460,7 @@
         <button type="button" class="lp-fc-open" data-sel="${w.id}"><span class="field-info"><span class="field-name">${esc(w.title || TYPES[w.type].name)}</span>
           <span class="db-item-tags"><span class="type-tag db-type-tag"><span class="sr-only">Type: </span>${TYPES[w.type].name}</span><span class="db-flt-tag db-mod-tag"><span class="sr-only">Data source: </span>${MODULES[modOf(w)]}</span></span></span></button>
           <span class="field-actions"><button type="button" class="del-btn" data-rmitem="${w.id}" aria-label="Delete ${esc(w.title || TYPES[w.type].name)}" title="Delete">${I.trash}</button></span></li>`).join('')}</ul>`
-        : `<p class="db-items-none">You don’t have any visualisations at the moment.</p>`}
+        : `<p class="db-items-none">You don’t have any visualisations yet.</p>`}
     </div>`;
   }
 
@@ -497,7 +497,7 @@
               <span class="dl-name">${esc(f.name)}${f.conds[0] ? `<span class="dl-meta">${esc(FILTERS[f.conds[0].field]?.[0] || '')} ${OPS.find(o => o[0] === f.conds[0].op)?.[2] || ''} ${esc(f.conds[0].value)}</span>` : ''}</span>
               <button type="button" class="dl-btn" data-editf="${i}" aria-label="Edit ${esc(f.name)}" aria-haspopup="dialog">${I.pencilS}</button>
               <button type="button" class="dl-btn" data-rmf="${i}" aria-label="Delete ${esc(f.name)}">${I.trash}</button>
-            </li>`).join('')}</ul>` : '<p class="db-none">You don’t have any filters at the moment, so this visualisation counts every record.</p>'}
+            </li>`).join('')}</ul>` : '<p class="db-none">You don’t have any filters yet, so this visualisation counts every record.</p>'}
           <button type="button" class="btn btn-secondary dl-add" id="db-add-filter" aria-haspopup="dialog">${I.plus} Add Filter</button>
         </div>`);
   }
