@@ -359,7 +359,7 @@
 .db-ghost { position: absolute; left: -1px; top: -1px; z-index: 6; pointer-events: none; border: 1.5px dashed #C84C0E; border-radius: 8px;
             background: rgba(200, 76, 14, .04); transition: width .12s ease, height .12s ease; }
 .db-ghost.is-same { border-color: #767676; background: none; }
-.db-ghost-l { position: absolute; right: -1px; top: -30px; padding: 2px 8px; border-radius: 4px; background: #C84C0E; color: #fff;
+.db-ghost-l { position: absolute; right: 8px; top: 8px; padding: 2px 8px; box-shadow: 0 1px 3px rgba(0,0,0,.2); border-radius: 4px; background: #C84C0E; color: #fff;
               font-size: 14px; font-weight: 700; line-height: 1.37; white-space: nowrap; }
 .db-ghost.is-same .db-ghost-l { background: #363636; }
 .db-card.is-resizing { box-shadow: none; border-color: #D6D5D4; user-select: none; }
