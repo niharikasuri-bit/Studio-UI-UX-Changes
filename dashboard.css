@@ -441,3 +441,5 @@ circle.db-mark.is-hot { opacity: 1; }
 .db-tt b { font-weight: 700; color: #0B4B66; }
 .db-tt[hidden] { display: none; }
 @media (prefers-reduced-motion: reduce) { .db-mark, .db-pt { transition: none; } }
+/* Preview Dashboard while the dashboard is empty: off (same disabled look as other Studio footer buttons) */
+#db-view:disabled { border-color: #D6D5D4; color: #9E9E9E; background: #fff; cursor: not-allowed; }   /* outline + text greyed only, background stays white */

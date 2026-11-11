@@ -475,6 +475,8 @@
           <h2 class="db-empty-t">Build a dashboard with your data</h2>
           <p class="db-empty-d">Select or drag a KPI card or chart from the visualisations offered onto the dashboard canvas.</p></div>`;
     view.classList.toggle('db-is-empty', !data.widgets.length);
+    // Preview Dashboard stays off until there is at least one visualisation to preview
+    const pv = $('db-view'); if (pv && !preview) { pv.disabled = !data.widgets.length; pv.title = data.widgets.length ? '' : 'Add a visualisation to preview the dashboard'; }
     drawCharts();
   }
   function drawCharts() {
