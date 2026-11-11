@@ -146,7 +146,7 @@ button.lp-tile.is-sel { box-shadow: 0 0 0 2px #C84C0E; background: #FBEEE8; }
 .lp-ll { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .lp-li { display: flex; align-items: center; gap: 2px; min-height: 44px; padding: 4px 4px 4px 12px; background: #FAFAFA; border: 1px solid #D6D5D4; border-radius: 8px; }
 .lp-li:hover { border-color: #C84C0E; }
-.lp-li-open { flex: 1; min-width: 0; min-height: 34px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; color: #767676;
+.lp-li-open { flex: 1; min-width: 0; min-height: 34px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; color: #363636;
               text-align: left; cursor: pointer; }
 .lp-li-open:focus-visible, .lp-li-btn:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
 .lp-li-btn { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border: 0; border-radius: 4px; background: none; color: #C84C0E; cursor: pointer; }

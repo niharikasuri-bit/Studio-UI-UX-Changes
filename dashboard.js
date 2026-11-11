@@ -494,7 +494,7 @@
           <h4 class="dl-title fpp-with-tip" id="db-fl-t">Filters for This Visualisation ${tip('db-tip-fl', 'filters for this visualisation', 'Filters for this visualisation are conditions on a record. Only records that meet every filter are included in this visualisation.')}</h4>
           ${normFilters(w).length ? `<ul class="dl-list" aria-labelledby="db-fl-t">${w.filters.map((f, i) => `
             <li class="dl-item">
-              <span class="dl-name">${esc(f.name)}${f.conds[0] ? `<span class="dl-meta">${esc(FILTERS[f.conds[0].field]?.[0] || '')} ${OPS.find(o => o[0] === f.conds[0].op)?.[2] || ''} ${esc(f.conds[0].value)}</span>` : ''}</span>
+              <span class="dl-name">${esc(f.name)}</span>
               <button type="button" class="dl-btn" data-editf="${i}" aria-label="Edit ${esc(f.name)}" aria-haspopup="dialog">${I.pencilS}</button>
               <button type="button" class="dl-btn" data-rmf="${i}" aria-label="Delete ${esc(f.name)}">${I.trash}</button>
             </li>`).join('')}</ul>` : '<p class="db-none">You don’t have any filters yet, so this visualisation counts every record.</p>'}
