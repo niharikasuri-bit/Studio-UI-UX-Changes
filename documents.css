@@ -621,3 +621,6 @@ button.dc-fcard-img:focus-visible { outline: none; box-shadow: inset 0 0 0 2px v
 .dc-zoom-l { min-width: 56px; height: 32px; border: 0; border-radius: 6px; background: none; font: inherit; font-size: 14px; font-weight: 700; color: #0B4B66; cursor: pointer; }
 .dc-zoom-l:hover { background: #EEEEEE; }
 .dc-zoom .icon-btn:focus-visible, .dc-zoom-l:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+/* document name in the editor: 32px (headingL) */
+#dc-ed-title { font-size: 32px; }
