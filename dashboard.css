@@ -163,7 +163,7 @@
 .db-pal-name { font-size: 16px; font-weight: 500; color: #363636; }
 .db-desc { margin: 4px 0 0; font-size: 16px; line-height: 1.37; color: #767676; }
 .db-desc[hidden] { display: none; }
-.db-head:not(:has(.db-desc:not([hidden]))) { display: none; }   /* no description → no empty gap above the first row */
+.form-view:not(.db-previewing) .db-head:not(:has(.db-desc:not([hidden]))) { display: none; }   /* no description → no empty gap above the first row */
 #db-ddesc { min-height: 88px; }
 #db-items .db-type-tag { margin-top: 2px; }
 
@@ -397,4 +397,3 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 /* Preview Dashboard: 40px page heading (editing mode has no title above the visualisations) */
 .db-prev-title { display: none; margin: 0; font-size: 40px; line-height: 1.14; font-weight: 700; color: #0B4B66; }
 .db-previewing .db-prev-title { display: block; }
-.db-previewing .db-head { display: block; }   /* heading shows even when the dashboard has no description */
