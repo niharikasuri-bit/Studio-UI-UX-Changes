@@ -422,8 +422,16 @@
   function drawGrid() {
     drawStats();
     grid.innerHTML = data.widgets.length ? data.widgets.map(cardHTML).join('')
-      : `<div class="db-empty"><svg aria-hidden="true" focusable="false" width="128" height="104" viewBox="0 0 128 104" fill="none"><rect x="14" y="10" width="100" height="72" rx="6" fill="#fff" stroke="#D6D5D4" stroke-width="2"/><path d="M30 64V46M46 64V34M62 64V52M78 64V28" stroke="#C84C0E" stroke-width="6" stroke-linecap="round"/><path d="M92 40h12M92 50h12M92 60h8" stroke="#D6D5D4" stroke-width="3" stroke-linecap="round"/><path d="M44 94h40" stroke="#D6D5D4" stroke-width="2"/></svg>
-          <h2 class="db-empty-t">No visualisations yet</h2><p class="db-empty-d">Click or drag a visualisation from the left to add it here.</p></div>`;
+      : `<div class="db-empty"><section class="db-guide" aria-labelledby="db-guide-t">
+          <div class="db-guide-head"><h2 id="db-guide-t">Guide to make a dashboard</h2><p>Five steps from an empty dashboard to a saved one.</p></div>
+          <ol class="db-guide-steps">
+            <li><strong>Add a visualisation</strong><span>Click a KPI card or chart in the left panel, or drag it onto the dashboard. Choose its module and give it a title.</span></li>
+            <li><strong>Choose its data</strong><span>Select a visualisation to open <em>Item Properties</em>. In the <em>Data</em> tab, choose what to show and add filters.</span></li>
+            <li><strong>Set how it looks</strong><span>In the <em>Appearance</em> tab, set the chart style, data labels, legend and number format.</span></li>
+            <li><strong>Arrange the dashboard</strong><span>Drag a visualisation to move it, and drag its edges to resize it. The toolbar on each visualisation also has <em>Move</em> and <em>Resize</em>.</span></li>
+            <li><strong>Preview and save</strong><span>Use <em>Preview Dashboard</em> to see the dashboard as viewers will, then <em>Save</em>.</span></li>
+          </ol></section></div>`;
+    view.classList.toggle('db-is-empty', !data.widgets.length);
     drawCharts();
   }
   function drawCharts() {

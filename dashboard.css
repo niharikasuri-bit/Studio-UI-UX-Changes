@@ -80,11 +80,19 @@
 .db-legend b { font-weight: 500; color: #767676; }
 .db-sw { width: 12px; height: 12px; border-radius: 3px; flex: none; }
 
-/* Empty dashboard */
-.db-empty { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 48px 16px; text-align: center;
-            background: #fff; border: 1px dashed #C9C9C9; border-radius: 8px; }
-.db-empty-t { margin: 8px 0 0; font-size: 20px; font-weight: 700; color: #0B4B66; }
-.db-empty-d { margin: 0; font-size: 16px; color: #767676; }
+/* Empty dashboard = process flow: guide card on the canvas, no right panel until something is added */
+.db-empty { grid-column: 1 / -1; display: flex; justify-content: center; padding: 32px 0; }
+.db-guide { width: min(560px, 100%); background: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, .12); text-align: left; overflow: hidden; }
+.db-guide-head { padding: 20px 24px 14px; border-bottom: 1px solid #D6D5D4; }
+.db-guide-head h2 { margin: 0 0 4px; font-size: 20px; font-weight: 700; color: #363636; }
+.db-guide-head p { margin: 0; font-size: 14px; color: #767676; }
+.db-guide-steps { margin: 0; padding: 16px 24px 20px; list-style: none; display: grid; gap: 12px; counter-reset: step; }
+.db-guide-steps li { display: grid; grid-template-columns: 28px 1fr; column-gap: 12px; row-gap: 2px; counter-increment: step; line-height: 1.5; }
+.db-guide-steps li::before { content: counter(step); grid-row: span 2; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+  background: #FBEEE8; color: #C84C0E; font-weight: 700; font-size: 13px; }
+.db-guide-steps strong { color: #0B4B66; }
+.db-guide-steps span { color: #767676; font-size: 14px; }
+.db-guide-steps em { font-style: normal; font-weight: 500; color: #363636; }
 
 /* Right panel */
 .db-item .lp-fc-open { align-items: flex-start; }
@@ -403,3 +411,9 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 .db-src-row .dc-vd-field { display: grid; grid-template-columns: 120px 1fr; column-gap: 16px; row-gap: 4px; align-items: center; }
 .db-src-row .dc-vd-field .fp-error { grid-column: 2; }
 .db-src-row .dc-vd-label { color: var(--heading); font-weight: 700; }
+/* Empty dashboard: right panel hidden (like an empty process flow) */
+#view-dashboard.db-is-empty .db-body { grid-template-columns: 280px minmax(0, 1fr); }
+#view-dashboard.db-is-empty .db-panel { display: none; }
+#view-dashboard.db-is-empty .db-main { margin-right: 0; padding-right: 32px; }
+@media (max-width: 1279px) { #view-dashboard.db-is-empty .db-body { grid-template-columns: 240px minmax(0, 1fr); } }
+@media (min-width: 1024px) and (max-width: 1099px) { #view-dashboard.db-is-empty .db-body { grid-template-columns: 220px minmax(0, 1fr); } }
