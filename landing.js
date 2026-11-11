@@ -140,11 +140,12 @@
       - (head ? head.offsetHeight + parseFloat(getComputedStyle(head).marginBottom) : 0)
       - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     const w = st.clientWidth - 32;
-    // like the form configurator preview: the phone fills the height between the title and the footer and scales as one picture
-    // never below 80% (still readable); on very short windows the centre column scrolls instead of shrinking it further
-    const k = window.innerWidth >= 1100 ? Math.max(0.8, Math.min(1.25, h / PH, w / PW)) : 1;
-    st.classList.toggle('is-scroll', h / PH < 0.8);
-    fit.style.width = PW * k + 'px'; fit.style.height = PH * k + 'px';
+    // phone keeps its normal width and text size; its height = the space available (max 592) and the screen scrolls inside the phone
+    const big = window.innerWidth >= 1100;
+    const k = big ? Math.min(1, w / PW) : 1;
+    const ph = big ? Math.max(200, Math.min(PH, h / k)) : PH;
+    fit.style.width = PW * k + 'px'; fit.style.height = ph * k + 'px';
+    fit.firstElementChild.style.height = ph + 'px';
     fit.firstElementChild.style.transform = `scale(${k})`;
   }
   if (window.ResizeObserver) new ResizeObserver(fitPhone).observe($('lp-stage').parentElement);
