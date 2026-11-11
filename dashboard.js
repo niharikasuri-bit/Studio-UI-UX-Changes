@@ -284,7 +284,6 @@
           <p class="db-stats" id="db-stats" aria-live="polite"></p>
         </div>
         <div class="db-head">
-          <div class="dc-name-row"><h2 class="page-title" id="db-title" tabindex="-1"></h2></div>
           <p class="db-desc" id="db-desc"></p>
         </div>
         <p class="sr-only" id="db-kb-hint">Arrow keys go to the next or previous visualisation. Control plus arrow keys move it. Control Shift plus arrow keys resize it. Delete removes it. Control plus slash lists all keyboard shortcuts.</p>
@@ -431,7 +430,7 @@
   new ResizeObserver(() => drawCharts()).observe(grid);
   const stamp = new Date();
   const fresh = () => `<svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Data last updated: ${stamp.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}, ${stamp.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })}`;
-  function drawTitle() { $('db-title').textContent = preview ? 'Preview Dashboard' : (data.name || 'Untitled dashboard'); const d = $('db-desc'); d.textContent = data.desc || ''; d.hidden = !data.desc; }
+  function drawTitle() { const d = $('db-desc'); d.textContent = data.desc || ''; d.hidden = !data.desc; }
 
   /* ---------- Right panel: Dashboard Items ---------- */
   const DL = { name: 60, desc: 150 };
@@ -751,7 +750,7 @@
   const typing = t => !!(t && t.matches && t.matches('input, textarea, select, [contenteditable="true"]'));
   function areas() {
     return [view.querySelector('.db-pal-item'),
-      grid.querySelector(`[data-sel="${selId}"]`) || grid.querySelector('.db-sel') || $('db-title'),
+      grid.querySelector(`[data-sel="${selId}"]`) || grid.querySelector('.db-sel') || $('db-page-t'),
       !$('db-item-view').hidden ? $('db-tab-' + tab) : ($('db-items').querySelector('[data-sel]') || $('db-items'))].filter(Boolean);
   }
   document.addEventListener('keydown', e => {
@@ -909,7 +908,7 @@
     render(focus) {
       preview = false; view.classList.remove('db-previewing'); $('db-range').hidden = true; $('db-view').innerHTML = `${I.eye} Preview Dashboard`;
       selId = null; drawTitle(); drawGrid(); closeItem();
-      if (focus) $('db-title').focus();
+      if (focus) $('db-page-t').focus();
     },
   };
 })();
