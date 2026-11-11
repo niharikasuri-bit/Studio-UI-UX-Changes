@@ -159,6 +159,9 @@
     return [a, fit(words.join(' '), px)].filter(Boolean);
   };
   const txLines = (x, y, lines, a, dy = 13) => `<text x="${x}" y="${y}" ${Object.entries(a).map(([k, v]) => `${k}="${v}"`).join(' ')}>${lines.map((l, i) => `<tspan x="${x}" dy="${i ? dy : 0}">${esc(l)}</tspan>`).join('')}</text>`;
+  // vertical axis title: one line if it fits the plot height, else two lines (13px apart); "…" only if two lines are not enough
+  const yTitle = (label, ih, T) => { const ln = wrap2(label, ih), cy = T + ih / 2, x0 = 12; return txLines(x0, cy, ln, { 'text-anchor': 'middle', class: 'db-axis', transform: `rotate(-90 ${x0} ${cy})` }); };
+  const yRoom = (label, ih) => (label && label.length * 6.4 > ih ? 31 : 18);   // left room for one / two title lines
   const niceMax = m => { if (m <= 0) return 1; const p = Math.pow(10, Math.floor(Math.log10(m))); return Math.ceil(m / p * 1.1) * p; };
   function chartSVG(w, W0, H) {
     const t = TYPES[w.type], d = series(w), m = w.measure;
@@ -168,22 +171,25 @@
     w = { ...w, xLabel: xl, yLabel: yl };
     const ax = (w.xLabel ? 18 : 0), ay = (w.yLabel ? 18 : 0);
     if (w.type === 'hbar') {
-      const L = Math.min(130, Math.max(...d.map(x => x.label.length)) * 7.4 + 18) + ay, R = 48, T = 8, B = 24 + ax;
-      const iw = Math.max(40, W0 - L - R), ih = H - T - B, band = ih / d.length, bh = Math.min(28, band * 0.62);
+      const T = 8, B = 24 + ax, ih = H - T - B, ayh = w.yLabel ? yRoom(w.yLabel, ih) : 0;
+      const L = Math.min(130, Math.max(...d.map(x => x.label.length)) * 7.4 + 18) + ayh, R = 48;
+      const iw = Math.max(40, W0 - L - R), band = ih / d.length, bh = Math.min(28, band * 0.62);
       let s = '';
       for (let k = 0; k <= 4; k++) { const x = L + iw * k / 4; s += `<line x1="${x}" y1="${T}" x2="${x}" y2="${T + ih}" class="db-gl"/>` + tx(x, T + ih + 16, fmt(m, max * k / 4, true), { 'text-anchor': 'middle', class: 'db-tick' }); }
       d.forEach((p, i) => { const y = T + band * i + (band - bh) / 2, bw = iw * p.value / max;
-        s += `<rect x="${L}" y="${y}" width="${Math.max(1, bw)}" height="${bh}" rx="3" fill="${COLOURS[0]}"/>` + (() => { const ln = wrap2(p.label, L - 10 - ay); return txLines(L - 8, y + bh / 2 + 4 - (ln.length - 1) * 6.5, ln, { 'text-anchor': 'end', class: 'db-tick' }); })();
+        s += `<rect x="${L}" y="${y}" width="${Math.max(1, bw)}" height="${bh}" rx="3" fill="${COLOURS[0]}"/>` + (() => { const ln = wrap2(p.label, L - 10 - ayh); return txLines(L - 8, y + bh / 2 + 4 - (ln.length - 1) * 6.5, ln, { 'text-anchor': 'end', class: 'db-tick' }); })();
         if (w.values) s += tx(L + bw + 6, y + bh / 2 + 4, fmtW(w, m, p.value), { class: 'db-val' }); });
       if (w.xLabel) s += tx(L + iw / 2, H - 4, w.xLabel, { 'text-anchor': 'middle', class: 'db-axis' });
-      if (w.yLabel) s += tx(12, T + ih / 2, fit(w.yLabel, ih), { 'text-anchor': 'middle', class: 'db-axis', transform: `rotate(-90 12 ${T + ih / 2})` });
+      if (w.yLabel) s += yTitle(w.yLabel, ih, T);
       return s;
     }
     // names along the bottom: one line → two lines → tilted (when even two lines would cut a name short)
-    const bandW = Math.max(40, W0 - 48 - ay - 12) / d.length, names = d.map(p => wrap2(p.label, bandW - 4));
-    const tilt = names.some(l => l.some(x => x.endsWith('…'))), two = !tilt && names.some(l => l.length > 1);
-    const longest = Math.max(...d.map(p => Math.min(p.label.length, 32)));
-    const L = 48 + ay, R = 12, T = w.values ? 22 : 10, B = 26 + ax + (tilt ? Math.min(110, longest * 3.6) : two ? 13 : 0);
+    const longest = Math.max(...d.map(p => Math.min(p.label.length, 32))), T = w.values ? 22 : 10, R = 12;
+    const lay = a => { const bandW = Math.max(40, W0 - 48 - a - 12) / d.length, names = d.map(p => wrap2(p.label, bandW - 4));
+      const tilt = names.some(l => l.some(x => x.endsWith('…'))), two = !tilt && names.some(l => l.length > 1);
+      return { names, tilt, two, L: 48 + a, B: 26 + ax + (tilt ? Math.min(110, longest * 3.6) : two ? 13 : 0) }; };
+    let g = lay(ay); const ay2 = w.yLabel ? yRoom(w.yLabel, Math.max(40, H - T - g.B)) : 0; if (ay2 > ay) g = lay(ay2);
+    const { names, tilt, two, L, B } = g;
     const nameAt = (x, y, i) => tilt
       ? tx(x + 4, y - 4, fit(d[i].label, 32 * 6.4), { 'text-anchor': 'end', class: 'db-tick', transform: `rotate(-40 ${x + 4} ${y - 4})` })
       : txLines(x, y, names[i], { 'text-anchor': 'middle', class: 'db-tick' });
@@ -208,7 +214,7 @@
     }
     s += `<line x1="${L}" y1="${T + ih}" x2="${L + iw}" y2="${T + ih}" class="db-axisline"/>`;
     if (w.xLabel) s += tx(L + iw / 2, H - 4, w.xLabel, { 'text-anchor': 'middle', class: 'db-axis' });
-    if (w.yLabel) s += tx(12, T + ih / 2, fit(w.yLabel, ih), { 'text-anchor': 'middle', class: 'db-axis', transform: `rotate(-90 12 ${T + ih / 2})` });
+    if (w.yLabel) s += yTitle(w.yLabel, ih, T);
     return s;
   }
   function pieSVG(w, d, W0, H) {
@@ -507,13 +513,13 @@
   function displayTab(w) {
     const k = TYPES[w.type].kind;
     const cnt = (key, max) => `<div class="fp-meta"><span class="fp-error"></span><span class="fp-count" data-cnt="${key}">${(w[key] || '').length}/${max}<span class="sr-only"> characters</span></span></div>`;
-    // Title, then Size (named grid sizes, not px; Height only for charts) — chart titles sit with the look, as in Power BI / Looker / Sheets
+    // Title → Size (all types). Named grid sizes, not px; Height only for charts.
     const wSel = field('db-sz-w', 'Width', sel('db-sz-w', 'w', Object.entries(WIDTHS), w.w));
-    let h = box('Title', field('db-ttl', 'Title', `<input class="fp-input" id="db-ttl" type="text" maxlength="${LIMIT.title}" data-k="title" value="${esc(w.title)}" autocomplete="off">`))
-      + box('Size', k === 'kpi' ? wSel
-      : `<div class="dc-px-row">${wSel}${field('db-sz-h', 'Height', sel('db-sz-h', 'h', Object.entries(HEIGHTS).map(([v, [t]]) => [v, t]), w.h || 'medium'))}</div>`);
+    const sizeBox = box('Size', k === 'kpi' ? wSel
+      : wSel + field('db-sz-h', 'Height', sel('db-sz-h', 'h', Object.entries(HEIGHTS).map(([v, [t]]) => [v, t]), w.h || 'medium')));
+    let h = box('Title', field('db-ttl', 'Title', `<input class="fp-input" id="db-ttl" type="text" maxlength="${LIMIT.title}" data-k="title" value="${esc(w.title)}" autocomplete="off">`));
     // (Size is also on the canvas: drag the handles, Ctrl+Shift+arrows, or the card's Resize menu)
-    if (k === 'kpi') h += numBox(w) + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Comparison</h3>${sw('compare', w.compare, 'Comparison')}</div>
+    if (k === 'kpi') h += sizeBox + numBox(w) + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Comparison</h3>${sw('compare', w.compare, 'Comparison')}</div>
       ${w.compare ? field('db-cw', 'Compare With', sel('db-cw', 'cmpWith', [['month', 'Previous month'], ['quarter', 'Previous 3 months'], ['year', 'Same month last year']], w.cmpWith || 'month'))
         + field('db-ca', 'Show Change As', sel('db-ca', 'cmpAs', [['pct', 'Percentage'], ['num', 'Number']], w.cmpAs || 'pct'))
         + field('db-cg', 'An Increase Is', sel('db-cg', 'upGood', [['good', 'Good (shown in green)'], ['bad', 'Bad (shown in red)']], w.upGood === false ? 'bad' : 'good')) : ''}</div>`;
@@ -522,7 +528,7 @@
       // what it is → its axes (same order as Data) → what is written on it → its key
       const xT = field('db-xl', 'Horizontal Axis (X) Title', `<input class="fp-input" id="db-xl" type="text" maxlength="30" data-k="xLabel" value="${esc(w.xLabel)}" placeholder="${esc(w.type === 'hbar' ? MEASURES[w.measure] : BY[w.by][0])}" autocomplete="off">`);
       const yT = field('db-yl', 'Vertical Axis (Y) Title', `<input class="fp-input" id="db-yl" type="text" maxlength="30" data-k="yLabel" value="${esc(w.yLabel)}" placeholder="${esc(w.type === 'hbar' ? BY[w.by][0] : MEASURES[w.measure])}" autocomplete="off">`);
-      h += box('Chart Style', field('db-style', 'Style', `<select class="input" id="db-style" data-style>${opts(STYLE_PAIRS[k], w.type)}</select>`))
+      h += sizeBox   // (no Chart Style box: the chart type is the one picked from the Visualisations panel)
         + (k !== 'pie' ? box('Axis Titles', w.type === 'hbar' ? yT + xT : xT + yT) : '')
         + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Data Labels</h3>${sw('values', w.values, 'Data Labels')}</div>
             ${k === 'pie' && w.values ? field('db-sla', 'Slice Labels Show', sel('db-sla', 'sliceAs', [['pct', 'Percentage of the total'], ['value', 'Value']], w.sliceAs || 'pct')) : ''}
@@ -663,9 +669,17 @@
     const msg = `${w.title} added from ${MODULES[module]}`;
     S.announce(`${msg}. Its properties are open on the right. You can change the data source in its Data tab.`);
   }
+  // "Title (copy)", then "Title (copy 2)", "Title (copy 3)"… — never "(copy) (copy)"; the name stays within the title limit
+  function copyName(title) {
+    const base = title.replace(/ \(copy(?: \d+)?\)$/, ''), used = new Set(data.widgets.map(w => w.title));
+    for (let n = 1; ; n++) {
+      const tag = n === 1 ? ' (copy)' : ` (copy ${n})`, name = base.slice(0, LIMIT.title - tag.length).trimEnd() + tag;
+      if (!used.has(name)) return name;
+    }
+  }
   function copy(id) {
     const i = data.widgets.findIndex(w => w.id === id), src = data.widgets[i];
-    snap(); const c = JSON.parse(JSON.stringify(src)); c.id = nid(); c.title = `${src.title} (copy)`.slice(0, LIMIT.title);
+    snap(); const c = JSON.parse(JSON.stringify(src)); c.id = nid(); c.title = copyName(src.title);
     data.widgets.splice(i + 1, 0, c); selId = c.id; redraw(`[data-sel="${c.id}"]`); S.announce(`${c.title} added after ${src.title}.`);
   }
   function move(from, to, focus = 'grip') {
@@ -872,19 +886,34 @@
       if (y < r.top) return k; if (y <= r.bottom && x < r.left + r.width / 2) return k; }
     return cards.length;
   }
-  grid.addEventListener('dragover', e => {
+  // where the dashed spot is = how many visible cards come before it (the dragged card is not counted)
+  const phIndex = () => { let k = 0; for (const c of grid.children) { if (c === ph) return k; if (c.classList.contains('db-card') && !c.classList.contains('is-dragging')) k++; } return k; };
+  /* The spot follows the card under the pointer: its left half = before it, right half = after it.
+     Over the spot itself or a gap between cards, the spot stays where it is (no jumping while the cards reflow).
+     It is only worked out from positions when there is no spot yet (e.g. entering an empty part of the dashboard). */
+  const dzone = $('db-main');
+  dzone.addEventListener('dragover', e => {
     if (!drag) return; e.preventDefault(); grid.classList.add('is-over');
-    const k = dropIndex(e.clientX, e.clientY), cards = [...grid.querySelectorAll('.db-card:not(.is-dragging)')];
     grid.querySelector('.db-empty')?.remove();
-    if (cards[k]) { if (ph.nextElementSibling !== cards[k]) grid.insertBefore(ph, cards[k]); } else if (grid.lastElementChild !== ph) grid.appendChild(ph);
-    drag.at = k;
+    const over = e.target.closest && e.target.closest('.db-card:not(.is-dragging)');
+    if (over && grid.contains(over)) {
+      const r = over.getBoundingClientRect(), after = e.clientX > r.left + r.width / 2;
+      const ref = after ? over.nextElementSibling : over;
+      if (ref !== ph && !(after ? over.nextElementSibling === ph : ph.nextElementSibling === over)) grid.insertBefore(ph, ref);
+    } else if (!ph.parentNode) {
+      const k = dropIndex(e.clientX, e.clientY), cards = [...grid.querySelectorAll('.db-card:not(.is-dragging)')];
+      if (cards[k]) grid.insertBefore(ph, cards[k]); else grid.appendChild(ph);
+    }
+    drag.at = phIndex();
   });
-  grid.addEventListener('dragleave', e => { if (drag && !grid.contains(e.relatedTarget)) { ph.remove(); grid.classList.remove('is-over'); if (!data.widgets.length) drawGrid(); } });
-  grid.addEventListener('drop', e => {
-    if (!drag) return; e.preventDefault(); ph.remove(); grid.classList.remove('is-over');
-    const d = drag; drag = null; let at = d.at ?? data.widgets.length;
+  dzone.addEventListener('dragleave', e => { if (drag && !dzone.contains(e.relatedTarget)) { ph.remove(); grid.classList.remove('is-over'); if (!data.widgets.length) drawGrid(); } });
+  // releasing anywhere on the dashboard area drops at the dashed spot shown
+  dzone.addEventListener('drop', e => {
+    if (!drag) return; e.preventDefault(); const shown = !!ph.parentNode; ph.remove(); grid.classList.remove('is-over');
+    const d = drag; drag = null; const at = shown ? (d.at ?? data.widgets.length) : data.widgets.length;
     if (d.add) return add(d.add, at, d.preset);
-    move(d.from, at > d.from ? at : at, 'sel');   // index counted without the dragged card
+    if (!shown) return;
+    move(d.from, at, 'sel');   // index counted without the dragged card
   });
   view.addEventListener('dragend', () => { grid.querySelectorAll('.is-dragging').forEach(c => c.classList.remove('is-dragging')); if (!drag) return; drag = null; ph.remove(); grid.classList.remove('is-over'); grid.querySelectorAll('.is-dragging').forEach(c => c.classList.remove('is-dragging')); if (!data.widgets.length) drawGrid(); });
 
