@@ -262,8 +262,8 @@
 .panel-view[hidden] { display: none; }
 .fpp-top { padding: 16px 24px 16px; background: #FAFAFA; border-bottom: 1px solid var(--border); border-radius: 16px 0 0 0;
            display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
-.fpp-back { height: 32px; }
-.fpp-title { font-size: 16px; line-height: var(--lh-heading); font-weight: 700; color: var(--heading); }
+.fpp-back { height: 32px; font-size: 16px; }
+.fpp-title { font-size: 20px; line-height: var(--lh-heading); font-weight: 700; color: var(--heading); }
 .fpp-with-tip { display: inline-flex; align-items: center; gap: 4px; }
 .fpp-tabs { display: flex; width: 100%; border: 1px solid var(--border); border-radius: var(--radius-btn); background: #fff; }
 /* Tabs sit on white, below the grey header band; 34px tall overall (32 + 1px border top/bottom) */
@@ -278,7 +278,7 @@
 .fpp-body { padding: 16px 24px 24px; display: flex; flex-direction: column; gap: 16px; }
 /* Intro stays pinned at the top of the scrolling area (both tabs) */
 .fpp-intro { position: sticky; top: 0; z-index: 3; margin: -16px -24px 0; padding: 16px 24px 12px; background: #fff;
-             border-bottom: 1px solid transparent; font-size: 14px; line-height: var(--lh-body); color: #505A5F; }
+             border-bottom: 1px solid transparent; font-size: 16px; line-height: var(--lh-body); color: #505A5F; }
 
 .fpp-box { background: #FAFAFA; border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
 .fpp-box-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
