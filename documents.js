@@ -778,25 +778,29 @@
     const stage = $('dc-stage'), main = view.querySelector('.dc-main'), page = stage && stage.querySelector('.dp-page');
     if (!page || (screen !== 'template' && screen !== 'upload')) return;
     const availH = main.clientHeight - stage.offsetTop - 32, availW = stage.clientWidth;
-    const fit = Math.max(0.3, Math.min(1, availH / 842, availW / 595));
-    const k = W.zf ? W.zf : fit;   // W.zf = zoom chosen with − / +; none = fit the page
+    // The page is laid out at 595 × 842 (A4 in points). Real A4 on screen is 210 × 297 mm = 794 × 1123 CSS px,
+    // so 100% = REAL scale (like the phone preview: true size, grows with browser zoom).
+    const REAL = 793.7 / 595;
+    const fit = Math.max(0.3, Math.min(REAL, availH / 842, availW / 595));
+    const k = W.zf ? W.zf * REAL : fit;   // W.zf = zoom chosen with − / + (1 = actual size); none = fit the page
     W.zoom = k; page.style.transform = `scale(${k})`; page.style.transformOrigin = 'top center'; page.style.setProperty('--uz', String(1 / k));
     stage.style.height = Math.ceil(842 * k) + 'px'; stage.style.padding = '0';
     stage.style.width = k * 595 > availW ? Math.ceil(595 * k) + 'px' : ''; stage.style.overflow = 'visible';
     main.style.overflow = k > fit + 0.001 ? 'auto' : 'hidden';   // zoomed past the fit: the centre scrolls
     // zoom control pinned to the bottom-right of the page area (same place as the process flow), also while the page scrolls
     const zc = main.querySelector('.dc-zoom'); if (zc) { const r = main.getBoundingClientRect(); zc.style.left = (r.right - zc.offsetWidth - 16) + 'px'; zc.style.top = (r.bottom - zc.offsetHeight - 16) + 'px'; }
-    const l = view.querySelector('#dc-zoom-l'); if (l) { l.textContent = W.zf ? Math.round(k * 100) + '%' : 'Fit'; l.setAttribute('aria-label', `Zoom ${Math.round(k * 100)} percent${W.zf ? '. Select to fit the page' : ', fitted to the space'}`); }
+    const pct = Math.round(k / REAL * 100);
+    const l = view.querySelector('#dc-zoom-l'); if (l) { l.textContent = W.zf ? pct + '%' : 'Fit'; l.title = W.zf ? 'Fit the page' : `Fitted: ${pct}% of actual size`; l.setAttribute('aria-label', `Zoom ${pct} percent of actual size${W.zf ? '. Select to fit the page' : ', fitted to the space'}`); }
   }
   addEventListener('resize', () => fitTemplate());
   // − / Fit / + : steps of 25%, from 50% to 200%
   view.addEventListener('click', e => {
     const b = e.target.closest('[data-zoom]'); if (!b || !W) return;
-    const cur = W.zoom || 1, steps = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+    const cur = (W.zoom || 1) / (793.7 / 595), steps = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];   // percent of actual A4 size
     if (b.dataset.zoom === 'fit') W.zf = null;
     else if (b.dataset.zoom === 'in') W.zf = steps.find(z => z > cur + 0.01) || 2;
     else W.zf = [...steps].reverse().find(z => z < cur - 0.01) || 0.5;
-    fitTemplate(); placeResize && placeResize(); S.announce(W.zf ? `Zoom ${Math.round(W.zoom * 100)} percent.` : 'Page fitted to the space.');
+    fitTemplate(); placeResize && placeResize(); S.announce(W.zf ? `Zoom ${Math.round(W.zf * 100)} percent of actual size.` : 'Page fitted to the space.');
   });
   function selectEl(k) {
     W.sel = k; W.elTab = W.elTab || 'element';
