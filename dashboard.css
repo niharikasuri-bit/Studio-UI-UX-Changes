@@ -359,9 +359,9 @@
 .db-ghost { position: absolute; left: -1px; top: -1px; z-index: 6; pointer-events: none; border: 1.5px dashed #C84C0E; border-radius: 8px;
             background: rgba(200, 76, 14, .04); transition: width .12s ease, height .12s ease; }
 .db-ghost.is-same { border-color: #767676; background: none; }
-.db-ghost-l { position: absolute; right: 8px; top: 8px; padding: 2px 8px; box-shadow: 0 1px 3px rgba(0,0,0,.2); border-radius: 4px; background: #C84C0E; color: #fff;
+.db-ghost-l { position: fixed; z-index: 1000; pointer-events: none; padding: 2px 8px; box-shadow: 0 1px 3px rgba(0,0,0,.2); border-radius: 4px; background: #C84C0E; color: #fff;
               font-size: 14px; font-weight: 700; line-height: 1.37; white-space: nowrap; }
-.db-ghost.is-same .db-ghost-l { background: #363636; }
+.db-ghost-l.is-same { background: #363636; }
 .db-card.is-resizing { box-shadow: none; border-color: #D6D5D4; user-select: none; }
 .db-card.is-resizing .db-card-body { opacity: .5; }
 body.db-resizing-x, body.db-resizing-x * { cursor: ew-resize !important; }
@@ -372,3 +372,6 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 .db-card.is-resizing .db-card-body { opacity: 1; }
 
 .move-menu .move-sep { height: 1px; margin: 4px 0; background: #D6D5D4; }
+
+/* the sticky counts bar stays above cards, their toolbars and the resize preview while scrolling */
+.db-bar { z-index: 20; }

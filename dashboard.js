@@ -793,22 +793,25 @@
     const gs = getComputedStyle(grid), gap = parseFloat(gs.columnGap) || 16, col = (grid.clientWidth - parseFloat(gs.paddingLeft) - parseFloat(gs.paddingRight) - gap * 11) / 12;
     const ch = card.querySelector('.db-chart'), chartH = ch ? ch.getBoundingClientRect().height : 0;
     const ghost = document.createElement('div'); ghost.className = 'db-ghost'; ghost.setAttribute('aria-hidden', 'true');
-    ghost.innerHTML = '<span class="db-ghost-l"></span>'; card.appendChild(ghost);
-    rs = { w, card, ghost, axis: hd.dataset.axis || 'xy', x: e.clientX, y: e.clientY, width: r.width, height: r.height, col, gap, chartH,
+    card.appendChild(ghost);
+    const tag = document.createElement('div'); tag.className = 'db-ghost-l'; tag.setAttribute('aria-hidden', 'true'); document.body.appendChild(tag);   // follows the pointer, above every header
+    rs = { w, card, ghost, tag, px: e.clientX, py: e.clientY, axis: hd.dataset.axis || 'xy', x: e.clientX, y: e.clientY, width: r.width, height: r.height, col, gap, chartH,
            isChart: !!ch && TYPES[w.type].kind !== 'kpi', span: w.w, h: w.h };
     hd.setPointerCapture(e.pointerId); card.classList.add('is-resizing'); document.body.classList.add('db-resizing-' + rs.axis);
     grid.style.setProperty('--db-col', col + 'px'); grid.style.setProperty('--db-gap', gap + 'px'); grid.classList.add('db-cols');   // show the 12 columns
     select(w.id, { keepTab: true }); paintGhost();
   });
   function paintGhost() {
-    const { ghost, span, h, col, gap, height, isChart, w } = rs;
+    const { ghost, tag, span, h, col, gap, height, isChart, w } = rs;
     ghost.style.width = (span * col + (span - 1) * gap) + 'px';
     ghost.style.height = (isChart ? height + HEIGHTS[h][1] - HEIGHTS[w.h][1] : height) + 'px';   // grows / shrinks from the card's current height
-    ghost.firstChild.textContent = WIDTHS[span] + (isChart ? ' · ' + HEIGHTS[h][0] : '');
-    ghost.classList.toggle('is-same', span === w.w && h === w.h);
+    tag.textContent = WIDTHS[span] + (isChart ? ' · ' + HEIGHTS[h][0] : '');
+    const same = span === w.w && h === w.h; ghost.classList.toggle('is-same', same); tag.classList.toggle('is-same', same);
+    const tw = tag.offsetWidth, th = tag.offsetHeight;
+    tag.style.left = Math.min(innerWidth - tw - 8, rs.px + 16) + 'px'; tag.style.top = Math.min(innerHeight - th - 8, rs.py + 18) + 'px';
   }
   grid.addEventListener('pointermove', e => {
-    if (!rs) return;
+    if (!rs) return; rs.px = e.clientX; rs.py = e.clientY;
     if (rs.axis !== 'y') {
       const want = (rs.width + e.clientX - rs.x + rs.gap) / (rs.col + rs.gap);
       rs.span = ORDER.reduce((a, b) => (Math.abs(b - want) < Math.abs(a - want) ? b : a));
@@ -820,8 +823,8 @@
     paintGhost();
   });
   const endResize = () => {
-    if (!rs) return; const { w, span, h, card, ghost, axis } = rs; rs = null;
-    ghost.remove(); card.classList.remove('is-resizing'); document.body.classList.remove('db-resizing-' + axis); grid.classList.remove('db-cols');
+    if (!rs) return; const { w, span, h, card, ghost, tag, axis } = rs; rs = null;
+    ghost.remove(); tag.remove(); card.classList.remove('is-resizing'); document.body.classList.remove('db-resizing-' + axis); grid.classList.remove('db-cols');
     if (span === w.w && h === w.h) return;
     snap(); w.w = span; w.h = h; redraw(`[data-sel="${w.id}"]`);
     S.announce(`${w.title} resized to ${WIDTHS[span].toLowerCase()}${TYPES[w.type].kind !== 'kpi' ? `, ${HEIGHTS[h][0].toLowerCase()} height` : ''}.`);
