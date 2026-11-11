@@ -3,10 +3,10 @@
 .nt-main { padding-bottom: 48px; }
 .nt-filters { display: flex; flex-wrap: wrap; gap: 16px 24px; padding: 20px 24px; }
 .nt-filter { display: flex; flex-direction: column; gap: 4px; width: min(300px, 100%); }
-.nt-label { font-size: 16px; line-height: 20px; color: #505A5F; }
+.nt-label { font-size: 16px; line-height: 20px; color: #767676; }
 .nt-search { position: relative; }
 .nt-search .input { width: 100%; height: 40px; padding: 0 40px 0 12px; }
-.nt-search .rs-ico { position: absolute; left: auto; right: 12px; top: 50%; transform: translateY(-50%); color: #505A5F; display: grid; }
+.nt-search .rs-ico { position: absolute; left: auto; right: 12px; top: 50%; transform: translateY(-50%); color: #767676; display: grid; }
 .nt-search input[type="search"]::-webkit-search-cancel-button { display: none; }
 .nt-select { width: 100%; height: 40px; }
 
@@ -61,7 +61,7 @@
 .ntw-bars span { flex: 1; height: 6px; border-radius: 3px; background: #C5C5C5; }
 .ntw-bars span.on { background: var(--primary); }
 .ntw-title { font-size: 24px; line-height: 1.3; font-weight: 700; color: #0B4B66; padding-right: 32px; }
-.ntw-desc { margin-top: 4px; font-size: 16px; line-height: 1.5; color: #5E5E5E; }
+.ntw-desc { margin-top: 4px; font-size: 16px; line-height: 1.5; color: #767676; }
 .ntw-options { margin: 16px 0 0; padding: 0; border: 0; display: grid; gap: 12px; }
 .ntw-radio { position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 16px; border: 1px solid #D6D5D4; border-radius: 8px; background: #FAFAFA; cursor: pointer; }
 .ntw-radio:hover { border-color: #5E5E5E; }
@@ -72,7 +72,7 @@
 .ntw-radio:has(input:checked) .ntw-rdot { border-color: var(--primary); }
 .ntw-radio:has(input:checked) .ntw-rdot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
 .ntw-rlabel { display: block; font-size: 14px; font-weight: 700; color: #0B4B66; }
-.ntw-rtext { display: block; margin-top: 4px; font-size: 13px; color: #5E5E5E; }
+.ntw-rtext { display: block; margin-top: 4px; font-size: 13px; color: #767676; }
 
 .ntw-tiles { margin: 20px 0 0; padding: 0; border: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
 .ntw-tile { position: relative; flex: 0 1 248px; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 24px 20px;
@@ -82,7 +82,7 @@
 .ntw-tile-ico { width: 40px; height: 40px; border-radius: 8px; background: var(--primary-tint); color: var(--primary); display: grid; place-items: center; }
 .ntw-tile:has(input:checked) .ntw-tile-ico { background: var(--primary); color: #fff; }
 .ntw-tile-title { margin-top: 12px; font-size: 16px; font-weight: 700; color: #0B4B66; }
-.ntw-tile-text { margin-top: 4px; font-size: 14px; line-height: 1.4; color: #5E5E5E; }
+.ntw-tile-text { margin-top: 4px; font-size: 14px; line-height: 1.4; color: #767676; }
 
 .ntw-search { margin-top: 16px; }
 .ntw-pick { margin: 12px -4px 0; padding: 4px; display: grid; gap: 12px; max-height: 50vh; overflow-y: auto; }
@@ -94,7 +94,7 @@
 .ntw-pcheck { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #C5C5C5; flex: none; }
 .ntw-pcard:has(input:checked) .ntw-pcheck { border-color: var(--primary); background: var(--primary)
   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4L18 8'/%3E%3C/svg%3E") center / 14px no-repeat; }
-.ntw-none { margin-top: 16px; padding: 16px; text-align: center; font-size: 14px; color: #5E5E5E; background: #FAFAFA; border: 1px dashed #D6D5D4; border-radius: 8px; }
+.ntw-none { margin-top: 16px; padding: 16px; text-align: center; font-size: 14px; color: #767676; background: #FAFAFA; border: 1px dashed #D6D5D4; border-radius: 8px; }
 
 .ntw-head { position: sticky; top: -24px; z-index: 2; margin: 0 -24px; padding: 0 64px 12px 24px; background: #fff; display: flex; flex-direction: column; gap: 8px; }
 .ntw-name-row { display: flex; align-items: center; gap: 8px; }
@@ -122,7 +122,7 @@
 .ntw-foot .btn { min-height: 40px; height: 40px; padding: 0 16px; font-size: 14px; font-weight: 500; min-width: 96px; }
 .ntw-foot .btn:disabled { opacity: .5; cursor: not-allowed; }
 .nt-subject { font-size: 14px; color: #363636; }
-.nt-subject-k { font-weight: 700; color: #505A5F; }
+.nt-subject-k { font-weight: 700; color: #767676; }
 .ntw .req { color: #B91900; margin-left: 2px; }
 
 /* Confirm popup = process-flow delete popup: 550px, centred, 48px red triangle, 24px blue title,
@@ -132,7 +132,7 @@
 .pfc-close { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; }
 .pfc-icon { display: grid; place-items: center; margin-top: 4px; }
 .pfc-title { font-size: 24px; line-height: 1.3; font-weight: 700; color: #0B4B66; overflow-wrap: anywhere; padding: 0 16px; }
-.pfc-desc { font-size: 16px; line-height: 1.5; color: #5E5E5E; overflow-wrap: anywhere; }
+.pfc-desc { font-size: 16px; line-height: 1.5; color: #767676; overflow-wrap: anywhere; }
 .pfc-desc strong { color: #363636; font-weight: 700; }
 .pfc-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
 .pfc-actions .btn { height: 40px; min-height: 40px; font-size: 20px; font-weight: 500; }
@@ -166,14 +166,14 @@
 /* illustration sits closer to its title */
 .empty-state.is-new .es-art-new { margin-bottom: -8px; }
 /* Email subject sits inline before the message (bold) so email and SMS cards stay the same height */
-.nt-subject-in { font-weight: 700; color: #0B0C0C; }
+.nt-subject-in { font-weight: 700; color: #363636; }
 /* Type tile icons: inner lines take the tile-icon background so they stay visible when selected */
 .ntw-ico-cut { stroke: var(--primary-tint); }
 .ntw-tile:has(input:checked) .ntw-ico-cut { stroke: var(--primary); }
 /* Popup type tag = same amber tag as the notification cards (SMS / Email) */
 .ntw-type-tag { align-self: flex-start; min-height: 0; }
 /* Visible result count when a search / filter is applied (e.g. "3 notifications found."); full row under the filters */
-.nt-count { flex-basis: 100%; margin: 0; font-size: 16px; line-height: 1.37; font-weight: 500; color: #505A5F; }   /* 7.4:1 on white */
+.nt-count { flex-basis: 100%; margin: 0; font-size: 16px; line-height: 1.37; font-weight: 500; color: #767676; }   /* 7.4:1 on white */
 .nt-count:empty { display: none; }
 .roles-bar .nt-count { margin-top: 8px; }
 /* Count sits outside the white filter card, on the page background */
@@ -192,7 +192,7 @@
 .nt-clear:hover:not(:disabled) { background: var(--primary-tint); }
 .nt-clear:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .nt-clear:disabled { color: #767676; cursor: not-allowed; }
-.nt-filters .nt-count { flex-basis: 100%; margin: -4px 0 0; font-size: 14px; font-weight: 500; color: #505A5F; }
+.nt-filters .nt-count { flex-basis: 100%; margin: -4px 0 0; font-size: 14px; font-weight: 500; color: #767676; }
 .nt-filters .nt-count:empty { display: none; }
 
 /* Results row OUTSIDE the white card: "1 checklist found." with a tertiary Clear right next to it (only while filtering) */

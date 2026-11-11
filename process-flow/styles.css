@@ -5,7 +5,7 @@
   --primary-bg: #fbeee8;
   --secondary: #0b4b66;
   --text: #363636;
-  --muted: #5e5e5e;
+  --muted: #767676;
   --subtle: #c5c5c5;
   --border: #d6d5d4;
   --surface: #ffffff;
@@ -1181,7 +1181,7 @@ button { cursor: pointer; }
 .digit-employeeCard-input { height: 40px; }
 .digit-employee-card-textarea-field { height: 100px; padding: 8px 12px; resize: vertical; }
 .digit-employeeCard-input::placeholder,
-.digit-employee-card-textarea-field::placeholder { color: #5e5e5e; }
+.digit-employee-card-textarea-field::placeholder { color: #767676; }
 .digit-employeeCard-input:focus, .digit-employeeCard-input:focus-visible,
 .digit-employee-card-textarea-field:focus, .digit-employee-card-textarea-field:focus-visible {
   outline: none; box-shadow: none; border: 1.5px solid var(--primary);
@@ -1226,12 +1226,12 @@ button { cursor: pointer; }
 .pay-calc input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .pay-calc[hidden], #payIntegration[hidden] { display: none; }
 /* Amount field: fixed rupee prefix inside the field (the currency cannot be changed) */
-.pay-amount__prefix { position: absolute; inset: 1px auto 1px 1px; width: 40px; display: flex; align-items: center; justify-content: center; background: #eee; border-right: 1px solid #767676; border-radius: 3px 0 0 3px; color: #505a5f; font-size: 16px; pointer-events: none; }
+.pay-amount__prefix { position: absolute; inset: 1px auto 1px 1px; width: 40px; display: flex; align-items: center; justify-content: center; background: #eee; border-right: 1px solid #767676; border-radius: 3px 0 0 3px; color: #767676; font-size: 16px; pointer-events: none; }
 .pay-amount .digit-employeeCard-input { padding-left: 52px; }
 .pay-modes { display: grid; gap: 12px; }
 .pay-modes .radio-card { background: var(--surface); } /* each mode card is white; a ticked one keeps the warm tint */
 .pay-modes .radio-card:has(input:checked) { background: #fff8f5; }
-.digit-dropdown-select__value.is-placeholder { color: #5e5e5e; }
+.digit-dropdown-select__value.is-placeholder { color: #767676; }
 .nf-control:has(> .nf-meta .field__error:not([hidden])) .digit-dropdown-select { border-color: var(--error); }
 /* Create New Role: fields stack label-over-input; access cards are checkboxes (multi-select) */
 .modal.role-choice { width: min(640px, calc(100vw - 32px)); }
@@ -1430,4 +1430,4 @@ button { cursor: pointer; }
 #addDialog .tag--channel, #docDialog .tag--channel { background: var(--warning-bg); color: var(--warning); }
 
 /* Left panel description matches the dashboard's Visualisations panel: 14px, #505A5F */
-.sidebar__head .muted { font-size: 14px; line-height: 1.37; color: #505A5F; }
+.sidebar__head .muted { font-size: 14px; line-height: 1.37; color: #363636; }   /* on grey: #767676 would be 4.35:1 */

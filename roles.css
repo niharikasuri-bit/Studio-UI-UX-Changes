@@ -7,14 +7,14 @@
 .roles-new { height: 40px; padding: 0 20px; font-size: var(--buttonM); }
 .roles-search { position: relative; width: min(360px, 100%); }
 .roles-search .input { padding-left: 36px; height: 40px; }
-.roles-search .input::placeholder { color: #6B6B6B; }
-.rs-ico { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #505A5F; display: grid; }
+.roles-search .input::placeholder { color: #767676; }
+.rs-ico { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #767676; display: grid; }
 .role-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 340px)); gap: 24px; }
 .role-tile { background: #fff; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 8px;
              box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.08); }
 .rt-pic { height: 88px; border-radius: 8px; display: grid; place-items: center; color: #9E9E9E; margin-bottom: 8px; }
 .rt-name { font-size: 18px; line-height: var(--lh-heading); font-weight: 700; color: var(--heading); overflow-wrap: anywhere; }
-.rt-desc { font-size: 14px; line-height: var(--lh-body); color: #505A5F; }
+.rt-desc { font-size: 14px; line-height: var(--lh-body); color: #767676; }
 .rt-tags { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .rt-tag { padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; line-height: 1.3; }
 .rt-create { background: #EAF2FC; color: #0B4B66; }   /* 8.3:1 */
@@ -25,7 +25,7 @@
 .modal.role-modal { width: min(640px, calc(100vw - 32px)); }
 .rm-body { position: relative; padding: 24px; display: flex; flex-direction: column; gap: 20px; max-height: calc(100vh - 140px); overflow-y: auto; }
 .rm-title { font-size: 24px; line-height: 1.3; font-weight: 700; color: var(--heading); padding-right: 32px; }
-.rm-desc { margin-top: 4px; font-size: 16px; line-height: 1.5; color: #505A5F; }
+.rm-desc { margin-top: 4px; font-size: 16px; line-height: 1.5; color: #767676; }
 .rm-access { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
 .rm-access legend { padding: 0; margin-bottom: 12px; }
 .rm-card { position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: #FAFAFA; border: 1px solid var(--border);
@@ -38,7 +38,7 @@
 .rm-card input:checked + .rm-box { border-color: var(--primary);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C84C0E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
 .rm-label { display: block; font-size: 14px; font-weight: 700; color: var(--heading); }
-.rm-text { display: block; margin-top: 4px; font-size: 13px; line-height: 1.4; color: #505A5F; }
+.rm-text { display: block; margin-top: 4px; font-size: 13px; line-height: 1.4; color: #767676; }
 .rm-foot { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px 24px; border-top: 1px solid var(--divider); }
 .rm-foot .btn { height: 40px; min-width: 132px; font-size: var(--buttonM); }
 @media (forced-colors: active) { .rm-card input { position: static; opacity: 1; width: auto; height: auto; } .rm-box { display: none; } }
@@ -51,11 +51,11 @@
 .modal.role-modal { border-radius: 12px; color: #363636; font-size: 14px; }
 .role-modal .rm-body { padding: 24px 24px 20px; gap: 16px; }
 .role-modal .rm-title { font-size: 24px; line-height: 1.3; font-weight: 700; color: #0B4B66; }
-.role-modal .rm-desc { margin-top: 4px; font-size: 16px; line-height: 1.5; color: #5E5E5E; }
+.role-modal .rm-desc { margin-top: 4px; font-size: 16px; line-height: 1.5; color: #767676; }
 .role-modal .field { gap: 4px; }
 .role-modal .label { font-size: 16px; font-weight: 400; color: #363636; line-height: 1.5; }
 .role-modal .input { height: 40px; padding: 0 12px; border: 1px solid #767676; border-radius: 4px; font: 400 16px/24px Roboto, sans-serif; color: #363636; }
-.role-modal .input::placeholder { color: #5E5E5E; }
+.role-modal .input::placeholder { color: #767676; }
 .role-modal .input:hover { border-color: #767676; }
 .role-modal .input:focus, .role-modal .input:focus-visible { outline: none; box-shadow: none; border: 1.5px solid #C84C0E; }
 .role-modal .input[aria-invalid="true"] { border: 1.5px solid #B91900; }
@@ -66,7 +66,7 @@
 .role-modal .rm-card:hover { border-color: #5E5E5E; }
 .role-modal .rm-card:has(input:checked) { border-color: #C84C0E; background: #FFF8F5; }
 .role-modal .rm-label { font-size: 14px; font-weight: 700; color: #0B4B66; }
-.role-modal .rm-text { margin-top: 4px; font-size: 13px; color: #5E5E5E; line-height: 1.4; }
+.role-modal .rm-text { margin-top: 4px; font-size: 13px; color: #767676; line-height: 1.4; }
 .role-modal .rm-foot { gap: 8px; padding: 14px 24px; background: #FAFAFA; border-top: 1px solid #D6D5D4; border-radius: 0 0 12px 12px; }
 .role-modal .rm-foot .btn { height: auto; min-height: 40px; min-width: 0; padding: 0 16px; font-size: 14px; font-weight: 500; }
 .role-modal .label { line-height: 20px; display: block; }   /* label → input exactly 4px */
@@ -105,7 +105,7 @@
 /* Search: magnifier on the right, lighter label (#505A5F, 7.4:1) */
 .roles-box .roles-search .input { padding-left: 12px; padding-right: 40px; }
 .roles-box .rs-ico { left: auto; right: 12px; }
-.rs-label { color: #505A5F; }
+.rs-label { color: #363636; }   /* sits on the grey page: #767676 would be 3.9:1 */
 .roles-box input[type="search"]::-webkit-search-cancel-button { display: none; }   /* avoid the browser clear "x" sitting on the magnifier */
 
 /* ---- Search on the page (no white container), Cards | List toggle ---- */
@@ -116,11 +116,11 @@
 .roles-bar input[type="search"]::-webkit-search-cancel-button { display: none; }
 .view-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius-btn); background: #fff; }
 .vt-btn { height: 38px; padding: 0 14px; display: inline-flex; align-items: center; gap: 6px; border: 0; background: #fff;
-          font: inherit; font-size: 14px; color: #505A5F; }
+          font: inherit; font-size: 14px; color: #767676; }
 .vt-btn + .vt-btn { border-left: 1px solid var(--border); }
 .vt-btn:first-child { border-radius: 3px 0 0 3px; }
 .vt-btn:last-child { border-radius: 0 3px 3px 0; }
-.vt-btn:hover { background: #FAFAFA; color: #0B0C0C; }
+.vt-btn:hover { background: #FAFAFA; color: #363636; }
 .vt-btn[aria-pressed="true"] { background: var(--primary); color: #fff; font-weight: 700; }   /* 4.6:1 */
 .vt-btn:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--heading), inset 0 0 0 4px #fff; }
 
@@ -142,7 +142,7 @@
 .role-row { grid-template-columns: 48px minmax(0, 1fr) auto auto; }
 @media (max-width: 719px) { .role-row { grid-template-columns: 48px minmax(0, 1fr) auto; } .role-row .rt-tags { grid-column: 2 / 4; } }
 /* Citizen in the popup: name read-only, access locked to View */
-.role-modal .input[readonly] { background: #F5F5F5; color: #505A5F; }
+.role-modal .input[readonly] { background: #F5F5F5; color: #767676; }
 .rm-access.is-locked .rm-card { cursor: not-allowed; opacity: .7; }
 
 /* Edit tooltip on the pencil */
@@ -151,7 +151,7 @@
 .rm-note { display: flex; align-items: flex-start; gap: 8px; padding: 12px; background: #EAF2FC; border: 1px solid #A9C6EC; border-radius: 4px; }
 .rm-note[hidden] { display: none; }
 .rm-note svg { flex: none; margin-top: 1px; }
-.rm-note p { font-size: 14px; line-height: 1.4; color: #0B0C0C; }
+.rm-note p { font-size: 14px; line-height: 1.4; color: #363636; }
 
 /* Role access cards: orange stroke on hover, like every other selectable card */
 .rm-card:hover, .role-modal .rm-card:hover { border-color: var(--primary); }
