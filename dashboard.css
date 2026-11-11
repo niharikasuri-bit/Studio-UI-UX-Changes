@@ -397,3 +397,4 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 /* Preview Dashboard: 40px page heading (editing mode has no title above the visualisations) */
 .db-prev-title { display: none; margin: 0; font-size: 40px; line-height: 1.14; font-weight: 700; color: #0B4B66; }
 .db-previewing .db-prev-title { display: block; }
+.db-previewing .db-head { display: block; }   /* heading shows even when the dashboard has no description */
