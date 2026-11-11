@@ -1192,7 +1192,7 @@
       if (!type) return $('#docDetType').focus();
       if (!name) return $('#docDetName').focus();
       docDialog.close();
-      return ctx.onNew({ name, docType: DOC_TEMPLATES[type], source: ctx.create });
+      return ctx.onNew({ name, docType: DOC_TEMPLATES[type] || 'Other', source: ctx.create });
     }
     const docId = docDialog.querySelector('input[name="docPick"]:checked')?.value;
     if (!docId) return;

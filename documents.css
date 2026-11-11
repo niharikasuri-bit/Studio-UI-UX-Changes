@@ -637,3 +637,15 @@ button.dc-fcard-img:focus-visible { outline: none; box-shadow: inset 0 0 0 2px v
   #fm-how .ntw-tile-title { white-space: normal; }
   #fm-how .ntw-foot { padding: 16px; }
 }
+
+/* Sticky popup header: the 32px-padded create popups */
+#dc-how .ntw-head, #fm-how .ntw-head { top: -32px; margin: -32px -32px -8px; padding: 32px 64px 8px 32px; }
+@media (max-width: 480px) {
+  #fm-how .ntw-head { top: -24px; margin: -24px -16px -8px; padding: 24px 56px 8px 16px; }
+}
+/* Sticky popup header: small popups (title + description stay put, the rest scrolls; close never scrolls) */
+.modal.dc-vd[open] { display: flex; flex-direction: column; }
+.dc-vd form, .dc-vd .db-kb-in { position: static; overflow-y: auto; min-height: 0; }
+.vd-head { position: sticky; top: -24px; z-index: 2; display: flex; flex-direction: column; gap: 16px;
+           margin: -24px -24px -8px; padding: 24px 24px 8px; background: #fff; }
+.dc-vd-close { z-index: 3; background: #fff; }

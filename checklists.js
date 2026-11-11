@@ -73,8 +73,8 @@
           <div class="ntw-bars-wrap" id="clw-bars-wrap"><span class="sr-only" id="clw-step-text"></span><span class="ntw-bars" id="clw-bars" aria-hidden="true"></span></div>
 
           <section data-step="how">
-            <h2 class="ntw-title" id="clw-title-how">How would you like to add the checklist?</h2>
-            <p class="ntw-desc">Create a new checklist, or copy one that already exists in this process flow.</p>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="clw-title-how">How would you like to add the checklist?</h2>
+            <p class="ntw-desc">Create a new checklist, or copy one that already exists in this process flow.</p></div>
             <fieldset class="ntw-options"><legend class="sr-only">How to add the checklist</legend>
               <label class="ntw-radio"><input type="radio" name="clw-mode" value="new" checked><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">Create new checklist</span><span class="ntw-rtext">Create a new checklist for this action.</span></span></label>
               <label class="ntw-radio"><input type="radio" name="clw-mode" value="copy"><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">Copy existing checklist</span><span class="ntw-rtext">Copy a checklist and edit the copy.</span></span></label>
@@ -82,8 +82,8 @@
           </section>
 
           <section data-step="pick" hidden>
-            <h2 class="ntw-title" id="clw-title-pick">Select Checklist</h2>
-            <p class="ntw-desc">Select the checklist to copy. You can edit the copy in the next step.</p>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="clw-title-pick">Select Checklist</h2>
+            <p class="ntw-desc">Select the checklist to copy. You can edit the copy in the next step.</p></div>
             <div class="ntw-pick" id="clw-pick" role="radiogroup" aria-labelledby="clw-title-pick"></div>
           </section>
 

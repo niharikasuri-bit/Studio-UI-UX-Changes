@@ -317,8 +317,8 @@
     <dialog class="modal dc-vd" id="db-src-dlg" aria-labelledby="db-src-t" aria-describedby="db-src-d">
       <form id="db-src-form" novalidate>
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
-        <h2 class="dc-vd-title" id="db-src-t">Add Visualisation</h2>
-        <p class="dc-vd-desc" id="db-src-d">Choose the module this visualisation counts records from, and give it a title to show on the dashboard. You can change both later in Item Properties.</p>
+        <div class="vd-head"><h2 class="dc-vd-title" id="db-src-t">Add Visualisation</h2>
+        <p class="dc-vd-desc" id="db-src-d">Choose the module this visualisation counts records from, and give it a title to show on the dashboard. You can change both later in Item Properties.</p></div>
         <div class="db-src-row">
         <div class="dc-vd-field">
           <label class="dc-vd-label" for="db-src-sel">Data Source <span class="req" aria-hidden="true">*</span></label>
@@ -340,8 +340,8 @@
     <dialog class="modal dc-vd db-kb-dlg" id="db-kb-dlg" aria-labelledby="db-kb-t" aria-describedby="db-kb-d">
       <div class="db-kb-in">
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
-        <h2 class="dc-vd-title" id="db-kb-t"><span class="dc-vd-ico" aria-hidden="true">${I.kb}</span><span>Keyboard Shortcuts</span></h2>
-        <p class="dc-vd-desc" id="db-kb-d">Everything you can do with a mouse, you can also do with these keys. On a Mac, use Cmd instead of Ctrl.</p>
+        <div class="vd-head"><h2 class="dc-vd-title" id="db-kb-t"><span class="dc-vd-ico" aria-hidden="true">${I.kb}</span><span>Keyboard Shortcuts</span></h2>
+        <p class="dc-vd-desc" id="db-kb-d">Everything you can do with a mouse, you can also do with these keys. On a Mac, use Cmd instead of Ctrl.</p></div>
         <div class="db-kb-body" tabindex="0" role="region" aria-label="Shortcut list"><h3 class="db-kb-h">Anywhere on this page</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>Ctrl + /</kbd></td><td>Show these keyboard shortcuts</td></tr><tr><td><kbd>Ctrl + S</kbd></td><td>Save the dashboard</td></tr><tr><td><kbd>Ctrl + Z</kbd></td><td>Undo the last change</td></tr><tr><td><kbd>Ctrl + Y or Ctrl + Shift + Z</kbd></td><td>Redo</td></tr><tr><td><kbd>F6 / Shift + F6</kbd></td><td>Go to the next / previous area: Visualisations panel, dashboard, properties panel</td></tr><tr><td><kbd>Esc</kbd></td><td>Close Item Properties, or leave Preview Dashboard</td></tr></tbody></table><h3 class="db-kb-h">Visualisations (left)</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>↑ / ↓</kbd></td><td>Go to the previous / next visualisation</td></tr><tr><td><kbd>Enter or Space</kbd></td><td>Add the visualisation at the end of the dashboard</td></tr></tbody></table><h3 class="db-kb-h">A visualisation on the dashboard</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>← → ↑ ↓</kbd></td><td>Go to the previous / next visualisation</td></tr><tr><td><kbd>Home / End</kbd></td><td>Go to the first / last visualisation</td></tr><tr><td><kbd>Enter or Space</kbd></td><td>Select it and open its properties</td></tr><tr><td><kbd>Ctrl + ← / Ctrl + →</kbd></td><td>Move it left / right</td></tr><tr><td><kbd>Ctrl + Home / Ctrl + End</kbd></td><td>Move it to the first / last place</td></tr><tr><td><kbd>Ctrl + Shift + → / ←</kbd></td><td>Make it wider / narrower</td></tr><tr><td><kbd>Ctrl + Shift + ↑ / ↓</kbd></td><td>Make a chart shorter / taller</td></tr><tr><td><kbd>Ctrl + D</kbd></td><td>Copy it</td></tr><tr><td><kbd>Delete</kbd></td><td>Delete it</td></tr></tbody></table></div>
         <div class="dc-vd-actions"><button type="button" class="btn btn-primary" data-close>Close</button></div>
       </div>

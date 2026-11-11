@@ -163,3 +163,8 @@
 .rt-foot .rt-edit-btn { width: 100%; }
 .role-row .rt-edit-btn { flex: none; }
 
+
+/* Sticky popup header: title + description stay put while the role options scroll; close never scrolls */
+.rm-body { position: static; }
+.rm-body > .modal-head { position: sticky; top: -24px; z-index: 2; margin: -24px -24px -8px; padding: 24px 56px 8px 24px; background: #fff; }
+.role-modal .modal-close { z-index: 3; background: #fff; }

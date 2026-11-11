@@ -74,8 +74,8 @@
           <div class="ntw-bars-wrap" id="ntw-bars-wrap"><span class="sr-only" id="ntw-step-text"></span><span class="ntw-bars" id="ntw-bars" aria-hidden="true"></span></div>
 
           <section data-step="how">
-            <h2 class="ntw-title" id="ntw-title-how">How do you want to add the notification?</h2>
-            <p class="ntw-desc">Create a new notification, or copy one that already exists in this module.</p>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="ntw-title-how">How do you want to add the notification?</h2>
+            <p class="ntw-desc">Create a new notification, or copy one that already exists in this module.</p></div>
             <fieldset class="ntw-options"><legend class="sr-only">How to add the notification</legend>
               <label class="ntw-radio"><input type="radio" name="ntw-mode" value="new" checked><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">Create new notification</span><span class="ntw-rtext">Create a new notification for this module.</span></span></label>
               <label class="ntw-radio"><input type="radio" name="ntw-mode" value="copy"><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">Copy existing notification</span><span class="ntw-rtext">Copy a notification and edit the copy.</span></span></label>
@@ -83,8 +83,8 @@
           </section>
 
           <section data-step="type" hidden>
-            <h2 class="ntw-title" id="ntw-title-type">Select Notification Type</h2>
-            <p class="ntw-desc">Start by choosing the notification type you want to add, such as Email or SMS, to notify users at the right time.</p>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="ntw-title-type">Select Notification Type</h2>
+            <p class="ntw-desc">Start by choosing the notification type you want to add, such as Email or SMS, to notify users at the right time.</p></div>
             <fieldset class="ntw-tiles"><legend class="sr-only">Notification type</legend>
               <label class="ntw-tile"><input type="radio" name="ntw-type" value="SMS" checked>
                 <span class="ntw-tile-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 4h16a1 1 0 011 1v11a1 1 0 01-1 1H8l-4 4V5a1 1 0 011-1z" fill="currentColor"/><path d="M8 9h8M8 12.5h5" fill="none" class="ntw-ico-cut" stroke-width="1.8" stroke-linecap="round"/></svg></span>
@@ -96,8 +96,8 @@
           </section>
 
           <section data-step="pick" hidden>
-            <h2 class="ntw-title" id="ntw-title-pick">Select Notification</h2>
-            <p class="ntw-desc">Select the notification to copy. You can edit the copy in the next step.</p>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="ntw-title-pick">Select Notification</h2>
+            <p class="ntw-desc">Select the notification to copy. You can edit the copy in the next step.</p></div>
             <div class="nt-search ntw-search"><label class="sr-only" for="ntw-q">Search notifications</label><input class="input" id="ntw-q" type="search" autocomplete="off" aria-controls="ntw-pick"><span class="rs-ico" aria-hidden="true">${I.search}</span></div>
             <p class="sr-only" id="ntw-pick-count" role="status"></p>
             <div class="ntw-pick" id="ntw-pick" role="radiogroup" aria-labelledby="ntw-title-pick"></div>

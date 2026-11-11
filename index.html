@@ -161,6 +161,12 @@
   .modal-title { font-size: 32px; line-height: var(--lh-heading); font-weight: 700; color: var(--heading); overflow-wrap: anywhere; }
   .modal-desc { margin-top: 8px; font-size: var(--bodyS); line-height: var(--lh-body); color: var(--text-muted); }
   .modal-close { position: absolute; top: 8px; right: 8px; }
+  /* Sticky popup header: title + description stay put while the body scrolls; close belongs to the dialog */
+  .modal[open]:has(> form > .modal-body) { display: flex; flex-direction: column; }
+  .modal > form:has(> .modal-body) { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  .modal-body { position: static; overflow-y: auto; min-height: 0; }
+  .modal-body > .modal-head { position: sticky; top: -24px; z-index: 2; margin: -24px -24px -8px; padding: 24px 56px 8px 24px; background: var(--surface); }
+  .modal-body > .modal-close { z-index: 3; background: var(--surface); }
   .icon-btn { width: 32px; height: 32px; border: 0; border-radius: var(--radius-btn); background: none; color: var(--text);
               display: grid; place-items: center; }
   .icon-btn:hover { background: var(--primary-tint); }
@@ -340,13 +346,13 @@
   .art-role-top { width: 100%; height: 52px; border-radius: 8px; display: grid; place-items: center; color: var(--heading); }
 </style>
 <link rel="stylesheet" href="form.css?v=1794412100" />
-<link rel="stylesheet" href="roles.css?v=1794410900" />
-<link rel="stylesheet" href="notifications.css?v=1794408816" />
-<link rel="stylesheet" href="checklists.css?v=1794408816" />
-<link rel="stylesheet" href="payments.css?v=1794408816" />
-<link rel="stylesheet" href="documents.css?v=1794420463" />
-<link rel="stylesheet" href="landing.css?v=1794419528" />
-<link rel="stylesheet" href="dashboard.css?v=1794414100" />
+<link rel="stylesheet" href="roles.css?v=1794421081" />
+<link rel="stylesheet" href="notifications.css?v=1794421247" />
+<link rel="stylesheet" href="checklists.css?v=1794421081" />
+<link rel="stylesheet" href="payments.css?v=1794421081" />
+<link rel="stylesheet" href="documents.css?v=1794421081" />
+<link rel="stylesheet" href="landing.css?v=1794421081" />
+<link rel="stylesheet" href="dashboard.css?v=1794421081" />
 </head>
 <body>
 <a class="skip" href="#content">Skip to main content</a>
@@ -628,8 +634,8 @@
   <form id="fm-how-form" novalidate>
     <div class="ntw-body">
       <button type="button" class="icon-btn ntw-close" data-close aria-label="Close"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-      <h2 class="ntw-title" id="fm-how-title">How would you like to create your form?</h2>
-      <p class="ntw-desc" id="fm-how-desc">Choose how you would like to create your form.</p>
+      <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="fm-how-title">How would you like to create your form?</h2>
+      <p class="ntw-desc" id="fm-how-desc">Choose how you would like to create your form.</p></div>
       <fieldset class="ntw-tiles"><legend class="sr-only">How to create the form</legend>
         <label class="ntw-tile"><input type="radio" name="fm-how" value="COPY"><span class="ntw-tile-ico"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="8" y="8" width="13" height="13" rx="2" fill="currentColor"/><path d="M5 16H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
           <span class="ntw-tile-title">Copy Primary Module Form</span><span class="ntw-tile-text">Start from the primary module form and customize it.</span></label>
@@ -1037,7 +1043,7 @@
       return;
     }
     if (flow) {
-      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794420323';   // version forces a fresh copy after edits
+      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794421645';   // version forces a fresh copy after edits
       if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
       frame.title = `Process flow designer for ${m.name}`;
       document.title = `Process Flow – ${m.name} – Studio Prototype – Studio`;
@@ -1196,13 +1202,13 @@
   route();
 })();
 </script>
-<script src="roles.js?v=1794413400"></script>
-<script src="notifications.js?v=1794420497"></script>
-<script src="checklists.js?v=1794420497"></script>
-<script src="payments.js?v=1794420497"></script>
-<script src="documents.js?v=1794420497"></script>
-<script src="landing.js?v=1794408816"></script>
-<script src="dashboard.js?v=1794420323"></script>
+<script src="roles.js?v=1794421081"></script>
+<script src="notifications.js?v=1794421081"></script>
+<script src="checklists.js?v=1794421081"></script>
+<script src="payments.js?v=1794421081"></script>
+<script src="documents.js?v=1794421645"></script>
+<script src="landing.js?v=1794421081"></script>
+<script src="dashboard.js?v=1794421081"></script>
 <script src="form.js?v=1794413200"></script>
 
 </body>

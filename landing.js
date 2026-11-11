@@ -88,8 +88,8 @@
     <dialog class="modal dc-vd" id="lp-act-dlg" aria-labelledby="lp-ad-t" aria-describedby="lp-ad-d">
       <form id="lp-act-form" novalidate>
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
-        <h2 class="dc-vd-title" id="lp-ad-t"><span class="dc-vd-ico" aria-hidden="true">${I.plusSq}</span><span>Add Quick Action</span></h2>
-        <p class="dc-vd-desc" id="lp-ad-d">Select the actions applicants can start from the landing page.</p>
+        <div class="vd-head"><h2 class="dc-vd-title" id="lp-ad-t"><span class="dc-vd-ico" aria-hidden="true">${I.plusSq}</span><span>Add Quick Action</span></h2>
+        <p class="dc-vd-desc" id="lp-ad-d">Select the actions applicants can start from the landing page.</p></div>
         <div class="dc-vd-field">
           <p class="dc-vd-label" id="lp-ad-l">Quick Actions <span class="req" aria-hidden="true">*</span></p>
           <fieldset class="check-list dc-vd-list" id="lp-ad-list" aria-labelledby="lp-ad-l" aria-describedby="lp-ad-err"><legend>Quick Actions</legend></fieldset>
@@ -105,8 +105,8 @@
     <dialog class="modal dc-vd lp-faq-dlg" id="lp-faq-dlg" aria-labelledby="lp-fq-t" aria-describedby="lp-fq-d">
       <form id="lp-faq-form" novalidate>
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
-        <h2 class="dc-vd-title" id="lp-fq-t"><span class="dc-vd-ico" aria-hidden="true">${I.plusSq}</span><span id="lp-fq-tt">Add FAQ</span></h2>
-        <p class="dc-vd-desc" id="lp-fq-d">Add a question applicants often ask, and its answer.</p>
+        <div class="vd-head"><h2 class="dc-vd-title" id="lp-fq-t"><span class="dc-vd-ico" aria-hidden="true">${I.plusSq}</span><span id="lp-fq-tt">Add FAQ</span></h2>
+        <p class="dc-vd-desc" id="lp-fq-d">Add a question applicants often ask, and its answer.</p></div>
         <div class="dc-vd-field">
           <label class="dc-vd-label" for="lp-fq-q">Question <span class="req" aria-hidden="true">*</span></label>
           <input class="input" id="lp-fq-q" type="text" maxlength="100" autocomplete="off" aria-required="true" aria-describedby="lp-fq-q-err lp-fq-q-n">

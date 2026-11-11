@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=1794419871" />
+  <link rel="stylesheet" href="styles.css?v=1794421518" />
 </head>
 <body>
   <header class="topbar">
@@ -259,8 +259,8 @@
       </div>
 
       <section data-add-step="how">
-        <h2 class="add-choice__title" id="addTitle"></h2>
-        <p class="add-choice__desc" id="addDesc"></p>
+        <div class="pop-head"><h2 class="add-choice__title" id="addTitle"></h2>
+        <p class="add-choice__desc" id="addDesc"></p></div>
         <fieldset class="add-choice__options">
           <legend class="sr-only" id="addLegend"></legend>
           <label class="radio-card">
@@ -275,8 +275,8 @@
       </section>
 
       <section data-add-step="type" hidden>
-        <h2 class="add-choice__title" id="addTypeTitle"></h2>
-        <p class="add-choice__desc" id="addTypeDesc"></p>
+        <div class="pop-head"><h2 class="add-choice__title" id="addTypeTitle"></h2>
+        <p class="add-choice__desc" id="addTypeDesc"></p></div>
         <fieldset class="type-tiles">
           <legend class="sr-only" id="addTypeLegend"></legend>
           <div class="type-tiles__grid" id="addTypeTiles"></div>
@@ -284,8 +284,8 @@
       </section>
 
       <section data-add-step="pick" hidden>
-        <h2 class="add-choice__title" id="addPickTitle"></h2>
-        <p class="add-choice__desc" id="addPickDesc"></p>
+        <div class="pop-head"><h2 class="add-choice__title" id="addPickTitle"></h2>
+        <p class="add-choice__desc" id="addPickDesc"></p></div>
         <div class="doc-search">
           <input class="digit-employeeCard-input doc-search__input" id="addSearch" type="search" autocomplete="off" aria-controls="addPickList">
           <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#505A5F" stroke-width="2"/><path d="M15.5 15.5L21 21" stroke="#505A5F" stroke-width="2" stroke-linecap="round"/></svg>
@@ -373,8 +373,8 @@
       </div>
 
       <section data-pay-step="after">
-        <h2 class="add-choice__title" id="payTitle">Select Next Step After Payment</h2>
-        <p class="add-choice__desc" id="payDesc">Select what happens when the payment is successful.</p>
+        <div class="pop-head"><h2 class="add-choice__title" id="payTitle">Select Next Step After Payment</h2>
+        <p class="add-choice__desc" id="payDesc">Select what happens when the payment is successful.</p></div>
         <fieldset class="add-choice__options">
           <legend class="sr-only">Next step after payment</legend>
           <label class="radio-card">
@@ -390,8 +390,8 @@
       </section>
 
       <section data-pay-step="details" hidden>
-        <h2 class="add-choice__title" id="payDetailsTitle">Set Up Payment</h2>
-        <p class="add-choice__desc" id="payDetailsDesc">Choose how the fee amount is worked out and how people can pay the fee at this state.</p>
+        <div class="pop-head"><h2 class="add-choice__title" id="payDetailsTitle">Set Up Payment</h2>
+        <p class="add-choice__desc" id="payDetailsDesc">Choose how the fee amount is worked out and how people can pay the fee at this state.</p></div>
         <div class="nf-fields">
           <div class="nf-box">
             <div class="nf-row">
@@ -504,8 +504,8 @@
       <button type="button" class="icon-btn add-choice__close" data-close aria-label="Close">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
-      <h2 class="add-choice__title" id="roleTitle">Add Role</h2>
-      <p class="add-choice__desc" id="roleDesc">Choose what this role can do in the service.</p>
+      <div class="pop-head"><h2 class="add-choice__title" id="roleTitle">Add Role</h2>
+      <p class="add-choice__desc" id="roleDesc">Choose what this role can do in the service.</p></div>
       <div class="nf-fields">
         <div class="digit-field">
           <label class="digit-field__label" for="roleName">Role Name <span class="req">*</span></label>
@@ -556,8 +556,8 @@
       </div>
 
       <section data-cl-step="how">
-        <h2 class="add-choice__title" id="clHowTitle">How would you like to add the checklist?</h2>
-        <p class="add-choice__desc">Create a new checklist, or copy one that already exists in this process flow.</p>
+        <div class="pop-head"><h2 class="add-choice__title" id="clHowTitle">How would you like to add the checklist?</h2>
+        <p class="add-choice__desc">Create a new checklist, or copy one that already exists in this process flow.</p></div>
         <fieldset class="add-choice__options">
           <legend class="sr-only">How to add the checklist</legend>
           <label class="radio-card">
@@ -572,8 +572,8 @@
       </section>
 
       <section data-cl-step="pick" hidden>
-        <h2 class="add-choice__title" id="clPickTitle">Select Checklist</h2>
-        <p class="add-choice__desc">Select the checklist to copy. You can edit the copy in the next step.</p>
+        <div class="pop-head"><h2 class="add-choice__title" id="clPickTitle">Select Checklist</h2>
+        <p class="add-choice__desc">Select the checklist to copy. You can edit the copy in the next step.</p></div>
         <div class="pick-list" id="clPickList" role="radiogroup" aria-labelledby="clPickTitle"></div>
       </section>
 
@@ -615,8 +615,8 @@
 
       <!-- Only when the process flow already has documents (same as the other "add" popups) -->
       <section data-doc-step="how">
-        <h2 class="add-choice__title" id="docHowTitle">How do you want to add the document?</h2>
-        <p class="add-choice__desc">Create a new document, or copy one that already exists in this process flow.</p>
+        <div class="pop-head"><h2 class="add-choice__title" id="docHowTitle">How do you want to add the document?</h2>
+        <p class="add-choice__desc">Create a new document, or copy one that already exists in this process flow.</p></div>
         <fieldset class="add-choice__options">
           <legend class="sr-only">How to add the document</legend>
           <label class="radio-card">
@@ -632,8 +632,8 @@
 
       <!-- Same as Studio Documents: Predefined Document Template / Upload Your Own Design -->
       <section data-doc-step="create" hidden>
-        <h2 class="add-choice__title" id="docCreateTitle">How would you like to create your document?</h2>
-        <p class="add-choice__desc">Choose how you would like to create your document.</p>
+        <div class="pop-head"><h2 class="add-choice__title" id="docCreateTitle">How would you like to create your document?</h2>
+        <p class="add-choice__desc">Choose how you would like to create your document.</p></div>
         <fieldset class="type-tiles">
           <legend class="sr-only">How to create the document</legend>
           <div class="type-tiles__grid">
@@ -649,8 +649,8 @@
       </section>
 
       <section data-doc-step="template" hidden>
-        <h2 class="add-choice__title" id="docTplTitle">Choose a document template</h2>
-        <p class="add-choice__desc">Pick the template closest to the document you need, then personalize it to suit your service.</p>
+        <div class="pop-head"><h2 class="add-choice__title" id="docTplTitle">Choose a document template</h2>
+        <p class="add-choice__desc">Pick the template closest to the document you need, then personalize it to suit your service.</p></div>
         <div class="pick-list" role="radiogroup" aria-labelledby="docTplTitle">
           <label class="pick-card"><input type="radio" name="docTpl" value="application" checked>
             <span class="pick-card__body"><span class="pick-card__title">Application Details</span><span class="pick-card__text">Create an application summary containing applicant details, submitted information, and application status</span></span></label>
@@ -664,8 +664,8 @@
       </section>
 
       <section data-doc-step="details" hidden>
-        <h2 class="add-choice__title" id="docDetTitle">Add Document Details</h2>
-        <p class="add-choice__desc">Add the basic details of the document you are creating.</p>
+        <div class="pop-head"><h2 class="add-choice__title" id="docDetTitle">Add Document Details</h2>
+        <p class="add-choice__desc">Add the basic details of the document you are creating.</p></div>
         <div class="nf-box">
           <div class="nf-row">
             <div class="digit-label-row"><label class="digit-label" for="docDetType">Document type <span class="req">*</span></label></div>
@@ -676,6 +676,7 @@
                 <option value="certificate">Certificate</option>
                 <option value="invoice">Invoice / Receipt</option>
                 <option value="demand">Demand / Bill</option>
+                <option value="other">Other</option>
               </select>
               <p class="field__error" id="docDetTypeErr" hidden>Select the document type.</p>
             </div>
@@ -693,8 +694,8 @@
       </section>
 
       <section data-doc-step="pick" hidden>
-        <h2 class="add-choice__title" id="docPickTitle">Select Document</h2>
-        <p class="add-choice__desc">Select the document to copy. You can edit the copy in the next step.</p>
+        <div class="pop-head"><h2 class="add-choice__title" id="docPickTitle">Select Document</h2>
+        <p class="add-choice__desc">Select the document to copy. You can edit the copy in the next step.</p></div>
         <div class="doc-search">
           <input class="digit-employeeCard-input doc-search__input" id="docSearch" type="search" placeholder="Search documents" autocomplete="off" aria-label="Search documents by name, type or state" aria-controls="docPickList">
           <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#505A5F" stroke-width="2"/><path d="M15.5 15.5L21 21" stroke="#505A5F" stroke-width="2" stroke-linecap="round"/></svg>
@@ -712,6 +713,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=1794420323"></script>
+  <script src="app.js?v=1794421645"></script>
 </body>
 </html>

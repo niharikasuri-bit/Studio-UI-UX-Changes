@@ -89,16 +89,16 @@
           <button type="button" class="icon-btn ntw-close" data-close aria-label="Close">${I.close}</button>
           <div class="ntw-bars-wrap" id="pyw-bars-wrap"><span class="sr-only" id="pyw-step-text"></span><span class="ntw-bars" id="pyw-bars" aria-hidden="true"></span></div>
           <section data-step="after">
-            <h2 class="ntw-title" id="pyw-title-after">Select Next Step After Payment</h2>
-            <p class="ntw-desc">Select what happens when the payment is successful.</p>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-after">Select Next Step After Payment</h2>
+            <p class="ntw-desc">Select what happens when the payment is successful.</p></div>
             <fieldset class="ntw-options"><legend class="sr-only">Next step after payment</legend>${Object.entries(AFTER).map(([v, [t, d]]) => `
               <label class="ntw-radio"><input type="radio" name="pyw-after" value="${v}" data-k="after"><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">${t}</span><span class="ntw-rtext">${d}</span></span></label>`).join('')}
             </fieldset>
             <p class="error" id="pyw-err-after" hidden>Select what happens after payment.</p>
           </section>
           <section data-step="details" hidden>
-            <h2 class="ntw-title" id="pyw-title-details">Set Up Payment</h2>
-            <p class="ntw-desc">Choose how the fee amount is worked out and how people can pay the fee at this state.</p>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-details">Set Up Payment</h2>
+            <p class="ntw-desc">Choose how the fee amount is worked out and how people can pay the fee at this state.</p></div>
             <div class="ntw-fields pyw-fields" id="pyw-fields"></div>
           </section>
         </div>

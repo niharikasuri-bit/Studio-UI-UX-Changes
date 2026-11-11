@@ -22,6 +22,8 @@
     invoice: ['Invoice / Receipt', 'Generate payment receipts/ invoices with transaction details and payment information'],
     demand: ['Demand / Bill', 'Create demand notices/ bills outlining fees, taxes, dues, due dates, and payment instructions'],
   };
+  // Document type dropdowns (and the type filter) also offer Other; the template chooser keeps the four CATS only
+  const TYPES = { ...CATS, other: ['Other', ''] };
   // Document elements per template: Header + Body (varies) + Footer. [key, label, required]
   const HEADER = [['logo', 'Logo', true], ['orgName', 'Organization Name'], ['orgAddr', 'Organization Address'], ['appNo', 'Application Number']];
   const FOOTER = [['qr', 'QR Code'], ['note', 'Bottom note']];
@@ -255,7 +257,7 @@
         </div>
         <div class="nt-filter">
           <label class="nt-label" for="dc-kind">Type</label>
-          <select class="input pf-select nt-select" id="dc-kind">${opts(Object.entries(CATS).map(([k, [t]]) => [k, t]), f.kind, 'All types')}</select>
+          <select class="input pf-select nt-select" id="dc-kind">${opts(Object.entries(TYPES).map(([k, [t]]) => [k, t]), f.kind, 'All types')}</select>
         </div>
         <button type="button" class="btn btn-secondary nt-clear nt-clear-btn" id="dc-clear" data-clear-filters disabled>Clear Search</button>
       </section>
@@ -284,7 +286,7 @@
           <h2 class="nt-name" id="dc-n-${d.id}">${esc(d.name)}</h2>
           <ul class="nt-tags" aria-label="Details">
             <li class="nt-tag nt-tag-state">${d.state ? esc(d.state) : 'No state selected'}</li>
-            <li class="nt-tag nt-tag-type">${CATS[d.cat][0]}</li>
+            <li class="nt-tag nt-tag-type">${TYPES[d.cat][0]}</li>
           </ul>
         </div>
         <div class="nt-foot">
@@ -336,8 +338,8 @@
       <form id="dc-how-form" novalidate>
         <div class="ntw-body">
           <button type="button" class="icon-btn ntw-close" data-close aria-label="Close">${I.close}</button>
-          <h2 class="ntw-title" id="dcw-how-title">How would you like to create your document?</h2>
-          <p class="ntw-desc" id="dcw-how-desc">Choose how you would like to create your document.</p>
+          <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="dcw-how-title">How would you like to create your document?</h2>
+          <p class="ntw-desc" id="dcw-how-desc">Choose how you would like to create your document.</p></div>
           <fieldset class="ntw-tiles"><legend class="sr-only">How to create the document</legend>
             <label class="ntw-tile"><input type="radio" name="dc-how" value="TEMPLATE"><span class="ntw-tile-ico">${I.tplTile}</span>
               <span class="ntw-tile-title">Predefined Document Template</span><span class="ntw-tile-text">Start from a ready-made template and customize it.</span></label>
@@ -357,8 +359,8 @@
       <form id="dc-name-form" novalidate>
         <div class="ntw-body">
           <button type="button" class="icon-btn ntw-close" data-close aria-label="Close">${I.close}</button>
-          <h2 class="ntw-title" id="dcw-name-title">Name Your Document</h2>
-          <p class="ntw-desc" id="dcw-name-desc">Enter a name for this document. You can change the name later.</p>
+          <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="dcw-name-title">Name Your Document</h2>
+          <p class="ntw-desc" id="dcw-name-desc">Enter a name for this document. You can change the name later.</p></div>
           <div class="ntw-box"><div class="ntw-row">
             <label class="ntw-label" for="dc-name-in">Document name <span class="req" aria-hidden="true">*</span></label>
             <div class="ntw-control"><input class="input" id="dc-name-in" type="text" maxlength="60" autocomplete="off" aria-required="true" aria-describedby="dc-name-err">
@@ -366,7 +368,7 @@
           </div></div>
           <div class="ntw-box" id="dc-state-box"><div class="ntw-row">
             <label class="ntw-label" for="dc-state-in">Document type <span class="req" aria-hidden="true">*</span></label>
-            <div class="ntw-control"><select class="input" id="dc-state-in" aria-required="true" aria-describedby="dc-state-err">${opts(Object.entries(CATS).map(([k, [t]]) => [k, t]), '', 'Select document type')}</select>
+            <div class="ntw-control"><select class="input" id="dc-state-in" aria-required="true" aria-describedby="dc-state-err">${opts(Object.entries(TYPES).map(([k, [t]]) => [k, t]), '', 'Select document type')}</select>
               <p class="error" id="dc-state-err" hidden><span>Select the document type.</span></p></div>
           </div></div>
         </div>
@@ -390,8 +392,8 @@
     <dialog class="modal dc-vd" id="dc-var-dlg" aria-labelledby="dc-vd-title" aria-describedby="dc-vd-desc">
       <form id="dc-vd-form" novalidate>
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
-        <h2 class="dc-vd-title" id="dc-vd-title"><span class="dc-vd-ico" aria-hidden="true">${I.plusSq}</span><span id="dc-vd-title-t">Add System Variable</span></h2>
-        <p class="dc-vd-desc" id="dc-vd-desc"></p>
+        <div class="vd-head"><h2 class="dc-vd-title" id="dc-vd-title"><span class="dc-vd-ico" aria-hidden="true">${I.plusSq}</span><span id="dc-vd-title-t">Add System Variable</span></h2>
+        <p class="dc-vd-desc" id="dc-vd-desc"></p></div>
         <div class="dc-vd-field">
           <p class="dc-vd-label" id="dc-vd-legend">Personalization Variables <span class="req" aria-hidden="true">*</span></p>
           <fieldset class="check-list dc-vd-list" id="dc-vd-list" aria-labelledby="dc-vd-legend" aria-describedby="dc-vd-err"><legend>Personalization Variables</legend></fieldset>
@@ -501,8 +503,8 @@
         <div class="dc-dt-control">${control}<p class="error" id="${id}-err" hidden>${err}</p></div>
       </div>`;
     const typeCtl = tpl
-      ? `<input class="input dc-readonly" id="dc-dt-type" type="text" readonly aria-readonly="true" value="${esc(CATS[doc.cat][0])}">`
-      : `<select class="input" id="dc-dt-type" aria-required="true" aria-describedby="dc-dt-type-err">${opts(Object.entries(CATS).map(([k, [t]]) => [k, t]), doc.cat, 'Select document type')}</select>`;
+      ? `<input class="input dc-readonly" id="dc-dt-type" type="text" readonly aria-readonly="true" value="${esc(TYPES[doc.cat][0])}">`
+      : `<select class="input" id="dc-dt-type" aria-required="true" aria-describedby="dc-dt-type-err">${opts(Object.entries(TYPES).map(([k, [t]]) => [k, t]), doc.cat, 'Select document type')}</select>`;
     view.innerHTML = `${subbar}
     <main class="content dc-details">
       <h1 class="page-title" id="dc-dt-title" tabindex="-1">${fromEd ? 'Edit Document Details' : 'Add Document Details'}</h1>
@@ -711,7 +713,7 @@
     else { id = nid(); list.unshift({ ...d, id }); }
     persist();
     if (pf && !W.ctx.edit) {
-      sessionStorage.setItem('studio.docDone', JSON.stringify({ module: mod.id, stateId: pf.stateId, docId: id, name: d.name, docType: CATS[d.cat] ? CATS[d.cat][0] : '', source: d.kind === 'UPLOAD' ? 'upload' : 'template' }));
+      sessionStorage.setItem('studio.docDone', JSON.stringify({ module: mod.id, stateId: pf.stateId, docId: id, name: d.name, docType: TYPES[d.cat] ? TYPES[d.cat][0] : '', source: d.kind === 'UPLOAD' ? 'upload' : 'template' }));
       pf = null; return toFlow();
     }
     const was = !!W.ctx.edit, name = d.name;

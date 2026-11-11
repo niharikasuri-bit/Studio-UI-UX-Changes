@@ -231,3 +231,13 @@
 .ntw-box .fp-count { color: #363636; }
 /* variable chips on the type scale */
 .var-chip { font-size: 14px; }
+
+/* Sticky popup header (all wizards and popups): progress bars + title / description (or name + type tag)
+   stay put while the content scrolls. The close button belongs to the dialog, so it never scrolls. */
+.ntw-body { position: static; }
+.ntw-bars-wrap { position: sticky; top: -24px; z-index: 2; margin: -24px -24px 0; padding: 24px 64px 16px 24px; background: #fff; }
+.ntw-head { top: -24px; margin-top: -24px; padding-top: 24px; }
+.ntw-head--step { gap: 0; padding-bottom: 8px; margin-bottom: -8px; }
+.ntw-bars-wrap:not([hidden]) ~ section .ntw-head { top: 22px; margin-top: 0; padding-top: 0; }
+/* the hidden " characters" text stays inside its counter, so it never stretches the popup (no second scrollbar) */
+.ntw .fp-count { position: relative; }

@@ -1463,5 +1463,12 @@ button { cursor: pointer; }
 .toggle-card.is-on .toggle-card__title { color: var(--secondary); }
 .logic-item__input, .logic-item { color: #363636; }
 
-/* Side panel: Notification / Payment row names in #363636 */
-.logic-list[data-kind="notify"] .logic-item > .logic-item__name, .logic-list[data-kind="payment"] .logic-item > .logic-item__name { color: #363636; }
+/* Side panel: every row name (form, notification, document, payment, checklist) and every role in #363636 */
+.logic-item > .logic-item__name, .role-check { color: #363636; }
+
+/* Sticky popup header for every step title + description (same rule as .nf-head above) */
+.pop-head { position: sticky; top: 30px; z-index: 1; padding-bottom: 8px; margin-bottom: -8px; background: var(--surface); }
+.add-choice__body > .pop-head,
+.add-choice__body > .wizard[hidden] ~ section .pop-head,
+.add-choice__body > .wizard[style*="none"] ~ section .pop-head,
+.add-choice__body > .wizard[style*="none"] ~ section .nf-head { top: -24px; padding-top: 24px; margin-top: -24px; }
