@@ -247,3 +247,6 @@ button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff;
   .lp-main.lp-tall .lp-stage { position: absolute; inset: 0; padding: 24px 0 32px; align-items: flex-start; }
   .lp-main.lp-tall .lp-head { position: relative; z-index: 1; }
 }
+
+/* v32: phone screen scrolls inside the phone; visible focus ring for keyboard scrolling */
+.lp-screen:focus-visible { outline: 3px solid #C84C0E; outline-offset: 2px; }

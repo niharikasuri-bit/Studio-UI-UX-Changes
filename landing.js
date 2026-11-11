@@ -65,9 +65,9 @@
         </div>
         <div class="lp-stage" id="lp-stage">
           <div class="lp-fit" id="lp-fit">
-            <div class="lp-phone" role="region" aria-label="Phone preview of the landing page">
+            <div class="lp-phone">
               <span class="lp-cam" aria-hidden="true"></span>
-              <div class="lp-screen" id="lp-screen"></div>
+              <div class="lp-screen" id="lp-screen" tabindex="0" role="region" aria-label="Phone preview of the landing page"></div>
             </div>
           </div>
         </div>
@@ -131,28 +131,28 @@
   /* ---------- Phone preview ---------- */
   // Scale the fixed-size phone (320 × 592) as one picture to fit the stage, so its inside never reflows with browser zoom
   const PW = 320, PH = 592;
+  // Phone at its real size (320px wide in CSS pixels), so it grows with browser zoom like the rest of the page (WCAG 1.4.4).
+  // Its height fits the space (max 592) and the screen scrolls inside the phone.
   function fitPhone() {
     const st = $('lp-stage'), fit = $('lp-fit'); if (!st || !fit || view.hidden) return;
-    const main = st.parentElement, head = main.querySelector('.lp-head'), title = $('lp-title');
-    if (window.innerWidth < 1100) { main.classList.remove('lp-tall'); fit.style.width = PW + 'px'; fit.style.height = PH + 'px'; fit.firstElementChild.style.transform = ''; return; }
+    const main = st.parentElement, head = main.querySelector('.lp-head'), title = $('lp-title'), phone = fit.firstElementChild;
+    phone.style.transform = '';
+    if (window.innerWidth < 1100) { main.classList.remove('lp-tall'); st.style.paddingLeft = ''; fit.style.width = PW + 'px'; fit.style.height = PH + 'px'; phone.style.height = PH + 'px'; return; }
     const mcs = getComputedStyle(main);
-    const padT = parseFloat(mcs.paddingTop), padB = parseFloat(mcs.paddingBottom), padL = parseFloat(mcs.paddingLeft);
+    const padT = parseFloat(mcs.paddingTop), padB = parseFloat(mcs.paddingBottom);
     const M = main.clientWidth, H = main.clientHeight;
     const headH = head.offsetHeight + parseFloat(getComputedStyle(head).marginBottom);
-    // A) phone uses the full height of the centre column, level with the title, if it can sit beside the title without touching it
+    // beside the title (full column height) when there is room to its right; otherwise under the title
     const rg = document.createRange(); rg.selectNodeContents(title);
-    const titleR = rg.getBoundingClientRect().right - main.getBoundingClientRect().left;   // right edge of the title text itself
-    const tallK = Math.min(1.25, (H - padT - padB) / PH);
-    const pwT = PW * tallK, gap = 24;
-    const fitsBeside = M - titleR - gap - 32 >= pwT;                       // room to the right of the title
-    const shift = M / 2 - pwT / 2 < titleR + gap ? (titleR + gap + (M - titleR - gap - 32 - pwT) / 2) - (M / 2 - pwT / 2) : 0;   // centre in the space beside the title if the middle would touch it
-    st.style.paddingLeft = fitsBeside && shift > 0 ? 2 * shift + 'px' : '';
-    // B) otherwise it sits under the title
-    const k = Math.max(0.3, fitsBeside ? tallK : Math.min(1.25, (H - padT - padB - headH) / PH, (M - 64) / PW));
+    const titleR = rg.getBoundingClientRect().right - main.getBoundingClientRect().left;
+    const gap = 24, fitsBeside = M - titleR - gap - 32 >= PW;
+    const shift = fitsBeside && M / 2 - PW / 2 < titleR + gap ? (titleR + gap + (M - titleR - gap - 32 - PW) / 2) - (M / 2 - PW / 2) : 0;
+    st.style.paddingLeft = shift > 0 ? 2 * shift + 'px' : '';
     main.classList.toggle('lp-tall', fitsBeside);
-    fit.style.width = PW * k + 'px'; fit.style.height = PH * k + 'px';
-    fit.firstElementChild.style.height = PH + 'px';
-    fit.firstElementChild.style.transform = `scale(${k})`;
+    const avail = H - padT - padB - (fitsBeside ? 0 : headH) - 8;
+    const ph = Math.max(240, Math.min(PH, avail));
+    fit.style.width = PW + 'px'; fit.style.height = ph + 'px';
+    phone.style.height = ph + 'px';
   }
   if (window.ResizeObserver) new ResizeObserver(fitPhone).observe($('lp-stage').parentElement);
   window.addEventListener('resize', fitPhone);
