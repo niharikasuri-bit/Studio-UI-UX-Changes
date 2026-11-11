@@ -299,7 +299,7 @@
       </div>
       <aside class="form-panel db-panel" aria-label="Dashboard items">
         <div class="panel-view" id="db-list-view">
-          <div class="fp-head"><h2 class="fp-title" id="db-list-head">Dashboard Properties</h2></div>
+          <div class="fp-head"><h2 class="fp-title" id="db-list-head">Dashboard Items</h2></div>
           <div class="fp-scroll" id="db-items"></div>
         </div>
         <div class="panel-view" id="db-item-view" hidden></div>
@@ -317,11 +317,16 @@
     <dialog class="modal dc-vd" id="db-src-dlg" aria-labelledby="db-src-t" aria-describedby="db-src-d">
       <form id="db-src-form" novalidate>
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
-        <h2 class="dc-vd-title" id="db-src-t">Choose Data Source</h2>
-        <p class="dc-vd-desc" id="db-src-d">Choose the module this visualisation takes its data from. You can change it later.</p>
+        <h2 class="dc-vd-title" id="db-src-t">Add Visualisation</h2>
+        <p class="dc-vd-desc" id="db-src-d">Choose the module this visualisation takes its data from and give it a title. You can change both later.</p>
         <div class="dc-vd-field">
           <label class="dc-vd-label" for="db-src-sel">Module <span class="req" aria-hidden="true">*</span></label>
           <select class="input" id="db-src-sel">${opts(Object.entries(MODULES), 'all')}</select>
+        </div>
+        <div class="dc-vd-field">
+          <label class="dc-vd-label" for="db-src-title">Title <span class="req" aria-hidden="true">*</span></label>
+          <input class="input" id="db-src-title" type="text" maxlength="${LIMIT.title}" autocomplete="off" required aria-describedby="db-src-title-e">
+          <p class="fp-error" id="db-src-title-e"></p>
         </div>
         <div class="dc-vd-actions">
           <button type="button" class="btn btn-secondary" data-close>Cancel</button>
@@ -437,17 +442,8 @@
   /* ---------- Right panel: Dashboard Items ---------- */
   const DL = { name: 60, desc: 150 };
   function drawItems() {
-    const cnt = k => `<div class="fp-meta"><span class="fp-error"></span><span class="fp-count" data-dcnt="${k}">${(data[k] || '').length}/${DL[k]}<span class="sr-only"> characters</span></span></div>`;
     $('db-items').innerHTML = `<div class="fp-section">
-      <div class="fp-field"><span class="fp-label"><label for="db-dname">Dashboard Title</label>${tip('db-tip-dn', 'dashboard title', 'The name shown at the top of the dashboard.')}</span>
-        <input class="fp-input" id="db-dname" type="text" maxlength="${DL.name}" data-dk="name" value="${esc(data.name || '')}" autocomplete="off"></div>
-      <div class="fp-field"><span class="fp-label"><label for="db-ddesc">Dashboard Description</label>${tip('db-tip-dd', 'dashboard description', 'Short text shown under the dashboard name.')}</span>
-        <textarea class="fp-textarea" id="db-ddesc" maxlength="${DL.desc}" data-dk="desc" aria-describedby="db-ddesc-m">${esc(data.desc || '')}</textarea>
-        <div id="db-ddesc-m">${cnt('desc')}</div></div>
-    </div>
-    <div class="fp-section">
-      <h3 class="fp-subtitle" id="db-items-t">Dashboard Items ${tip('db-tip-di', 'dashboard items', 'Dashboard items are the visualisations (KPI cards and charts) on this dashboard, listed in the order they appear on it.')}</h3>
-      ${data.widgets.length ? `<ul class="field-list" aria-labelledby="db-items-t">${data.widgets.map(w => `<li class="field-card lp-fc db-item${w.id === selId ? ' is-selected' : ''}">
+      ${data.widgets.length ? `<ul class="field-list" aria-labelledby="db-list-head">${data.widgets.map(w => `<li class="field-card lp-fc db-item${w.id === selId ? ' is-selected' : ''}">
         <button type="button" class="lp-fc-open" data-sel="${w.id}"><span class="field-info"><span class="field-name">${esc(w.title || TYPES[w.type].name)}</span>
           <span class="db-item-tags"><span class="type-tag db-type-tag"><span class="sr-only">Type: </span>${TYPES[w.type].name}</span><span class="db-flt-tag db-mod-tag"><span class="sr-only">Data source: </span>${MODULES[modOf(w)]}</span></span></span></button>
           <span class="field-actions"><button type="button" class="del-btn" data-rmitem="${w.id}" aria-label="Delete ${esc(w.title || TYPES[w.type].name)}" title="Delete">${I.trash}</button></span></li>`).join('')}</ul>`
@@ -619,28 +615,31 @@
     if (!selId) (grid.querySelector('.db-sel') || document.querySelector('.db-pal-item'))?.focus();
     S.announce(`${word} done.`);
   }
-  /* Adding (click, drag or keyboard) first asks the data source; the last one chosen is preselected */
-  // Ask once (first visualisation added in this session); after that add straight away from the last choice.
-  // A service with only one module never asks.
-  let lastSrc = 'all', pending = null, asked = false;
-  const srcDlg = $('db-src-dlg');
+  /* Adding (click, drag or keyboard) always asks the data source and title; the last data source chosen is preselected */
+  let lastSrc = 'all', pending = null;
+  const srcDlg = $('db-src-dlg'), srcTitle = $('db-src-title'), srcErr = $('db-src-title-e');
+  const titleErr = msg => { srcErr.textContent = msg; if (msg) srcTitle.setAttribute('aria-invalid', 'true'); else srcTitle.removeAttribute('aria-invalid'); };
   function add(type, at = data.widgets.length, preset) {
-    if (asked || Object.keys(MODULES).length < 2) return place(type, at, preset, lastSrc);
     pending = { type, at, preset, opener: document.activeElement };
     $('db-src-sel').value = lastSrc;
+    srcTitle.value = preset != null && PRESETS[+preset] ? (PRESETS[+preset][1].title || TYPES[type].name) : TYPES[type].name;
+    titleErr('');
     srcDlg.showModal(); $('db-src-sel').focus();
   }
+  srcTitle.addEventListener('input', () => { if (srcTitle.value.trim()) titleErr(''); });
   $('db-src-form').addEventListener('submit', e => {
-    e.preventDefault(); const p0 = pending; if (!p0) return; pending = null;
-    lastSrc = $('db-src-sel').value; asked = true; srcDlg.close();
-    place(p0.type, p0.at, p0.preset, lastSrc);
+    e.preventDefault(); const p0 = pending; if (!p0) return;
+    const title = srcTitle.value.trim();
+    if (!title) { titleErr('Enter a title for this visualisation.'); srcTitle.focus(); return; }
+    pending = null; lastSrc = $('db-src-sel').value; srcDlg.close();
+    place(p0.type, p0.at, p0.preset, lastSrc, title);
   });
   srcDlg.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => srcDlg.close()));
   srcDlg.addEventListener('click', e => { if (e.target === srcDlg) srcDlg.close(); });
   srcDlg.addEventListener('close', () => { if (pending) { const o = pending.opener; pending = null; o && document.contains(o) && o.focus(); } });
-  function place(type, at, preset, module) {
+  function place(type, at, preset, module, title) {
     snap();
-    const w = make(type, { module, ...(preset != null && PRESETS[+preset] ? PRESETS[+preset][1] : {}) }); data.widgets.splice(at, 0, w); selId = w.id; tab = 'data';
+    const w = make(type, { module, ...(preset != null && PRESETS[+preset] ? PRESETS[+preset][1] : {}), ...(title ? { title } : {}) }); data.widgets.splice(at, 0, w); selId = w.id; tab = 'data';
     redraw(`[data-sel="${w.id}"]`); grid.querySelector(`[data-w="${w.id}"]`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     const msg = `${w.title} added from ${MODULES[module]}`;
     S.toast(msg); S.announce(`${msg}. Its properties are open on the right. You can change the data source in its Data tab.`);
@@ -888,7 +887,7 @@
   $('db-items').addEventListener('click', e => {
     const rm = e.target.closest('[data-rmitem]');
     if (rm) { const ids = data.widgets.map(w => w.id), i = ids.indexOf(rm.dataset.rmitem); askDelete(rm.dataset.rmitem);
-      const items = [...$('db-items').querySelectorAll('[data-rmitem]')]; (items[Math.min(i, items.length - 1)] || $('db-dname'))?.focus(); }
+      const items = [...$('db-items').querySelectorAll('[data-rmitem]')]; (items[Math.min(i, items.length - 1)] || document.querySelector('.db-pal-item'))?.focus(); }
   });
   $('db-items').addEventListener('click', e => { if (e.target.closest('[data-rmitem]')) return; const b = e.target.closest('[data-sel]'); if (b) { select(b.dataset.sel, { focusPanel: true }); grid.querySelector(`[data-w="${b.dataset.sel}"]`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } });
   const iv = $('db-item-view');
