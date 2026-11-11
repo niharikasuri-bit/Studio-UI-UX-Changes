@@ -354,7 +354,7 @@
 <link rel="stylesheet" href="payments.css?v=1794421081" />
 <link rel="stylesheet" href="documents.css?v=1794421081" />
 <link rel="stylesheet" href="landing.css?v=1794432134" />
-<link rel="stylesheet" href="dashboard.css?v=1794431342" />
+<link rel="stylesheet" href="dashboard.css?v=1794436254" />
 </head>
 <body>
 <a class="skip" href="#content">Skip to main content</a>
@@ -637,7 +637,7 @@
     <div class="ntw-body">
       <button type="button" class="icon-btn ntw-close" data-close aria-label="Close"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="fm-how-title">How would you like to create your form?</h2>
-      <p class="ntw-desc" id="fm-how-desc">Choose how you would like to create your form.</p></div>
+      <p class="ntw-desc" id="fm-how-desc">Pick a starting point for creating a form.</p></div>
       <fieldset class="ntw-tiles"><legend class="sr-only">How to create the form</legend>
         <label class="ntw-tile"><input type="radio" name="fm-how" value="COPY"><span class="ntw-tile-ico"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="8" y="8" width="13" height="13" rx="2" fill="currentColor"/><path d="M5 16H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
           <span class="ntw-tile-title">Copy Primary Module Form</span><span class="ntw-tile-text">Start from the primary module form and customize it.</span></label>
@@ -1045,7 +1045,7 @@
       return;
     }
     if (flow) {
-      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794432646';   // version forces a fresh copy after edits
+      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794436941';   // version forces a fresh copy after edits
       if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
       frame.title = `Process flow designer for ${m.name}`;
       document.title = `Process Flow – ${m.name} – Studio Prototype – Studio`;
@@ -1208,10 +1208,10 @@
 <script src="notifications.js?v=1794432646"></script>
 <script src="checklists.js?v=1794432646"></script>
 <script src="payments.js?v=1794432646"></script>
-<script src="documents.js?v=1794432646"></script>
+<script src="documents.js?v=1794436941"></script>
 <script src="landing.js?v=1794432365"></script>
-<script src="dashboard.js?v=1794432646"></script>
-<script src="form.js?v=1794432646"></script>
+<script src="dashboard.js?v=1794436295"></script>
+<script src="form.js?v=1794436810"></script>
 
 </body>
 </html>

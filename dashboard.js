@@ -193,6 +193,8 @@
   // vertical axis title: one line if it fits the plot height, else two lines (13px apart); "…" only if two lines are not enough
   const yTitle = (label, ih, T) => { const ln = wrap2(label, ih), cy = T + ih / 2, x0 = 12; return txLines(x0, cy, ln, { 'text-anchor': 'middle', class: 'db-axis', transform: `rotate(-90 ${x0} ${cy})` }); };
   const yRoom = (label, ih) => (label && label.length * 6.4 > ih ? 31 : 18);   // left room for one / two title lines
+  // hover / click tooltip on a bar, point or slice: what it is (label) and its value (with the measure's name)
+  const tipAttr = (w, label, v, total) => ` class="db-mark" data-tl="${esc(label)}" data-tv="${esc(fmtW(w, w.measure, v) + (total ? ` (${Math.round(v / total * 100)}%)` : '') + ' · ' + MEASURES[w.measure])}"`;
   const niceMax = m => { if (m <= 0) return 1; const p = Math.pow(10, Math.floor(Math.log10(m))); return Math.ceil(m / p * 1.1) * p; };
   function chartSVG(w, W0, H) {
     const t = TYPES[w.type], d = series(w), m = w.measure;
@@ -208,7 +210,7 @@
       let s = '';
       for (let k = 0; k <= 4; k++) { const x = L + iw * k / 4; s += `<line x1="${x}" y1="${T}" x2="${x}" y2="${T + ih}" class="db-gl"/>` + tx(x, T + ih + 16, fmt(m, max * k / 4, true), { 'text-anchor': 'middle', class: 'db-tick' }); }
       d.forEach((p, i) => { const y = T + band * i + (band - bh) / 2, bw = iw * p.value / max;
-        s += `<rect x="${L}" y="${y}" width="${Math.max(1, bw)}" height="${bh}" rx="3" fill="${COLOURS[0]}"/>` + (() => { const ln = wrap2(p.label, L - 10 - ayh); return txLines(L - 8, y + bh / 2 + 4 - (ln.length - 1) * 6.5, ln, { 'text-anchor': 'end', class: 'db-tick' }); })();
+        s += `<rect x="${L}" y="${y}" width="${Math.max(1, bw)}" height="${bh}" rx="3" fill="${COLOURS[0]}"${tipAttr(w, p.label, p.value)}/>` + (() => { const ln = wrap2(p.label, L - 10 - ayh); return txLines(L - 8, y + bh / 2 + 4 - (ln.length - 1) * 6.5, ln, { 'text-anchor': 'end', class: 'db-tick' }); })();
         if (w.values) s += tx(L + bw + 6, y + bh / 2 + 4, labelOf(w, m, p.value, sum), { class: 'db-val' }); });
       if (w.xLabel) s += tx(L + iw / 2, H - 4, w.xLabel, { 'text-anchor': 'middle', class: 'db-axis' });
       if (w.yLabel) s += yTitle(w.yLabel, ih, T);
@@ -231,7 +233,7 @@
     if (t.kind === 'bar') {
       const bw = Math.min(48, band * 0.6);
       d.forEach((p, i) => { const x = L + band * i + (band - bw) / 2, bh = ih * p.value / max;
-        s += `<rect x="${x}" y="${T + ih - bh}" width="${bw}" height="${Math.max(1, bh)}" rx="3" fill="${COLOURS[0]}"/>`;
+        s += `<rect x="${x}" y="${T + ih - bh}" width="${bw}" height="${Math.max(1, bh)}" rx="3" fill="${COLOURS[0]}"${tipAttr(w, p.label, p.value)}/>`;
         if (w.values) s += tx(x + bw / 2, T + ih - bh - 6, labelOf(w, m, p.value, sum), { 'text-anchor': 'middle', class: 'db-val' });
         s += nameAt(L + band * i + band / 2, T + ih + 16, i); });
     } else {
@@ -239,7 +241,8 @@
       if (w.type === 'area') s += `<path d="M${pts[0][0]},${T + ih} L${pts.map(p => p.join(',')).join(' L')} L${pts[pts.length - 1][0]},${T + ih}Z" fill="${COLOURS[0]}" fill-opacity=".16"/>`;
       s += `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="${COLOURS[0]}" stroke-width="2.5" stroke-linejoin="round"/>`;
       d.forEach((p, i) => {
-        if (w.points) s += `<circle cx="${pts[i][0]}" cy="${pts[i][1]}" r="4" fill="#fff" stroke="${COLOURS[0]}" stroke-width="2"/>`;
+        if (w.points) s += `<circle cx="${pts[i][0]}" cy="${pts[i][1]}" r="4" fill="#fff" stroke="${COLOURS[0]}" stroke-width="2" class="db-pt" data-pt="${i}"/>`;
+        s += `<circle cx="${pts[i][0]}" cy="${pts[i][1]}" r="${Math.max(10, Math.min(18, band / 2))}" fill="transparent" data-hit="${i}"${tipAttr(w, p.label, p.value)}/>`;
         if (w.values) s += tx(pts[i][0], pts[i][1] - 9, labelOf(w, m, p.value, sum), { 'text-anchor': 'middle', class: 'db-val' });
         s += nameAt(pts[i][0], T + ih + 16, i); });
     }
@@ -257,7 +260,7 @@
       const [x0, y0] = P(r, a0), [x1, y1] = P(r, a1);
       const path = ir ? (() => { const [u0, v0] = P(ir, a1), [u1, v1] = P(ir, a0); return `M${x0},${y0} A${r},${r} 0 ${big} 1 ${x1},${y1} L${u0},${v0} A${ir},${ir} 0 ${big} 0 ${u1},${v1}Z`; })()
         : `M${cx},${cy} L${x0},${y0} A${r},${r} 0 ${big} 1 ${x1},${y1}Z`;
-      s += `<path d="${path}" fill="${COLOURS[i % COLOURS.length]}" stroke="#fff" stroke-width="2"/>`;
+      s += `<path d="${path}" fill="${COLOURS[i % COLOURS.length]}" stroke="#fff" stroke-width="2"${tipAttr(w, p.label, p.value, total)}/>`;
       const pct = Math.round(p.value / total * 100);
       if (w.values && pct >= 6) { const [lx, ly] = P(ir ? (r + ir) / 2 : r * 0.62, (a0 + a1) / 2); s += tx(lx, ly + 4, labelAs(w) === 'value' ? fmtW(w, w.measure, p.value) : labelOf(w, w.measure, p.value, total), { 'text-anchor': 'middle', class: 'db-slice' }); }
       a0 = a1;
@@ -485,6 +488,26 @@
     });
   }
   new ResizeObserver(() => drawCharts()).observe(grid);
+  /* Chart tooltips (editing and Preview): hover a bar, point or slice to see its name and value; click / tap pins it
+     (click anywhere else, Esc or scrolling hides it). The hovered mark is highlighted. Screen readers keep the hidden data table. */
+  const tipEl = document.createElement('div'); tipEl.className = 'db-tt'; tipEl.setAttribute('aria-hidden', 'true'); tipEl.hidden = true; document.body.appendChild(tipEl);
+  let tipPinned = null, tipOn = null;
+  function showTip(m, x, y) {
+    if (tipOn && tipOn !== m) { tipOn.classList.remove('is-hot'); tipOn.closest('svg')?.querySelectorAll('.db-pt.is-hot').forEach(c => c.classList.remove('is-hot')); }
+    tipOn = m; m.classList.add('is-hot');
+    if (m.dataset.hit != null) m.closest('svg').querySelector(`[data-pt="${m.dataset.hit}"]`)?.classList.add('is-hot');
+    tipEl.innerHTML = `<b>${m.dataset.tl}</b><span>${m.dataset.tv}</span>`; tipEl.hidden = false;
+    const w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    tipEl.style.left = Math.max(8, Math.min(innerWidth - w - 8, x - w / 2)) + 'px';
+    tipEl.style.top = (y - h - 14 < 8 ? y + 18 : y - h - 14) + 'px';
+  }
+  function hideTip() { tipEl.hidden = true; if (tipOn) { tipOn.classList.remove('is-hot'); tipOn.closest('svg')?.querySelectorAll('.db-pt.is-hot').forEach(c => c.classList.remove('is-hot')); } tipOn = null; tipPinned = null; }
+  grid.addEventListener('pointermove', e => { if (tipPinned) return; const m = e.target.closest && e.target.closest('.db-mark'); if (m) showTip(m, e.clientX, e.clientY); else if (tipOn) hideTip(); });
+  grid.addEventListener('pointerleave', () => { if (!tipPinned) hideTip(); });
+  grid.addEventListener('click', e => { const m = e.target.closest && e.target.closest('.db-mark'); if (m) { hideTip(); tipPinned = m; showTip(m, e.clientX, e.clientY); } else if (tipPinned) hideTip(); });
+  document.addEventListener('pointerdown', e => { if (tipPinned && !e.target.closest('.db-mark')) hideTip(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !tipEl.hidden) hideTip(); });
+  addEventListener('scroll', () => { if (!tipEl.hidden) hideTip(); }, true);
   const stamp = new Date();
   const fresh = () => `<svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Data last updated: ${stamp.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}, ${stamp.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })}`;
   function drawTitle() { const d = $('db-desc'); d.textContent = data.desc || ''; d.hidden = !data.desc; }

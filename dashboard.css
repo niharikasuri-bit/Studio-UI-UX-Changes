@@ -429,3 +429,15 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 /* toolbar + handles show while focus is inside a card (keyboard): the card gets the same orange outline as on hover,
    so the tools never float on a plain card. KPI cards have only the right-edge handle (width is their only size). */
 .db-card:focus-within:not(.is-sel) { border-color: #C84C0E; box-shadow: 0 0 0 1px #C84C0E; }
+/* Chart interaction (editing and preview): hovered bar / slice / point is highlighted and a tooltip shows its name and value */
+.db-mark { cursor: pointer; transition: opacity .12s; }
+.db-mark.is-hot { opacity: .78; }
+circle.db-mark { transition: none; }
+circle.db-mark.is-hot { opacity: 1; }
+.db-pt { transition: r .12s; }
+.db-pt.is-hot { r: 6; }
+.db-tt { position: fixed; z-index: 2000; pointer-events: none; display: grid; gap: 2px; max-width: 260px; padding: 8px 12px;
+         background: #fff; border: 1px solid #D6D5D4; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,.16); font: 14px/1.37 Roboto, sans-serif; color: #363636; }
+.db-tt b { font-weight: 700; color: #0B4B66; }
+.db-tt[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { .db-mark, .db-pt { transition: none; } }

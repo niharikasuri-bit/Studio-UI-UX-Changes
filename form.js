@@ -11,12 +11,12 @@
   const TYPE_LABEL = { text: 'Text', mobile: 'Mobile', email: 'Email', dropdown: 'Dropdown', number: 'Number', document: 'Document upload',
                        docUpload: 'Document upload', docTemplate: 'Document download & upload' };
 
-  /* Section types offered in "Add Section" (copy from the Studio screenshot) */
+  /* Section types offered in "Add Section" (copy from the Studio screenshot). single = can be added once only (Custom section any number of times) */
   const SECTION_TYPES = [
     { type: 'custom', title: 'Custom section', desc: 'Configure a custom section with a heading, description, and fields as required.' },
-    { type: 'address', title: 'Address details', desc: 'Add address-related fields such as house number, street, locality, city, and pin code.' },
+    { type: 'address', title: 'Address details', desc: 'Add address-related fields such as house number, street, locality, city, and pin code.', single: true },
     { type: 'applicant', title: 'Applicant details', desc: 'Configure applicant information such as name, mobile number, email, and other personal details.', single: true },
-    { type: 'document', title: 'Document details', desc: 'Configure document upload fields to collect supporting documents from applicants.' },
+    { type: 'document', title: 'Document details', desc: 'Configure document upload fields to collect supporting documents from applicants.', single: true },
   ];
 
   const FILE_TYPES = [['pdf', 'PDF'], ['jpg', 'JPG'], ['png', 'PNG'], ['doc', 'DOC / DOCX'], ['xls', 'XLS / XLSX']];
