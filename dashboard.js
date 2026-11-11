@@ -432,8 +432,8 @@
             <rect x="18" y="74" width="7" height="14" rx="1" fill="#1A73E8"/><rect x="30" y="64" width="7" height="24" rx="1" fill="#F9AB00"/><rect x="42" y="70" width="7" height="18" rx="1" fill="#1A73E8"/>
             <path d="M48 90l0 20 5-5 4 9 4-2-4-9 7 0z" fill="#fff" stroke="#363636" stroke-width="1.5" stroke-linejoin="round"/>
           </svg>
-          <h2 class="db-empty-t">Build visualisations with your data</h2>
-          <p class="db-empty-d">Select or drag a KPI card or chart from the Visualisations panel onto the dashboard canvas.</p></div>`;
+          <h2 class="db-empty-t">Build a dashboard with your data</h2>
+          <p class="db-empty-d">Select or drag a KPI card or chart from the visualisations offered onto the dashboard canvas.</p></div>`;
     view.classList.toggle('db-is-empty', !data.widgets.length);
     drawCharts();
   }
