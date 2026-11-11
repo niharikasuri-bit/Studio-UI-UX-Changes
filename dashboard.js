@@ -630,12 +630,15 @@
   function add(type, at = data.widgets.length, preset) {
     pending = { type, at, preset, opener: document.activeElement };
     $('db-src-sel').value = lastSrc;
-    srcTitle.value = preset != null && PRESETS[+preset] ? (PRESETS[+preset][1].title || TYPES[type].name) : TYPES[type].name;
+    srcTitle.value = '';   // no default title: the user names every visualisation
     titleErr('');
     $('db-src-type').innerHTML = `<span class="db-src-ico" aria-hidden="true">${LOOK[type]}</span><span>${TYPES[type].name}</span>`;
     srcDlg.showModal(); $('db-src-sel').focus();
   }
-  srcTitle.addEventListener('input', () => { if (srcTitle.value.trim()) titleErr(''); });
+  // Titles always start with a capital letter (caret position kept)
+  const capFirst = el => { const v = el.value, i = v.search(/\S/); if (i < 0 || v[i] === v[i].toUpperCase()) return;
+    const a = el.selectionStart, b = el.selectionEnd; el.value = v.slice(0, i) + v[i].toUpperCase() + v.slice(i + 1); el.setSelectionRange(a, b); };
+  srcTitle.addEventListener('input', () => { capFirst(srcTitle); if (srcTitle.value.trim()) titleErr(''); });
   $('db-src-form').addEventListener('submit', e => {
     e.preventDefault(); const p0 = pending; if (!p0) return;
     const title = srcTitle.value.trim();
@@ -926,6 +929,7 @@
   iv.addEventListener('focusin', e => { if (e.target.matches('input[type="text"], textarea')) snap(); });
   iv.addEventListener('input', e => {
     const t = e.target, w = W(selId); if (!w || !['title', 'desc', 'xLabel', 'yLabel'].includes(t.dataset.k)) return;
+    if (t.dataset.k === 'title') capFirst(t);
     w[t.dataset.k] = t.value;
     const c = iv.querySelector(`[data-cnt="${t.dataset.k}"]`); if (c) c.innerHTML = `${t.value.length}/${LIMIT[t.dataset.k]}<span class="sr-only"> characters</span>`;
     const card = grid.querySelector(`[data-w="${w.id}"]`);
