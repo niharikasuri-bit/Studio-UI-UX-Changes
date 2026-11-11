@@ -45,7 +45,7 @@
     <main class="content nt-main">
       <div class="roles-head">
         <h1 class="page-title" id="nt-title" tabindex="-1">Notifications</h1>
-        <button type="button" class="btn btn-primary roles-new" id="nt-new" aria-haspopup="dialog">${I.plusW} Create New Notification</button>
+        <button type="button" class="btn btn-primary roles-new" id="nt-new" aria-haspopup="dialog">${I.plusW} Create Notification</button>
       </div>
       <section class="section nt-filters" aria-label="Filter notifications">
         <div class="nt-filter">
@@ -64,7 +64,7 @@
       </section>
       <div class="nt-results" id="nt-results" hidden><p class="nt-count" id="nt-count" role="status"></p></div>
       <ul class="nt-list" id="nt-list" aria-label="Notifications"></ul>
-      ${S.emptyState({ id: 'nt-empty', ctaId: 'nt-empty-new', ctaLabel: 'Create New Notification' })}
+      ${S.emptyState({ id: 'nt-empty', ctaId: 'nt-empty-new', ctaLabel: 'Create Notification' })}
     </main>
 
     <dialog class="modal ntw" id="nt-dialog" aria-labelledby="ntw-title-how">

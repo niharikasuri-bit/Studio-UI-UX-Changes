@@ -1,7 +1,7 @@
 /* ==========================================================
    Manage Documents — Studio Prototype
    Route: #/module/<id>/documents. One list per module.
-   Flow:  Create New Document → popup "How would you like to create your document?"
+   Flow:  Create Document → popup "How would you like to create your document?"
             • Predefined Document Template → full screen "Choose a document template" → template editor
               (no left panel: page preview + Document Properties with Header / Body / Footer elements)
             • Upload Your Own Design → full screen "Choose a document category" → name popup → uploader
@@ -242,7 +242,7 @@
     <main class="content nt-main">
       <div class="roles-head">
         <h1 class="page-title" id="dc-title" tabindex="-1">Documents</h1>
-        <button type="button" class="btn btn-primary roles-new" id="dc-new" aria-haspopup="dialog">${I.plusW} Create New Document</button>
+        <button type="button" class="btn btn-primary roles-new" id="dc-new" aria-haspopup="dialog">${I.plusW} Create Document</button>
       </div>
       <section class="section nt-filters" aria-label="Filter documents">
         <div class="nt-filter">
@@ -261,7 +261,7 @@
       </section>
       <div class="nt-results" id="dc-results" hidden><p class="nt-count" id="dc-count" role="status"></p></div>
       <ul class="dc-grid" id="dc-list" aria-label="Documents"></ul>
-      ${S.emptyState({ id: 'dc-empty', ctaId: 'dc-empty-new', ctaLabel: 'Create New Document' })}
+      ${S.emptyState({ id: 'dc-empty', ctaId: 'dc-empty-new', ctaLabel: 'Create Document' })}
     </main>`;
     topBack();
     $('dc-search').addEventListener('input', e => { f.q = e.target.value; renderList(); });

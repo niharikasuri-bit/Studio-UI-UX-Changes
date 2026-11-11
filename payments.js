@@ -61,7 +61,7 @@
     <main class="content nt-main">
       <div class="roles-head">
         <h1 class="page-title" id="py-title" tabindex="-1">Payment</h1>
-        <button type="button" class="btn btn-primary roles-new" id="py-new" aria-haspopup="dialog">${I.plusW} Create New Payment</button>
+        <button type="button" class="btn btn-primary roles-new" id="py-new" aria-haspopup="dialog">${I.plusW} Create Payment</button>
       </div>
       <section class="section nt-filters" aria-label="Filter payments">
         <div class="nt-filter">
@@ -80,7 +80,7 @@
       </section>
       <div class="nt-results" id="py-results" hidden><p class="nt-count" id="py-count" role="status"></p></div>
       <ul class="nt-list" id="py-list" aria-label="Payments"></ul>
-      ${S.emptyState({ id: 'py-empty', ctaId: 'py-empty-new', ctaLabel: 'Create New Payment' })}
+      ${S.emptyState({ id: 'py-empty', ctaId: 'py-empty-new', ctaLabel: 'Create Payment' })}
     </main>
 
     <dialog class="modal ntw pyw" id="py-dialog" aria-labelledby="pyw-title-after">

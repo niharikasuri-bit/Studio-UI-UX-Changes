@@ -48,7 +48,7 @@
     <main class="content nt-main">
       <div class="roles-head">
         <h1 class="page-title" id="cl-title" tabindex="-1">Checklists</h1>
-        <button type="button" class="btn btn-primary roles-new" id="cl-new" aria-haspopup="dialog">${I.plusW} Create New Checklist</button>
+        <button type="button" class="btn btn-primary roles-new" id="cl-new" aria-haspopup="dialog">${I.plusW} Create Checklist</button>
       </div>
       <section class="section nt-filters" aria-label="Filter checklists">
         <div class="nt-filter">
@@ -63,7 +63,7 @@
       </section>
       <div class="nt-results" id="cl-results" hidden><p class="nt-count" id="cl-count" role="status"></p></div>
       <ul class="nt-list" id="cl-list" aria-label="Checklists"></ul>
-      ${S.emptyState({ id: 'cl-empty', ctaId: 'cl-empty-new', ctaLabel: 'Create New Checklist' })}
+      ${S.emptyState({ id: 'cl-empty', ctaId: 'cl-empty-new', ctaLabel: 'Create Checklist' })}
     </main>
 
     <dialog class="modal ntw clw" id="cl-dialog" aria-labelledby="clw-title-how">

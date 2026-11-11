@@ -1,7 +1,7 @@
 /* ==========================================================
    Roles (Manage Roles) — Studio Prototype
    Route: #/module/<id>/roles. Roles belong to the service, so every module shares one list.
-   Citizen exists by default. "Create New Role" = the process-flow designer's popup (same copy and rules).
+   Citizen exists by default. "Create Role" = the process-flow designer's popup (same copy and rules).
    ========================================================== */
 (() => {
   const S = window.Studio, { esc } = S;
@@ -49,7 +49,7 @@
         <div class="roles-title-row">
           <h1 class="page-title" id="roles-title" tabindex="-1">Roles</h1>
         </div>
-        <button type="button" class="btn btn-primary roles-new" id="new-role-btn" aria-haspopup="dialog">${I.plusW} Create New Role</button>
+        <button type="button" class="btn btn-primary roles-new" id="new-role-btn" aria-haspopup="dialog">${I.plusW} Create Role</button>
       </div>
       <section class="section nt-filters" aria-label="Filter roles">
         <div class="nt-filter">
@@ -59,7 +59,7 @@
       </section>
       <p class="nt-count" id="role-count" role="status"></p>
       <ul class="role-grid" id="role-cards" aria-label="Roles"></ul>
-      ${S.emptyState({ id: 'roles-empty', ctaId: 're-create', ctaLabel: 'Create New Role' })}
+      ${S.emptyState({ id: 'roles-empty', ctaId: 're-create', ctaLabel: 'Create Role' })}
     </main>
 
     <dialog class="modal role-modal" id="role-dialog" aria-labelledby="role-d-title" aria-describedby="role-d-desc">
@@ -67,7 +67,7 @@
         <div class="rm-body">
           <button type="button" class="icon-btn modal-close" data-close aria-label="Close">${I.close}</button>
           <div class="modal-head">
-            <h2 class="rm-title" id="role-d-title">Create New Role</h2>
+            <h2 class="rm-title" id="role-d-title">Create Role</h2>
             <p class="rm-desc" id="role-d-desc">Choose what this role can do in the service.</p>
           </div>
           <div class="field">
@@ -129,7 +129,7 @@
   $('role-search').addEventListener('input', e => { query = e.target.value; render(); });
 
 
-  /* ---------- Create New Role popup ---------- */
+  /* ---------- Create Role popup ---------- */
   const dlg = $('role-dialog'), nameEl = $('role-name');
   const boxes = () => [...dlg.querySelectorAll('input[name="role-access"]')];
   const nameErr = msg => {
@@ -141,7 +141,7 @@
     editing = i; opener = from;
     const r = i >= 0 ? roles[i] : null, fixed = !!(r && r.fixed);
     $('role-form').reset();
-    $('role-d-title').textContent = r ? 'Edit Role' : 'Create New Role';
+    $('role-d-title').textContent = r ? 'Edit Role' : 'Create Role';
     $('role-d-desc').textContent = r ? 'Change this role’s details or what it can do in the service.' : 'Choose what this role can do in the service.';
     $('role-submit').textContent = r ? 'Save' : 'Create Role';
     nameEl.value = r ? r.name : '';
