@@ -615,7 +615,7 @@ button.dc-fcard-img:focus-visible { outline: none; box-shadow: inset 0 0 0 2px v
 .dc-resize:focus-visible { box-shadow: 0 0 0 calc(1.5px * var(--uz, 1)) #C84C0E, 0 0 0 calc(4px * var(--uz, 1)) #fff, 0 0 0 calc(6px * var(--uz, 1)) #C84C0E; }
 
 /* Zoom (same control as the process flow): − / level (select to fit) / + */
-.dc-zoom { align-self: center; display: inline-flex; align-items: center; gap: 2px; margin: 0 0 12px; padding: 2px; background: #fff; border: 1px solid #D6D5D4; border-radius: 8px; }
+.dc-zoom { position: fixed; z-index: 7; display: inline-flex; align-items: center; gap: 2px; padding: 4px; background: #fff; border: 1px solid #D6D5D4; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
 .dc-zoom .icon-btn { width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 6px; background: none; color: #C84C0E; cursor: pointer; }
 .dc-zoom .icon-btn:hover { background: #FBEEE8; color: #A33E0B; }
 .dc-zoom-l { min-width: 56px; height: 32px; border: 0; border-radius: 6px; background: none; font: inherit; font-size: 14px; font-weight: 700; color: #0B4B66; cursor: pointer; }

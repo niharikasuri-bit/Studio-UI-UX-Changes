@@ -784,6 +784,8 @@
     stage.style.height = Math.ceil(842 * k) + 'px'; stage.style.padding = '0';
     stage.style.width = k * 595 > availW ? Math.ceil(595 * k) + 'px' : ''; stage.style.overflow = 'visible';
     main.style.overflow = k > fit + 0.001 ? 'auto' : 'hidden';   // zoomed past the fit: the centre scrolls
+    // zoom control pinned to the bottom-right of the page area (same place as the process flow), also while the page scrolls
+    const zc = main.querySelector('.dc-zoom'); if (zc) { const r = main.getBoundingClientRect(); zc.style.left = (r.right - zc.offsetWidth - 16) + 'px'; zc.style.top = (r.bottom - zc.offsetHeight - 16) + 'px'; }
     const l = view.querySelector('#dc-zoom-l'); if (l) { l.textContent = W.zf ? Math.round(k * 100) + '%' : 'Fit'; l.setAttribute('aria-label', `Zoom ${Math.round(k * 100)} percent${W.zf ? '. Select to fit the page' : ', fitted to the space'}`); }
   }
   addEventListener('resize', () => fitTemplate());
