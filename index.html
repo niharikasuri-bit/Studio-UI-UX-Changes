@@ -442,10 +442,7 @@
               </svg>
             </div>
             <div class="card-foot">
-              <a class="btn btn-secondary" href="#/landing">
-                <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                Manage Content
-              </a>
+              <a class="btn btn-primary" id="cta-landing" href="#/landing">Configure Landing Page</a>
             </div>
           </article>
 
@@ -470,10 +467,7 @@
               </svg>
             </div>
             <div class="card-foot">
-              <a class="btn btn-secondary" href="#/dashboard">
-                <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                Configure Dashboard
-              </a>
+              <a class="btn btn-primary" id="cta-dashboard" href="#/dashboard">Configure Dashboard</a>
             </div>
           </article>
         </div>
@@ -922,7 +916,19 @@
 
   /* ---------- Routing: #/ = service, #/module/<id> = module ---------- */
   let started = false;
+  /* Landing page / Dashboard cards: primary "Configure …" until saved once, then secondary "Manage …" */
+  function setupCtas() {
+    const has = k => { try { return !!localStorage.getItem(k); } catch (e) { return false; } };
+    [['cta-landing', 'studio-prototype.landing.v1', 'Configure Landing Page', 'Manage Landing Page Content'],
+     ['cta-dashboard', 'studio-prototype.dashboard.v1', 'Configure Dashboard', 'Manage Dashboard']].forEach(([id, key, first, again]) => {
+      const a = $(id); if (!a) return;
+      const done = has(key);
+      a.className = 'btn ' + (done ? 'btn-secondary' : 'btn-primary');
+      a.innerHTML = `${svg(done ? 'pencil' : 'settings')} ${done ? again : first}`;
+    });
+  }
   function route() {
+    setupCtas();
     const match = location.hash.match(/^#\/module\/([^/]+)(\/process-flow|\/form|\/roles|\/notifications|\/checklists|\/payments|\/documents)?$/);
     const m = match && modules.find(x => x.id === decodeURIComponent(match[1]));
     const flow = !!(m && match[2] === '/process-flow');
