@@ -499,6 +499,9 @@
     let h = box('Title and Description',
       field('db-ttl', 'Title', `<input class="fp-input" id="db-ttl" type="text" maxlength="${LIMIT.title}" data-k="title" value="${esc(w.title)}" autocomplete="off">${cnt('title', LIMIT.title)}`)
       + field('db-dsc', 'Description', `<textarea class="fp-textarea db-ta" id="db-dsc" maxlength="${LIMIT.desc}" data-k="desc">${esc(w.desc)}</textarea>${cnt('desc', LIMIT.desc)}`));
+    // Size without dragging (WCAG 2.5.7): same options the resize handles snap to
+    h += box('Size', field('db-sz-w', 'Width', sel('db-sz-w', 'w', Object.entries(WIDTHS).map(([v, n]) => [v, n]), String(w.w)))
+      + (k !== 'kpi' ? field('db-sz-h', 'Height', sel('db-sz-h', 'h', Object.entries(HEIGHTS).map(([v, n]) => [v, n[0]]), w.h)) : ''));
     if (k === 'kpi') h += numBox(w) + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Comparison</h3>${sw('compare', w.compare, 'Comparison')}</div>
       ${w.compare ? field('db-cw', 'Compare With', sel('db-cw', 'cmpWith', [['month', 'Previous month'], ['quarter', 'Previous 3 months'], ['year', 'Same month last year']], w.cmpWith || 'month'))
         + field('db-ca', 'Show Change As', sel('db-ca', 'cmpAs', [['pct', 'Percentage'], ['num', 'Number']], w.cmpAs || 'pct'))
