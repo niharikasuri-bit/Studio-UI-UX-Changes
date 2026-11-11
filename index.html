@@ -339,14 +339,14 @@
               display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 14px; color: var(--heading); }
   .art-role-top { width: 100%; height: 52px; border-radius: 8px; display: grid; place-items: center; color: var(--heading); }
 </style>
-<link rel="stylesheet" href="form.css?v=1794405579" />
+<link rel="stylesheet" href="form.css?v=1794405805" />
 <link rel="stylesheet" href="roles.css?v=1794405579" />
 <link rel="stylesheet" href="notifications.css?v=1794405579" />
 <link rel="stylesheet" href="checklists.css?v=1794405579" />
 <link rel="stylesheet" href="payments.css?v=1794405579" />
 <link rel="stylesheet" href="documents.css?v=1794405579" />
 <link rel="stylesheet" href="landing.css?v=1794405579" />
-<link rel="stylesheet" href="dashboard.css?v=1794405579" />
+<link rel="stylesheet" href="dashboard.css?v=1794405851" />
 </head>
 <body>
 <a class="skip" href="#content">Skip to main content</a>
@@ -1014,7 +1014,7 @@
       return;
     }
     if (flow) {
-      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794405579';   // version forces a fresh copy after edits
+      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794405805';   // version forces a fresh copy after edits
       if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
       frame.title = `Process flow designer for ${m.name}`;
       document.title = `Process Flow – ${m.name} – Studio Prototype – Studio`;

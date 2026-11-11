@@ -1431,3 +1431,6 @@ button { cursor: pointer; }
 
 /* Left panel description matches the dashboard's Visualisations panel: 14px, #505A5F */
 .sidebar__head .muted { font-size: 14px; line-height: 1.37; color: #363636; }   /* on grey: #767676 would be 4.35:1 */
+
+/* Input field labels are #0B0C0C, same as Studio */
+.field > label, .field__label, .esc-fields .field > label, .digit-label, .digit-field__label, .nf-label { color: #0B0C0C; }

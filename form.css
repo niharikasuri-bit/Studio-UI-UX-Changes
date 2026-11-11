@@ -512,3 +512,8 @@
 .step-label { color: #363636; }
 .pf-prefix > span { color: #363636; }
 .fpp-box .fp-count, .lp-tc .fp-count, .fpp-box .lp-or { color: #363636; }
+
+/* Input field labels are #0B0C0C (the one place black is used); disabled labels stay #9E9E9E.
+   "body" raises priority over the page stylesheets that load after this file. */
+body :is(.pf-label, .fp-label, .fp-label label, .fpp-label, .lg-label, .rs-label, .nt-label, .dc-vd-label, .db-range-l, label.label, legend.label) { color: #0B0C0C; }
+body .fpp-box.is-disabled .fpp-label { color: #9E9E9E; }

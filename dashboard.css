@@ -95,7 +95,7 @@
 .db-sw-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; }
 .db-sw-row .fp-label { color: #363636; }
 #db-item-view .fpp-field > .fp-label { margin: 0; }
-#db-item-view .fpp-label { color: #363636; font-weight: 400; }
+#db-item-view .fpp-label { color: #0B0C0C; font-weight: 400; }
 .db-ta { min-height: 88px; }
 .db-filters { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .db-filter { display: flex; align-items: flex-end; gap: 8px; padding: 12px; background: #fff; border: 1px solid #D6D5D4; border-radius: 8px; }
