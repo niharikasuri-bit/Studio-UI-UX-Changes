@@ -422,7 +422,18 @@
   function drawGrid() {
     drawStats();
     grid.innerHTML = data.widgets.length ? data.widgets.map(cardHTML).join('')
-      : `<div class="db-empty"><p class="sr-only">The dashboard is empty. Add a visualisation from the Visualisations panel.</p></div>`;
+      : `<div class="db-empty"><svg class="db-empty-art" aria-hidden="true" focusable="false" width="220" height="120" viewBox="0 0 220 120" fill="none">
+            <rect x="96" y="14" width="56" height="36" rx="4" stroke="#B1B4B6" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <rect x="158" y="14" width="56" height="36" rx="4" stroke="#B1B4B6" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <rect x="96" y="58" width="118" height="54" rx="4" stroke="#B1B4B6" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <path d="M58 52c14-18 26-24 40-22" stroke="#C84C0E" stroke-width="1.5" stroke-dasharray="3 3" stroke-linecap="round"/>
+            <path d="M93 25l6 5-7 3" stroke="#C84C0E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="6" y="50" width="56" height="48" rx="6" fill="#fff" stroke="#C84C0E" stroke-width="2"/>
+            <rect x="18" y="74" width="7" height="14" rx="1" fill="#1A73E8"/><rect x="30" y="64" width="7" height="24" rx="1" fill="#F9AB00"/><rect x="42" y="70" width="7" height="18" rx="1" fill="#1A73E8"/>
+            <path d="M48 90l0 20 5-5 4 9 4-2-4-9 7 0z" fill="#fff" stroke="#363636" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          <p class="db-empty-t">Drag and drop visualisations here</p>
+          <p class="db-empty-d">Or click one in the Visualisations panel to add it.</p></div>`;
     view.classList.toggle('db-is-empty', !data.widgets.length);
     drawCharts();
   }

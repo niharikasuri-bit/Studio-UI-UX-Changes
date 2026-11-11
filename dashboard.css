@@ -81,7 +81,11 @@
 .db-sw { width: 12px; height: 12px; border-radius: 3px; flex: none; }
 
 /* Empty dashboard: plain empty canvas, no right panel until something is added */
-.db-empty { grid-column: 1 / -1; }
+.db-empty { grid-column: 1 / -1; min-height: calc(100vh - 360px); display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; padding: 32px 16px; text-align: center; border: 2px dashed #C9C9C9; border-radius: 12px; background: rgba(255, 255, 255, .5); }
+.db-empty-art { margin-bottom: 12px; }
+.db-empty-t { margin: 0; font-size: 16px; font-weight: 700; color: #0B4B66; }
+.db-empty-d { margin: 0; font-size: 14px; color: #767676; }
 
 /* Right panel */
 .db-item .lp-fc-open { align-items: flex-start; }
