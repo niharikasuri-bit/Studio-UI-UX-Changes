@@ -145,7 +145,7 @@
     // beside the title (full column height) when there is room to its right; otherwise under the title
     const rg = document.createRange(); rg.selectNodeContents(title);
     const titleR = rg.getBoundingClientRect().right - main.getBoundingClientRect().left;
-    const gap = 24, fitsBeside = M - titleR - gap - 32 >= PW;
+    const gap = 24, fitsBeside = false;   // phone always sits under the title, never level with it
     const shift = fitsBeside && M / 2 - PW / 2 < titleR + gap ? (titleR + gap + (M - titleR - gap - 32 - PW) / 2) - (M / 2 - PW / 2) : 0;
     st.style.paddingLeft = shift > 0 ? 2 * shift + 'px' : '';
     main.classList.toggle('lp-tall', fitsBeside);
