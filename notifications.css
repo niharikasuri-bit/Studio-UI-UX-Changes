@@ -94,7 +94,7 @@
 .ntw-pcheck { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #C5C5C5; flex: none; }
 .ntw-pcard:has(input:checked) .ntw-pcheck { border-color: var(--primary); background: var(--primary)
   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4L18 8'/%3E%3C/svg%3E") center / 14px no-repeat; }
-.ntw-none { margin-top: 16px; padding: 16px; text-align: center; font-size: 14px; color: #767676; background: #FAFAFA; border: 1px dashed #D6D5D4; border-radius: 8px; }
+.ntw-none { margin-top: 16px; padding: 16px; text-align: center; font-size: 14px; color: #363636; background: #FAFAFA; border: 1px dashed #D6D5D4; border-radius: 8px; }
 
 .ntw-head { position: sticky; top: -24px; z-index: 2; margin: 0 -24px; padding: 0 64px 12px 24px; background: #fff; display: flex; flex-direction: column; gap: 8px; }
 .ntw-name-row { display: flex; align-items: center; gap: 8px; }
@@ -112,7 +112,7 @@
 .ntw-label { min-height: 40px; display: flex; align-items: center; font-size: 16px; font-weight: 700; color: #0B4B66; }
 .ntw-control { display: grid; gap: 4px; min-width: 0; }
 .ntw .input { height: 40px; border: 1px solid #767676; border-radius: 4px; font: 400 16px/24px Roboto, sans-serif; padding: 0 12px; }
-.ntw .input:focus-visible { outline: none; box-shadow: none; border: 1.5px solid var(--primary); }
+.ntw .input:focus-visible { outline: none; border-color: var(--primary); box-shadow: var(--focus-ring); }
 .ntw .input[aria-invalid="true"] { border: 1.5px solid #B91900; }
 .ntw textarea.input { height: 120px; padding: 8px 12px; resize: vertical; }
 .ntw select.input { appearance: none; -webkit-appearance: none; padding-right: 40px;
@@ -141,7 +141,7 @@
 .ntw-name-row { gap: 4px; }
 .ntw-name { line-height: 1.25; }
 .ntw .ntw-name-in { height: 48px; padding: 0 8px; border: 1px solid #5E5E5E; border-radius: 4px; font: 700 32px/1.25 Roboto, sans-serif; color: #0B4B66; }
-.ntw .ntw-name-in:focus-visible { outline: none; border: 1.5px solid var(--primary); box-shadow: none; }
+.ntw .ntw-name-in:focus-visible { outline: none; border-color: var(--primary); box-shadow: var(--focus-ring); }
 
 /* Pencil buttons everywhere: 32px target, orange #C84C0E (4.6:1 on white), tint on hover, double focus ring */
 .ntw-rename, .role-edit, .dl-btn { width: 32px; height: 32px; border-radius: 4px; color: #C84C0E; display: inline-grid; place-items: center; }
@@ -226,3 +226,8 @@
 
 /* selected tile has the orange tint: secondary grey would be 4.33:1 there */
 .ntw-tile:has(input:checked) .ntw-tile-text { color: #363636; }
+
+/* grey boxes: counters in primary text (#767676 is 4.35:1 on #FAFAFA) */
+.ntw-box .fp-count { color: #363636; }
+/* variable chips on the type scale */
+.var-chip { font-size: 14px; }

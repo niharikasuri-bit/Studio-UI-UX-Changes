@@ -20,7 +20,7 @@
 
 /* ---------- Choose a document template / category ---------- */
 .dc-choose { padding-bottom: 32px; }
-.dc-ch-desc { margin-top: -16px; font-size: 16px; line-height: var(--lh-body); color: #767676; }
+.dc-ch-desc { margin-top: -16px; font-size: 16px; line-height: var(--lh-body); color: #363636; }   /* on #EEEEEE: #767676 was 3.9:1 */
 .dc-tpl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 .dc-tpl { position: relative; display: flex; flex-direction: column; overflow: hidden; cursor: pointer;
           background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
@@ -31,8 +31,8 @@
 .dc-tpl-thumb { height: 220px; display: flex; justify-content: center; overflow: hidden; padding-top: 16px; background: #FAFAFA; border-bottom: 1px solid var(--border); }
 .dc-tpl-thumb .dc-scale { transform: scale(.32); }
 .dc-tpl-text { display: flex; flex-direction: column; gap: 6px; padding: 16px; }
-.dc-tpl-title { font-size: 18px; line-height: 1.3; font-weight: 700; color: var(--heading); }
-.dc-tpl-desc { font-size: 14px; line-height: 1.4; color: #767676; }
+.dc-tpl-title { font-size: 20px; line-height: 1.3; font-weight: 700; color: var(--heading); }
+.dc-tpl-desc { font-size: 14px; line-height: 1.4; color: #363636; }   /* tinted card: #767676 was 4.33:1 */
 .dc-tpl-check { position: absolute; top: 12px; right: 12px; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #767676; background: #fff; }
 .dc-tpl:has(input:checked) .dc-tpl-check { border-color: var(--primary); background: var(--primary) center / 14px no-repeat
   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }

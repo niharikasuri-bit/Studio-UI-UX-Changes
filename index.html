@@ -82,7 +82,7 @@
     font-size: var(--buttonS); font-weight: 700; line-height: 1; white-space: nowrap;
   }
   .btn-secondary { background: var(--surface); color: var(--primary); border: 1px solid var(--primary); }
-  .btn-secondary:hover { background: var(--primary-tint); }
+  .btn-secondary:hover { background: var(--primary-tint); color: #A33E0B; border-color: #A33E0B; }   /* #C84C0E on the tint is 4.11:1 */
   .btn-primary { background: var(--primary); color: #fff; border: 1px solid var(--primary); }
   .btn-primary:hover { background: #A63E0B; }
   .btn:focus-visible, .side-btn:focus-visible, .add-card:focus-visible { outline: 2px solid var(--heading); outline-offset: 2px; }
@@ -246,7 +246,7 @@
   .module-tab:hover { background: #FBEEE8; color: #A33E0B; }   /* orange tint hover; #A33E0B on #FBEEE8 = 5.7:1 (AA) */
   .module-tab[aria-selected="true"]:hover { background: var(--primary); color: #fff; }
   .module-tab[aria-selected="true"] { background: var(--primary); color: #fff; font-weight: 700; }
-  .module-tab:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--heading), inset 0 0 0 4px #fff; }
+  .module-tab:focus-visible { outline: none; position: relative; z-index: 1; box-shadow: var(--focus-ring); }   /* the inset blue ring was under 3:1 on the orange selected tab */
 
   /* Activation state accordion (non-primary modules only).
      A labelled "View details / Hide details" button (aria-expanded) opens it,
@@ -300,7 +300,7 @@
   .state-box .tags { margin-top: 8px; }
   .state-box .state-empty { margin-top: 4px; }
   .state-box .btn-link { margin: -4px -4px -4px 0; }   /* 32px target kept, but it no longer adds height to the title row */
-  .state-empty { font-size: var(--bodyS); line-height: var(--lh-body); color: var(--text-muted); }
+  .state-empty { font-size: var(--bodyS); line-height: var(--lh-body); color: #363636; }   /* on grey: #767676 was 4.35:1 */
   /* Link-style action in primary orange, bold + underlined, on the #FAFAFA state box.
      #C84C0E on #FAFAFA is 4.47:1 (just under AA), so the link uses #C04A0D = 4.76:1 — visually the same orange. */
   .btn-link { height: 32px; padding: 0 4px; border: 0; background: none; border-radius: var(--radius-btn); color: #A33E0B;
@@ -339,14 +339,14 @@
               display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 14px; color: var(--heading); }
   .art-role-top { width: 100%; height: 52px; border-radius: 8px; display: grid; place-items: center; color: var(--heading); }
 </style>
-<link rel="stylesheet" href="form.css?v=1794406198" />
-<link rel="stylesheet" href="roles.css?v=1794406604" />
-<link rel="stylesheet" href="notifications.css?v=1794406604" />
-<link rel="stylesheet" href="checklists.css?v=1794406198" />
-<link rel="stylesheet" href="payments.css?v=1794406198" />
-<link rel="stylesheet" href="documents.css?v=1794406529" />
-<link rel="stylesheet" href="landing.css?v=1794406198" />
-<link rel="stylesheet" href="dashboard.css?v=1794407688" />
+<link rel="stylesheet" href="form.css?v=1794407814" />
+<link rel="stylesheet" href="roles.css?v=1794407814" />
+<link rel="stylesheet" href="notifications.css?v=1794407814" />
+<link rel="stylesheet" href="checklists.css?v=1794407814" />
+<link rel="stylesheet" href="payments.css?v=1794407814" />
+<link rel="stylesheet" href="documents.css?v=1794407814" />
+<link rel="stylesheet" href="landing.css?v=1794407814" />
+<link rel="stylesheet" href="dashboard.css?v=1794407814" />
 </head>
 <body>
 <a class="skip" href="#content">Skip to main content</a>
@@ -1014,7 +1014,7 @@
       return;
     }
     if (flow) {
-      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794406198';   // version forces a fresh copy after edits
+      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794407814';   // version forces a fresh copy after edits
       if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
       frame.title = `Process flow designer for ${m.name}`;
       document.title = `Process Flow – ${m.name} – Studio Prototype – Studio`;
@@ -1143,14 +1143,14 @@
   route();
 })();
 </script>
-<script src="roles.js?v=1794406749"></script>
-<script src="notifications.js?v=1794406198"></script>
-<script src="checklists.js?v=1794406198"></script>
-<script src="payments.js?v=1794406198"></script>
-<script src="documents.js?v=1794406198"></script>
-<script src="landing.js?v=1794406198"></script>
-<script src="dashboard.js?v=1794407643"></script>
-<script src="form.js?v=1794406198"></script>
+<script src="roles.js?v=1794407814"></script>
+<script src="notifications.js?v=1794407814"></script>
+<script src="checklists.js?v=1794407814"></script>
+<script src="payments.js?v=1794407814"></script>
+<script src="documents.js?v=1794407814"></script>
+<script src="landing.js?v=1794407814"></script>
+<script src="dashboard.js?v=1794407814"></script>
+<script src="form.js?v=1794407814"></script>
 
 </body>
 </html>

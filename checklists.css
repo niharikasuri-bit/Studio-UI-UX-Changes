@@ -46,7 +46,7 @@
 .cl-opt__input { flex: 1; min-width: 0; height: 36px; padding: 0 8px; border: 1px solid transparent; border-radius: 4px; background: none; font: inherit; font-size: 16px; color: #363636; }
 .cl-opt__input::placeholder { color: #767676; }
 .cl-opt__input:hover { border-color: #D6D5D4; }
-.cl-opt__input:focus { border-color: #C84C0E; outline: none; box-shadow: none; }
+.cl-opt__input:focus-visible { border-color: #C84C0E; outline: none; box-shadow: var(--focus-ring); }
 .cl-nested { display: inline-flex; align-items: center; gap: 2px; flex: none; }
 .cl-opt__delete { width: 32px; height: 32px; flex: none; color: #767676; }
 .cl-link { display: inline-flex; align-items: center; gap: 6px; justify-self: start; min-height: 32px; padding: 2px 0; border: 0; background: none; cursor: pointer;
