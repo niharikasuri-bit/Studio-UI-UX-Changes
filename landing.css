@@ -1,0 +1,216 @@
+/* ==========================================================
+   Service Landing Page — reuses form.css (editor frame, panel, switch) and documents.css (inner cards, popups)
+   ========================================================== */
+.lp-body { grid-template-columns: minmax(0, 1fr) 380px; }
+.lp-main { display: flex; flex-direction: column; }
+.lp-head { margin-bottom: 16px; }
+.lp-head .page-title { margin: 0; }
+.lp-desc { margin-top: 4px; font-size: 16px; color: #505A5F; }
+.lp-stage { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 8px 0 24px; }
+
+/* Phone frame */
+.lp-phone { position: relative; width: 300px; height: 600px; flex: none; padding: 14px 12px; border-radius: 40px; background: #1F1F1F;
+            box-shadow: 0 12px 32px rgba(0,0,0,.22), inset 0 0 0 2px #3A3A3A; }
+.lp-notch { position: absolute; top: 6px; left: 50%; width: 90px; height: 6px; margin-left: -45px; border-radius: 3px; background: #3A3A3A; }
+.lp-screen { height: 100%; overflow-y: auto; border-radius: 28px; background: #EEEEEE; font-family: Roboto, sans-serif; scrollbar-width: thin; }
+.lp-top { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px; background: #fff;
+          box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.lp-burger { width: 16px; height: 2px; background: #0B0C0C; box-shadow: 0 -5px 0 #0B0C0C, 0 5px 0 #0B0C0C; }
+.lp-logo { font-size: 14px; font-weight: 900; letter-spacing: .06em; color: #0B0C0C; }
+.lp-sep { width: 1px; height: 16px; background: #B1B4B6; }
+.lp-city { font-size: 12px; color: #505A5F; }
+.lp-hero { padding: 18px 16px 20px; background: #0B4B66; color: #fff; }
+.lp-hero-t { font-size: 24px; line-height: 1.2; font-weight: 700; }
+.lp-hero-d { margin-top: 8px; font-size: 13px; line-height: 1.45; font-weight: 500; color: #fff; }
+.lp-content { padding: 14px 12px 20px; display: flex; flex-direction: column; gap: 12px; }
+.lp-h { font-size: 15px; color: #0B4B66; }
+.lp-h b { font-weight: 700; }
+.lp-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.lp-tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 74px; padding: 10px 6px;
+           background: #fff; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.1); color: #C84C0E; text-align: center; }
+.lp-tile span { font-size: 13px; font-weight: 700; color: #C84C0E; }
+.lp-faqs { display: flex; flex-direction: column; gap: 8px; }
+.lp-faq { background: #fff; border: 1px solid #D6D5D4; border-radius: 4px; }
+.lp-faq-q { width: 100%; min-height: 40px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px;
+            border: 0; background: none; font: inherit; font-size: 13px; font-weight: 500; color: #0B0C0C; text-align: left; cursor: pointer; }
+.lp-chev { display: grid; color: #505A5F; transition: transform .15s; }
+.lp-faq.is-open .lp-chev { transform: rotate(90deg); }
+.lp-faq-q:focus-visible { outline: none; box-shadow: inset 0 0 0 2px #0B4B66; border-radius: 4px; }
+.lp-faq-a { padding: 0 10px 10px; font-size: 12px; line-height: 1.45; color: #363636; }
+.lp-empty { padding: 24px 8px; font-size: 13px; color: #505A5F; text-align: center; }
+
+/* Right panel bits */
+.lp-textarea { min-height: 88px; resize: vertical; line-height: 1.4; padding: 8px 12px; }
+textarea.input.lp-textarea { height: auto; }
+.lp-item { padding: 0 4px 0 12px; }
+.lp-item-t { flex: 1; min-width: 0; min-height: 40px; display: flex; align-items: center; font-size: 14px; color: #505A5F;
+             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lp-item .dc-uv-del { flex: none; width: 32px; height: 32px; color: var(--primary); border-radius: 4px; }
+.lp-item .dc-uv-del:hover { background: var(--primary-tint); }
+.lp-faq-dlg { width: min(560px, calc(100vw - 32px)); }
+
+@media (max-width: 1099px) {
+  #view-landing.form-view { height: auto; overflow: visible; }
+  .lp-body { grid-template-columns: 1fr; }
+}
+/* Phone fits the space under the title (no scrolling in the centre); the screen inside scrolls like a real phone */
+@media (min-width: 1100px) {
+  .lp-main { overflow: hidden; }
+  .lp-phone { height: min(620px, calc(100vh - 64px - 56px - 72px - 140px)); width: auto; aspect-ratio: 300 / 600; min-height: 420px; }
+}
+#lp-h-desc { min-height: 112px; }
+
+/* Phone: real phone proportions (≈ 9 : 19), as tall as the space allows */
+@media (min-width: 1100px) {
+  .lp-phone { height: min(720px, calc(100vh - 64px - 56px - 72px - 96px)); width: auto; aspect-ratio: 9 / 18.5; min-height: 460px; }
+}
+#lp-q-view[hidden], #lp-list-view[hidden] { display: none; }
+
+/* Phone quick-action tiles are buttons (open the action's properties) */
+button.lp-tile { border: 0; font: inherit; cursor: pointer; }
+button.lp-tile:hover { box-shadow: 0 0 0 1.5px #C84C0E; }
+button.lp-tile:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #0B4B66; }
+.lp-item .dc-uv-open { min-height: 40px; }
+
+/* ===== Phone v2 (reference): slim black bezel, camera dot, dark-blue app header, rounded screen, hidden scrollbar ===== */
+.lp-phone { padding: 12px 10px 14px; border-radius: 42px; background: #121212;
+            box-shadow: 0 0 0 1px #2B2B2B, 0 18px 40px rgba(0,0,0,.25), inset 0 0 0 1px #3A3A3A; }
+.lp-phone::before, .lp-phone::after { content: ""; position: absolute; right: -3px; width: 3px; border-radius: 0 2px 2px 0; background: #2B2B2B; }
+.lp-phone::before { top: 110px; height: 56px; }      /* side buttons */
+.lp-phone::after { top: 180px; height: 36px; }
+.lp-notch { display: none; }
+.lp-cam { position: absolute; top: 4px; left: 50%; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #2F2F2F; box-shadow: inset 0 0 0 1px #444; }
+.lp-screen { border-radius: 30px; background: #F0F0F0; scrollbar-width: none; }
+.lp-screen::-webkit-scrollbar { display: none; }
+.lp-top { height: 48px; padding: 0 14px; gap: 10px; background: #0B4B66; box-shadow: none; }
+.lp-top .lp-burger { width: 16px; height: 2px; background: #fff; box-shadow: 0 -5px 0 #fff, 0 5px 0 #fff; }
+.lp-mark { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; font-weight: 900; letter-spacing: .08em; color: #fff; }
+.lp-bell { margin-left: auto; display: grid; }
+.lp-hero { border-top: 1px solid rgba(255,255,255,.14); padding: 16px 16px 22px; }
+.lp-content { padding: 16px 12px 24px; }
+.lp-tile { border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.lp-faq { border-radius: 8px; border-color: #E0E0E0; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+
+/* Phone hero is clickable (opens Hero Banner properties) */
+.lp-hero[data-phero] { cursor: pointer; }
+.lp-hero[data-phero]:hover { box-shadow: inset 0 0 0 2px #C84C0E; }
+
+/* v5: light DIGIT header, a little wider phone, orange selection */
+.lp-top { background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.lp-top .lp-burger { background: #0B0C0C; box-shadow: 0 -5px 0 #0B0C0C, 0 5px 0 #0B0C0C; }
+.lp-mark { color: #0B0C0C; }
+.lp-hero { border-top: 0; }
+@media (min-width: 1100px) { .lp-phone { aspect-ratio: 10 / 18.5; } }
+.lp-hero.is-sel { box-shadow: inset 0 0 0 3px #C84C0E; }
+button.lp-tile.is-sel { box-shadow: 0 0 0 2px #C84C0E; background: #FBEEE8; }
+.lp-faq.is-sel { border-color: #C84C0E; box-shadow: 0 0 0 1px #C84C0E; }
+#lp-q-view .fp-section { padding: 20px 24px; }
+#lp-h-desc { min-height: 112px; }
+
+/* v6: panel sections like the process-flow inspector — title + ⓘ, full-width dividers */
+.lp-psec { display: grid; gap: 10px; padding: 18px 24px; }
+.lp-psec + .lp-psec { border-top: 1px solid #D6D5D4; }
+.lp-psec-head { display: flex; align-items: center; gap: 4px; }
+.lp-psec-title { font-size: 16px; line-height: 1.37; font-weight: 700; color: #0B4B66; }
+.lp-psec-head .switch { margin-left: auto; }
+
+/* v7: hero fields inline (form section-properties style); secondary containers like the process-flow toggle card */
+.lp-psec { gap: 12px; }
+.lp-psec .fp-field + .fp-field { margin-top: 4px; }
+.lp-tcard { display: grid; gap: 14px; padding: 14px 16px 16px; background: #FAFAFA; border: 1px solid #D6D5D4; border-radius: 12px; }
+.lp-tcard-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.lp-tcard-title { margin: 0; font-size: 14px; font-weight: 700; color: #5E5E5E; }
+.lp-tcard.is-on .lp-tcard-title { color: #0B4B66; }
+.lp-icard { display: grid; gap: 12px; padding: 14px; background: #fff; border: 1px solid #D6D5D4; border-radius: 10px; }
+.lp-tcard .dc-uv-item { background: #fff; }
+
+/* v8: Page Properties = the form builder's section properties (fp-section blocks, fp-subtitle, field cards) */
+.lp-fc { align-items: center; padding: 0; }
+.lp-fc-open { flex: 1; min-width: 0; min-height: 46px; display: flex; align-items: center; padding: 12px; border: 0; background: none;
+              font: inherit; text-align: left; cursor: pointer; border-radius: 8px; }
+.lp-fc-open:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.lp-fc:has(.lp-fc-open):hover { border-color: var(--primary); background: #FFF8F5; }
+.lp-fc .field-actions { padding-right: 12px; align-items: center; }
+.lp-fc .field-actions .del-btn { margin: 0 -6px 0 0; }
+.lp-fc-sw { padding: 12px; }
+.lp-fc-sw .field-actions { padding-right: 0; }
+#lp-props .fp-subtitle { margin: 0; }
+
+/* v9: process-flow colours — grey toggle card → white inner card → grey rows (measured from the process-flow inspector) */
+.lp-fc .field-name { color: #0B4B66; }                       /* quick action cards: process-flow card title colour */
+.lp-tc { display: grid; gap: 14px; padding: 14px 16px 16px; background: #FAFAFA; border: 1px solid #D6D5D4; border-radius: 12px; }
+.lp-tc-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.lp-tc-title { margin: 0; font-size: 14px; font-weight: 700; color: #5E5E5E; }
+.lp-tc.is-on .lp-tc-title { color: #0B4B66; }
+.lp-ic { display: grid; gap: 12px; padding: 14px; background: #fff; border: 1px solid #D6D5D4; border-radius: 10px; }
+.lp-ll { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.lp-li { display: flex; align-items: center; gap: 2px; min-height: 44px; padding: 4px 4px 4px 12px; background: #FAFAFA; border: 1px solid #D6D5D4; border-radius: 8px; }
+.lp-li:hover { border-color: #C84C0E; background: #FFF8F5; }
+.lp-li-open { flex: 1; min-width: 0; min-height: 34px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; color: #505A5F;
+              text-align: left; cursor: pointer; }
+.lp-li-open:focus-visible, .lp-li-btn:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
+.lp-li-btn { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border: 0; border-radius: 4px; background: none; color: #C84C0E; cursor: pointer; }
+.lp-li-btn:hover { background: var(--primary-tint); }
+.lp-ic-add { width: 100%; height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+
+/* v10: FAQ rows sit straight in the grey card, so they are white (process-flow inner-card--muted rows) */
+.lp-tc .lp-li { background: #fff; }
+.lp-tc .lp-li:hover { background: #FFF8F5; }
+
+/* v11: quick action names in the properties panel are #767676 */
+.lp-fc .field-name { color: #767676; }
+
+/* v12: description at the top of the FAQ view (fp-section has its own padding) */
+#lp-q-view .fp-section > .fpp-intro { position: static; margin: 0; padding: 0; }
+
+
+
+/* v17: Page Properties = Hero Banner card, Quick Actions card (open their properties), then FAQ */
+.lp-fc-open { justify-content: space-between; gap: 8px; }
+.lp-fc-chev { display: grid; color: #767676; }
+.lp-title-tip { display: inline-flex; align-items: center; gap: 4px; }
+.lp-title-tip .tip-btn { color: inherit; }
+#lp-q-view .fpp-field > .fp-label { margin-bottom: 0; }
+#lp-q-view .fpp-field > .fp-label .fpp-label { margin: 0; }
+
+/* v18: Page Properties — no divider between the cards and the FAQ card, one continuous list */
+#lp-props .fp-section + .fp-section { border-top: 0; padding-top: 0; }
+#lp-props .fp-section:first-child { padding-bottom: 8px; }   /* same 8px gap as between the cards */
+/* v19: card titles in Page Properties are 16px */
+#lp-props .lp-fc .field-name, #lp-props .lp-tc-title { font-size: 16px; }
+/* v20: Page Properties card titles in primary blue; FAQ's #767676 when switched off */
+#lp-props .lp-fc .field-name, #lp-props .lp-tc.is-on .lp-tc-title { color: #0B4B66; }
+#lp-props .lp-tc:not(.is-on) .lp-tc-title { color: #767676; }
+/* v21: the Quick Actions section on the phone is selectable as a whole */
+.lp-qa-sec { display: flex; flex-direction: column; gap: 12px; margin: -6px; padding: 6px; border-radius: 10px; cursor: pointer; }
+.lp-qa-sec:hover { box-shadow: inset 0 0 0 2px #C84C0E; }
+.lp-qa-sec.is-sel { box-shadow: inset 0 0 0 2px #C84C0E; background: #FFF8F5; }
+/* v22: selection = section stroke only — no tint, no single card / question highlight */
+.lp-sec { display: flex; flex-direction: column; gap: 12px; margin: -6px; padding: 6px; border-radius: 10px; }
+.lp-sec.is-sel, .lp-qa-sec.is-sel { box-shadow: inset 0 0 0 2px #C84C0E; background: none; }
+button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff; }
+.lp-faq.is-sel { border-color: #E0E0E0; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+/* v23: one hover + selection style for all three phone sections — 2px orange stroke, no tint */
+.lp-hero[data-phero], .lp-qa-sec, .lp-fq-sec { cursor: pointer; }
+.lp-hero[data-phero]:hover, .lp-hero.is-sel,
+.lp-qa-sec:hover, .lp-qa-sec.is-sel,
+.lp-fq-sec:hover, .lp-fq-sec.is-sel { box-shadow: inset 0 0 0 2px #C84C0E; background-color: transparent; }
+.lp-hero[data-phero]:hover, .lp-hero.is-sel { background-color: #0B4B66; }
+/* v24: section hover / selection outline has square corners */
+.lp-sec, .lp-qa-sec, .lp-fq-sec { border-radius: 0; }
+/* v25: FAQ container uses the same card as Hero Banner / Quick Actions (radius 8, 12px side padding, 48px tall when off) */
+#lp-props .lp-tc { padding: 11px 12px; border-radius: 8px; gap: 12px; }
+#lp-props .lp-tc.is-on { padding-bottom: 12px; }
+#lp-props .lp-tc .lp-li { border-radius: 8px; }
+/* v26: Hero Banner background image — upload or link (Studio Branding pattern) */
+.lp-hero.has-bg { background-size: cover; background-position: center; }
+.lp-bg-tile { padding: 8px 44px 8px 8px; }
+.lp-bg-tile img { width: 100%; max-height: 120px; object-fit: cover; border-radius: 6px; }
+.dc-logo-drop.is-disabled { opacity: .55; background: #F5F5F5; }
+.lp-or { display: flex; align-items: center; gap: 12px; margin: 0; font-size: 14px; color: #505A5F; }
+.lp-or::before, .lp-or::after { content: ''; flex: 1; height: 1px; background: #D6D5D4; }
+.lp-off-hint { margin: 4px 0 0; font-size: 14px; color: #505A5F; }
+#lp-q-view .fpp-field > p.fpp-label { margin: 0; }
+/* Add FAQ popup: error left, count right */
+#lp-faq-form .fp-meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 4px; }
+#lp-faq-form .fp-meta .error { margin: 0; }

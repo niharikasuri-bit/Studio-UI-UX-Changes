@@ -1,0 +1,165 @@
+/* Roles (Manage Roles) */
+.roles-view { display: flex; flex-direction: column; min-height: calc(100vh - 64px); }
+.roles-main { padding-bottom: 48px; }
+/* Roles page (user's screenshot): title + primary button, search, card grid */
+.roles-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+/* page title uses the same headingXl (40px desktop) as Studio Prototype and the form builder */
+.roles-new { height: 40px; padding: 0 20px; font-size: var(--buttonM); }
+.roles-search { position: relative; width: min(360px, 100%); }
+.roles-search .input { padding-left: 36px; height: 40px; }
+.roles-search .input::placeholder { color: #6B6B6B; }
+.rs-ico { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #505A5F; display: grid; }
+.role-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 340px)); gap: 24px; }
+.role-tile { background: #fff; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 8px;
+             box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.08); }
+.rt-pic { height: 88px; border-radius: 8px; display: grid; place-items: center; color: #9E9E9E; margin-bottom: 8px; }
+.rt-name { font-size: 18px; line-height: var(--lh-heading); font-weight: 700; color: var(--heading); overflow-wrap: anywhere; }
+.rt-desc { font-size: 14px; line-height: var(--lh-body); color: #505A5F; }
+.rt-tags { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.rt-tag { padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; line-height: 1.3; }
+.rt-create { background: #EAF2FC; color: #0B4B66; }   /* 8.3:1 */
+.rt-edit { background: #FDF0E9; color: #9A3A0A; }     /* 6.5:1 */
+.rt-view { background: #E6F6FA; color: #0B4B66; }     /* 8.4:1 */
+
+/* Create New Role popup — copy of the process-flow designer's role popup */
+.modal.role-modal { width: min(640px, calc(100vw - 32px)); }
+.rm-body { position: relative; padding: 24px; display: flex; flex-direction: column; gap: 20px; max-height: calc(100vh - 140px); overflow-y: auto; }
+.rm-title { font-size: 24px; line-height: 1.3; font-weight: 700; color: var(--heading); padding-right: 32px; }
+.rm-desc { margin-top: 4px; font-size: 16px; line-height: 1.5; color: #505A5F; }
+.rm-access { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.rm-access legend { padding: 0; margin-bottom: 12px; }
+.rm-card { position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: #FAFAFA; border: 1px solid var(--border);
+           border-radius: 8px; cursor: pointer; transition: border-color .15s, background .15s; }
+.rm-card:hover { border-color: #505A5F; }
+.rm-card:has(input:checked) { border-color: var(--primary); background: #FFF8F5; }
+.rm-card:has(input:focus-visible) { box-shadow: var(--focus-ring); }
+.rm-card input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.rm-box { width: 20px; height: 20px; margin-top: 1px; flex: none; border: 1.5px solid #505A5F; border-radius: 3px; background: #fff center / 14px 14px no-repeat; }
+.rm-card input:checked + .rm-box { border-color: var(--primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C84C0E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
+.rm-label { display: block; font-size: 14px; font-weight: 700; color: var(--heading); }
+.rm-text { display: block; margin-top: 4px; font-size: 13px; line-height: 1.4; color: #505A5F; }
+.rm-foot { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px 24px; border-top: 1px solid var(--divider); }
+.rm-foot .btn { height: 40px; min-width: 132px; font-size: var(--buttonM); }
+@media (forced-colors: active) { .rm-card input { position: static; opacity: 1; width: auto; height: auto; } .rm-box { display: none; } }
+.roles-main .form-head { max-width: none; margin-bottom: 0; }   /* Create New Role lines up with the container edge */
+
+/* Create New Role — exact process-flow popup styling:
+   12px radius · 24px title #0B4B66 · 16px description #5E5E5E · DIGIT input (40px, #767676 border, 16px, orange 1.5px focus)
+   · 16px label #363636 · legend 16px bold #0B4B66 · cards #FAFAFA, 14px bold #0B4B66 label, 13px #5E5E5E text
+   · 12px error · footer #FAFAFA with 14px/500 40px buttons */
+.modal.role-modal { border-radius: 12px; color: #363636; font-size: 14px; }
+.role-modal .rm-body { padding: 24px 24px 20px; gap: 16px; }
+.role-modal .rm-title { font-size: 24px; line-height: 1.3; font-weight: 700; color: #0B4B66; }
+.role-modal .rm-desc { margin-top: 4px; font-size: 16px; line-height: 1.5; color: #5E5E5E; }
+.role-modal .field { gap: 4px; }
+.role-modal .label { font-size: 16px; font-weight: 400; color: #363636; line-height: 1.5; }
+.role-modal .input { height: 40px; padding: 0 12px; border: 1px solid #767676; border-radius: 4px; font: 400 16px/24px Roboto, sans-serif; color: #363636; }
+.role-modal .input::placeholder { color: #5E5E5E; }
+.role-modal .input:hover { border-color: #767676; }
+.role-modal .input:focus, .role-modal .input:focus-visible { outline: none; box-shadow: none; border: 1.5px solid #C84C0E; }
+.role-modal .input[aria-invalid="true"] { border: 1.5px solid #B91900; }
+.role-modal .error { font-size: 12px; font-weight: 500; color: #B91900; }
+.role-modal .rm-access { margin-top: 8px; gap: 12px; }
+.role-modal .rm-access legend { margin-bottom: 12px; font-size: 16px; font-weight: 700; color: #0B4B66; }
+.role-modal .rm-card { padding: 16px; background: #FAFAFA; border-color: #D6D5D4; }
+.role-modal .rm-card:hover { border-color: #5E5E5E; }
+.role-modal .rm-card:has(input:checked) { border-color: #C84C0E; background: #FFF8F5; }
+.role-modal .rm-label { font-size: 14px; font-weight: 700; color: #0B4B66; }
+.role-modal .rm-text { margin-top: 4px; font-size: 13px; color: #5E5E5E; line-height: 1.4; }
+.role-modal .rm-foot { gap: 8px; padding: 14px 24px; background: #FAFAFA; border-top: 1px solid #D6D5D4; border-radius: 0 0 12px 12px; }
+.role-modal .rm-foot .btn { height: auto; min-height: 40px; min-width: 0; padding: 0 16px; font-size: 14px; font-weight: 500; }
+.role-modal .label { line-height: 20px; display: block; }   /* label → input exactly 4px */
+/* Thinner role cards */
+.role-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 260px)); gap: 20px; }
+.role-tile { padding: 16px; }
+.rt-pic { height: 72px; }
+/* Tags line up across cards: cards in a row share a height, tags sit at the bottom */
+.role-grid { align-items: stretch; }
+.role-tile .rt-tags { margin-top: auto; padding-top: 4px; }
+/* Config pages opened from a module (Form, Manage Roles, and later Documents etc.): title 32px on desktop; service + module dashboard stay 40px */
+/* form builder title: 40px on desktop, same as every other page title */
+
+/* ---- Manage Roles tweaks ---- */
+/* 1 + 2: title with count on the left, search + button on the right */
+.roles-head { align-items: center; }
+.roles-title-row { display: flex; align-items: baseline; gap: 12px; }
+.roles-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.roles-actions .roles-search { width: 280px; }
+@media (max-width: 719px) { .roles-actions { width: 100%; } .roles-actions .roles-search { width: 100%; } }
+/* 3 + 4: even 8px rhythm inside cards, a little air above the tags */
+.role-tile { gap: 8px; }
+.rt-pic { margin-bottom: 0; }
+.role-tile .rt-tags { padding-top: 8px; }
+/* 5: quieter picture panel */
+.rt-pic { color: #B1B4B6; }
+/* Manage Roles: title + button, then one white container with search on top and the cards */
+.roles-box { display: flex; flex-direction: column; gap: 24px; }
+.roles-box .roles-search { width: min(360px, 100%); }
+/* white container holds only the search; cards sit below it on the page background */
+.roles-box { padding: 16px 24px; }
+/* Visible label above the search: label → input 4px */
+.roles-box .roles-search { display: flex; flex-direction: column; gap: 4px; }
+.rs-label { font-size: 16px; line-height: 20px; color: #363636; }
+.roles-box .rs-ico { top: auto; bottom: 12px; transform: none; }
+/* Search: magnifier on the right, lighter label (#505A5F, 7.4:1) */
+.roles-box .roles-search .input { padding-left: 12px; padding-right: 40px; }
+.roles-box .rs-ico { left: auto; right: 12px; }
+.rs-label { color: #505A5F; }
+.roles-box input[type="search"]::-webkit-search-cancel-button { display: none; }   /* avoid the browser clear "x" sitting on the magnifier */
+
+/* ---- Search on the page (no white container), Cards | List toggle ---- */
+.roles-bar { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.roles-bar .roles-search { position: relative; display: flex; flex-direction: column; gap: 4px; width: min(360px, 100%); }
+.roles-bar .roles-search .input { height: 40px; padding: 0 40px 0 12px; }
+.roles-bar .rs-ico { left: auto; right: 12px; top: auto; bottom: 12px; transform: none; }
+.roles-bar input[type="search"]::-webkit-search-cancel-button { display: none; }
+.view-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius-btn); background: #fff; }
+.vt-btn { height: 38px; padding: 0 14px; display: inline-flex; align-items: center; gap: 6px; border: 0; background: #fff;
+          font: inherit; font-size: 14px; color: #505A5F; }
+.vt-btn + .vt-btn { border-left: 1px solid var(--border); }
+.vt-btn:first-child { border-radius: 3px 0 0 3px; }
+.vt-btn:last-child { border-radius: 0 3px 3px 0; }
+.vt-btn:hover { background: #FAFAFA; color: #0B0C0C; }
+.vt-btn[aria-pressed="true"] { background: var(--primary); color: #fff; font-weight: 700; }   /* 4.6:1 */
+.vt-btn:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--heading), inset 0 0 0 4px #fff; }
+
+/* List layout */
+.role-list-v { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.role-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 16px 20px;
+            background: #fff; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.06); }
+.rr-pic { width: 48px; height: 48px; border-radius: 8px; display: grid; place-items: center; color: #9E9E9E; }
+.rr-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.role-row .rt-tags { margin: 0; padding: 0; justify-content: flex-end; }
+@media (max-width: 719px) { .role-row { grid-template-columns: 48px minmax(0, 1fr); } .role-row .rt-tags { grid-column: 2; justify-content: flex-start; } }
+
+/* Edit role: orange pencil next to the name (cards) / at the end of the row (list) */
+.rt-name-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.role-edit { flex: none; width: 32px; height: 32px; border: 0; border-radius: var(--radius-btn); background: none; color: var(--primary);
+             display: grid; place-items: center; }
+.role-edit:hover { background: var(--primary-tint); }
+.role-edit:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.role-row { grid-template-columns: 48px minmax(0, 1fr) auto auto; }
+@media (max-width: 719px) { .role-row { grid-template-columns: 48px minmax(0, 1fr) auto; } .role-row .rt-tags { grid-column: 2 / 4; } }
+/* Citizen in the popup: name read-only, access locked to View */
+.role-modal .input[readonly] { background: #F5F5F5; color: #505A5F; }
+.rm-access.is-locked .rm-card { cursor: not-allowed; opacity: .7; }
+
+/* Edit tooltip on the pencil */
+.role-edit-tip { display: inline-flex; }
+/* Citizen note in a DIGIT info container (text #0B0C0C on #EAF2FC = 17:1) */
+.rm-note { display: flex; align-items: flex-start; gap: 8px; padding: 12px; background: #EAF2FC; border: 1px solid #A9C6EC; border-radius: 4px; }
+.rm-note[hidden] { display: none; }
+.rm-note svg { flex: none; margin-top: 1px; }
+.rm-note p { font-size: 14px; line-height: 1.4; color: #0B0C0C; }
+
+/* Role access cards: orange stroke on hover, like every other selectable card */
+.rm-card:hover, .role-modal .rm-card:hover { border-color: var(--primary); }
+/* Popup footer white, like every other popup */
+.role-modal .rm-foot { background: #fff; }
+/* Edit Role: card footer like the document / notification cards — divider, then a full-width 32px button (same as their Edit) */
+.rt-foot { margin: 12px -16px -16px; padding: 12px 16px 16px; border-top: 1px solid var(--divider); }
+.rt-edit-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.rt-foot .rt-edit-btn { width: 100%; }
+.role-row .rt-edit-btn { flex: none; }
+

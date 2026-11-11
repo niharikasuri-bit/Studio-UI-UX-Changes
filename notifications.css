@@ -1,0 +1,225 @@
+/* Manage Notifications (user's "SMS Notifications" screenshot) */
+.nt-view { display: flex; flex-direction: column; min-height: calc(100vh - 64px); }
+.nt-main { padding-bottom: 48px; }
+.nt-filters { display: flex; flex-wrap: wrap; gap: 16px 24px; padding: 20px 24px; }
+.nt-filter { display: flex; flex-direction: column; gap: 4px; width: min(300px, 100%); }
+.nt-label { font-size: 16px; line-height: 20px; color: #505A5F; }
+.nt-search { position: relative; }
+.nt-search .input { width: 100%; height: 40px; padding: 0 40px 0 12px; }
+.nt-search .rs-ico { position: absolute; left: auto; right: 12px; top: 50%; transform: translateY(-50%); color: #505A5F; display: grid; }
+.nt-search input[type="search"]::-webkit-search-cancel-button { display: none; }
+.nt-select { width: 100%; height: 40px; }
+
+.nt-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.nt-card { background: #fff; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.06); }
+.nt-body { padding: 20px 24px 16px; display: flex; flex-direction: column; gap: 12px; }
+.nt-name { font-size: 20px; line-height: var(--lh-heading); font-weight: 700; color: var(--heading); overflow-wrap: anywhere; }
+.nt-tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.nt-tag { padding: 2px 8px; border-radius: 4px; font-size: 14px; line-height: 20px; }
+.nt-tag-state { background: #EAF2FC; border: 1px solid #A9C6EC; color: #0B4B66; }     /* 8.3:1 */
+.nt-tag-type { background: #F1EDFD; border: 1px solid #C9BDF5; color: #5B3FC4; font-weight: 500; }   /* purple, 6.2:1 */
+.nt-msg-text { font-size: 14px; line-height: var(--lh-body); color: #363636; }
+.nt-foot { display: flex; align-items: center; gap: 16px; padding: 12px 24px 16px; border-top: 1px solid var(--divider); }
+.nt-act { height: 32px; min-width: 96px; }
+.nt-del { margin-left: -8px; height: 32px; padding: 0 8px; display: inline-flex; align-items: center; gap: 6px; border: 0; background: none;
+          border-radius: var(--radius-btn); font: inherit; font-size: 16px; font-weight: 500; color: #C84C0E; }
+.nt-del:hover { background: var(--primary-tint); }
+.nt-del:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+/* popup bits */
+.nt-types { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nt-type-card { align-items: center; padding: 12px 16px; }
+.nt-dot { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid #505A5F; background: #fff; display: grid; place-items: center; flex: none; }
+.nt-type-card:has(input:checked) .nt-dot { border-color: var(--primary); }
+.nt-type-card:has(input:checked) .nt-dot::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); }
+.role-modal .nt-msg { height: 100px; padding: 8px 12px; resize: vertical; line-height: 1.5; }
+.role-modal select.input { appearance: none; -webkit-appearance: none; padding-right: 40px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4z' fill='%23505A5F'/%3E%3C/svg%3E") right 14px center / 12px no-repeat; }
+.nt-right { margin-left: auto; display: flex; gap: 16px; }   /* Delete left, Edit + Duplicate right */
+
+/* Personalization variables (same chips as the process-flow notification popup) */
+.var-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.var-chip { display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 12px 0 8px; border: 1px solid #C5C5C5; border-radius: 15px;
+            background: #fff; font: inherit; font-size: 13px; color: #363636; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.var-chip svg { color: var(--primary); flex: none; }
+.var-chip:hover { border-color: var(--primary); background: var(--primary-tint); color: #A63E0B; }
+.var-chip:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+/* {Variable} tokens in the card message */
+.nt-var { padding: 0 2px; border-radius: 4px; background: #EEEEEE; color: #363636; font-weight: 500; }   /* grey token, 10.6:1 */
+
+/* ======================================================
+   Create / Edit Notification — mirrors the process-flow notification wizard
+   (800px popup, thin progress bars, radio cards, type tiles, pick cards, label-left detail boxes)
+   ====================================================== */
+.modal.ntw { width: min(800px, calc(100vw - 32px)); border-radius: 12px; color: #363636; }
+.modal.ntw[open] { display: flex; flex-direction: column; }
+.ntw form { display: flex; flex-direction: column; min-height: 0; max-height: calc(100vh - 48px); }
+.ntw-body { position: relative; padding: 24px 24px 20px; overflow-y: auto; flex: 1; min-height: 0; }
+.ntw-close { position: absolute; top: 12px; right: 12px; z-index: 3; background: #fff; }
+.ntw-bars-wrap { margin: 0 40px 16px 0; }
+.ntw-bars { display: flex; gap: 8px; }
+.ntw-bars span { flex: 1; height: 6px; border-radius: 3px; background: #C5C5C5; }
+.ntw-bars span.on { background: var(--primary); }
+.ntw-title { font-size: 24px; line-height: 1.3; font-weight: 700; color: #0B4B66; padding-right: 32px; }
+.ntw-desc { margin-top: 4px; font-size: 16px; line-height: 1.5; color: #5E5E5E; }
+.ntw-options { margin: 16px 0 0; padding: 0; border: 0; display: grid; gap: 12px; }
+.ntw-radio { position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 16px; border: 1px solid #D6D5D4; border-radius: 8px; background: #FAFAFA; cursor: pointer; }
+.ntw-radio:hover { border-color: #5E5E5E; }
+.ntw-radio:has(input:checked) { border-color: var(--primary); background: #FFF8F5; }
+.ntw-radio:has(input:focus-visible), .ntw-tile:has(input:focus-visible), .ntw-pcard:has(input:focus-visible) { box-shadow: var(--focus-ring); }
+.ntw-radio input, .ntw-tile input, .ntw-pcard input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ntw-rdot { width: 18px; height: 18px; margin-top: 1px; flex: none; border-radius: 50%; border: 2px solid #5E5E5E; background: #fff; display: grid; place-items: center; }
+.ntw-radio:has(input:checked) .ntw-rdot { border-color: var(--primary); }
+.ntw-radio:has(input:checked) .ntw-rdot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+.ntw-rlabel { display: block; font-size: 14px; font-weight: 700; color: #0B4B66; }
+.ntw-rtext { display: block; margin-top: 4px; font-size: 13px; color: #5E5E5E; }
+
+.ntw-tiles { margin: 20px 0 0; padding: 0; border: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+.ntw-tile { position: relative; flex: 0 1 248px; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 24px 20px;
+            border: 1px solid #D6D5D4; border-radius: 10px; background: #fff; cursor: pointer; }
+.ntw-tile:hover { border-color: #5E5E5E; }
+.ntw-tile:has(input:checked) { border: 2px solid var(--primary); padding: 23px 19px; background: #FFF8F5; }
+.ntw-tile-ico { width: 40px; height: 40px; border-radius: 8px; background: var(--primary-tint); color: var(--primary); display: grid; place-items: center; }
+.ntw-tile:has(input:checked) .ntw-tile-ico { background: var(--primary); color: #fff; }
+.ntw-tile-title { margin-top: 12px; font-size: 16px; font-weight: 700; color: #0B4B66; }
+.ntw-tile-text { margin-top: 4px; font-size: 14px; line-height: 1.4; color: #5E5E5E; }
+
+.ntw-search { margin-top: 16px; }
+.ntw-pick { margin: 12px -4px 0; padding: 4px; display: grid; gap: 12px; max-height: 50vh; overflow-y: auto; }
+.ntw-pcard { position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 16px; border: 1px solid #5E5E5E; border-radius: 8px; background: #fff; cursor: pointer; }
+.ntw-pcard:has(input:checked) { border: 2px solid var(--primary); padding: 15px; }
+.ntw-pbody { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.ntw-ptitle { font-size: 16px; font-weight: 700; color: #0B4B66; }
+.ntw-ptags { display: flex; flex-wrap: wrap; gap: 8px; }
+.ntw-pcheck { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #C5C5C5; flex: none; }
+.ntw-pcard:has(input:checked) .ntw-pcheck { border-color: var(--primary); background: var(--primary)
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4L18 8'/%3E%3C/svg%3E") center / 14px no-repeat; }
+.ntw-none { margin-top: 16px; padding: 16px; text-align: center; font-size: 14px; color: #5E5E5E; background: #FAFAFA; border: 1px dashed #D6D5D4; border-radius: 8px; }
+
+.ntw-head { position: sticky; top: -24px; z-index: 2; margin: 0 -24px; padding: 0 64px 12px 24px; background: #fff; display: flex; flex-direction: column; gap: 8px; }
+.ntw-name-row { display: flex; align-items: center; gap: 8px; }
+.ntw-name { font-size: 32px; line-height: 1.2; font-weight: 700; color: #0B4B66; overflow-wrap: anywhere; }
+.ntw-rename { color: var(--primary); }
+.ntw-name-in { height: 48px; font-size: 32px; font-weight: 700; color: #0B4B66; }
+.ntw-type-tag { align-self: flex-start; min-height: 28px; padding: 2px 10px; border-radius: 6px; background: #EAF2FC; border: 1px solid #A9C6EC; color: #0057BD; font-size: 16px; font-weight: 500; }
+.ntw-fields { display: grid; gap: 16px; padding-top: 8px; }
+.ntw-info { padding: 12px 16px; background: #EAF2FC; border-left: 4px solid #0057BD; border-radius: 4px; }
+.ntw-info-title { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; color: #0057BD; }
+.ntw-info-text { margin-top: 4px; font-size: 14px; line-height: 1.5; color: #363636; }
+.ntw-box { display: grid; gap: 20px; padding: 16px; background: #FAFAFA; border: 1px solid #D6D5D4; border-radius: 8px; }
+.ntw-row { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 4px 16px; align-items: start; }
+@media (max-width: 599px) { .ntw-row { grid-template-columns: 1fr; } }
+.ntw-label { min-height: 40px; display: flex; align-items: center; font-size: 16px; font-weight: 700; color: #0B4B66; }
+.ntw-control { display: grid; gap: 4px; min-width: 0; }
+.ntw .input { height: 40px; border: 1px solid #767676; border-radius: 4px; font: 400 16px/24px Roboto, sans-serif; padding: 0 12px; }
+.ntw .input:focus-visible { outline: none; box-shadow: none; border: 1.5px solid var(--primary); }
+.ntw .input[aria-invalid="true"] { border: 1.5px solid #B91900; }
+.ntw textarea.input { height: 120px; padding: 8px 12px; resize: vertical; }
+.ntw select.input { appearance: none; -webkit-appearance: none; padding-right: 40px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4z' fill='%23505A5F'/%3E%3C/svg%3E") right 14px center / 12px no-repeat; }
+.ntw .error { font-size: 14px; color: #B91900; }
+.ntw-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 24px; border-top: 1px solid #D6D5D4; background: #FAFAFA; border-radius: 0 0 12px 12px; }
+.ntw-foot .btn { min-height: 40px; height: 40px; padding: 0 16px; font-size: 14px; font-weight: 500; min-width: 96px; }
+.ntw-foot .btn:disabled { opacity: .5; cursor: not-allowed; }
+.nt-subject { font-size: 14px; color: #363636; }
+.nt-subject-k { font-weight: 700; color: #505A5F; }
+.ntw .req { color: #B91900; margin-left: 2px; }
+
+/* Confirm popup = process-flow delete popup: 550px, centred, 48px red triangle, 24px blue title,
+   16px muted text (name in bold dark), equal 40px buttons with 20px text */
+.modal.pfc { width: min(550px, calc(100vw - 32px)); padding: 20px 24px; border-radius: 12px; text-align: center; color: #363636; }
+.modal.pfc[open] { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.pfc-close { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; }
+.pfc-icon { display: grid; place-items: center; margin-top: 4px; }
+.pfc-title { font-size: 24px; line-height: 1.3; font-weight: 700; color: #0B4B66; overflow-wrap: anywhere; padding: 0 16px; }
+.pfc-desc { font-size: 16px; line-height: 1.5; color: #5E5E5E; overflow-wrap: anywhere; }
+.pfc-desc strong { color: #363636; font-weight: 700; }
+.pfc-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.pfc-actions .btn { height: 40px; min-height: 40px; font-size: 20px; font-weight: 500; }
+
+/* Rename = process flow (.nf-title-row / .nf-rename / .nf-name) */
+.ntw-name-row { gap: 4px; }
+.ntw-name { line-height: 1.25; }
+.ntw .ntw-name-in { height: 48px; padding: 0 8px; border: 1px solid #5E5E5E; border-radius: 4px; font: 700 32px/1.25 Roboto, sans-serif; color: #0B4B66; }
+.ntw .ntw-name-in:focus-visible { outline: none; border: 1.5px solid var(--primary); box-shadow: none; }
+
+/* Pencil buttons everywhere: 32px target, orange #C84C0E (4.6:1 on white), tint on hover, double focus ring */
+.ntw-rename, .role-edit, .dl-btn { width: 32px; height: 32px; border-radius: 4px; color: #C84C0E; display: inline-grid; place-items: center; }
+.ntw-rename:hover, .role-edit:hover, .dl-btn:hover { background: #FBEEE8; color: #A63E0B; }
+.ntw-rename:focus-visible, .role-edit:focus-visible, .dl-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px #fff, 0 0 0 5px #C84C0E; }
+/* Tags = process-flow "Select Notification" style: 24px, 4px radius, 12px/500, no border.
+   State: blue #0057BD on #E7F0FB (5.9:1). Type (SMS/Email): amber #9E5F00 on #FFF6E5 (4.9:1) */
+.nt-tag { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border: 0; border-radius: 4px; font-size: 12px; line-height: 1; font-weight: 500; }
+.nt-tag-state { background: #E7F0FB; color: #0057BD; border: 0; }
+.nt-tag-type { background: #FFF6E5; color: #9E5F00; border: 0; }
+/* Card text on the DIGIT type scale, same as the other Studio cards:
+   name = card title (captionS, 20px desktop) · tags = bodyXS (14px) · message + subject = bodyS (16px) */
+.nt-name { font-size: var(--captionS); }
+.nt-tag { height: 28px; padding: 0 10px; font-size: var(--bodyXS); }
+.nt-msg-text, .nt-subject { font-size: var(--bodyS); line-height: var(--lh-body); }
+.nt-var { font-size: inherit; }
+
+.nt-filters[hidden] { display: none; }
+.roles-new[hidden] { display: none; }
+/* empty list takes no gap slot → card sits 24px under the title */
+.nt-list:empty { display: none; }
+/* illustration sits closer to its title */
+.empty-state.is-new .es-art-new { margin-bottom: -8px; }
+/* Email subject sits inline before the message (bold) so email and SMS cards stay the same height */
+.nt-subject-in { font-weight: 700; color: #0B0C0C; }
+/* Type tile icons: inner lines take the tile-icon background so they stay visible when selected */
+.ntw-ico-cut { stroke: var(--primary-tint); }
+.ntw-tile:has(input:checked) .ntw-ico-cut { stroke: var(--primary); }
+/* Popup type tag = same amber tag as the notification cards (SMS / Email) */
+.ntw-type-tag { align-self: flex-start; min-height: 0; }
+/* Visible result count when a search / filter is applied (e.g. "3 notifications found."); full row under the filters */
+.nt-count { flex-basis: 100%; margin: 0; font-size: 16px; line-height: 1.37; font-weight: 500; color: #505A5F; }   /* 7.4:1 on white */
+.nt-count:empty { display: none; }
+.roles-bar .nt-count { margin-top: 8px; }
+/* Count sits outside the white filter card, on the page background */
+.content > .nt-count { flex: none; margin: -8px 0; color: #363636; }   /* flex: none — full-width basis would stretch it vertically in the column */
+/* Hover on every selectable card = orange stroke (same as the file-type checkboxes); includes Payment mode Online / Offline */
+.ntw-radio:hover, .ntw-tile:hover, .ntw-pcard:hover, .pay-modes .ntw-radio:hover { border-color: var(--primary); }
+/* Calmer card text: {Variable} tokens = regular weight on a faint grey (still marked as dynamic); subject = medium, not bold */
+.nt-msg-text .nt-var { font-weight: 400; background: #F3F3F3; color: #363636; padding: 0 3px; }   /* 11.2:1 */
+.nt-subject-in { font-weight: 500; color: #363636; }
+/* Popup footers are white everywhere (no grey #FAFAFA band) */
+.ntw-foot { background: #fff; }
+
+/* Filter card: Clear at the right end of the filter row; result count inside the card, under the filters */
+.nt-clear { margin-left: auto; align-self: flex-end; height: 40px; padding: 0 12px; border: 0; border-radius: 4px; background: none;
+            font: inherit; font-size: 16px; font-weight: 500; color: var(--primary); cursor: pointer; }
+.nt-clear:hover:not(:disabled) { background: var(--primary-tint); }
+.nt-clear:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.nt-clear:disabled { color: #767676; cursor: not-allowed; }
+.nt-filters .nt-count { flex-basis: 100%; margin: -4px 0 0; font-size: 14px; font-weight: 500; color: #505A5F; }
+.nt-filters .nt-count:empty { display: none; }
+
+/* Results row OUTSIDE the white card: "1 checklist found." with a tertiary Clear right next to it (only while filtering) */
+.nt-results { display: flex; align-items: center; gap: 12px; margin: -8px 0; }
+.nt-results[hidden] { display: none; }
+.nt-results .nt-count { margin: 0; flex: none; font-size: 16px; font-weight: 500; color: #363636; }
+.nt-results .nt-clear { margin: 0; align-self: center; height: 32px; padding: 0 8px; font-size: 16px; font-weight: 500;
+                        color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+/* Tertiary Clear: no tint; darker orange so it passes AA on the #EEEEEE page (5.57:1); 32px tall (≥ 24px target, WCAG 2.5.8) */
+.nt-results .nt-clear { color: #A33E0B; background: none; min-width: 44px; }
+.nt-results .nt-clear:hover:not(:disabled) { background: none; color: #7A2E08; text-decoration-thickness: 2px; }   /* 8.4:1 */
+/* Clear keeps primary orange #C84C0E. 20px bold = WCAG "large text" (needs 3:1); #C84C0E on #EEEEEE = 4.03:1 → passes. 40px tall. */
+.nt-results .nt-clear, .nt-results .nt-clear:hover:not(:disabled) { color: var(--primary); background: none; }
+.nt-results .nt-clear { height: 40px; font-size: 20px; font-weight: 700; text-decoration-thickness: 1px; }
+.nt-results .nt-clear:hover:not(:disabled) { text-decoration-thickness: 2px; }
+
+/* Clear back inside the white filter card, right end of the row: primary orange #C84C0E on white = 4.67:1 (AA at 16px), no tint */
+.nt-filters .nt-clear { margin-left: auto; align-self: flex-end; height: 40px; padding: 0 8px; background: none; color: var(--primary);
+                        font-size: 16px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.nt-filters .nt-clear:hover:not(:disabled) { background: none; color: var(--primary); text-decoration-thickness: 2px; }
+.nt-filters .nt-clear:disabled { color: #767676; text-decoration: none; }
+/* Clear = secondary CTA (white, orange border + text), 40px, right end of the filter row; disabled = DIGIT grey */
+.nt-filters .nt-clear.nt-clear-btn { height: 40px; min-width: 100px; padding: 0 20px; text-decoration: none; font-size: 16px; font-weight: 500;
+                                    background: #fff; color: var(--primary); border: 1px solid var(--primary); }
+.nt-filters .nt-clear.nt-clear-btn:hover:not(:disabled) { background: #fff; color: var(--primary); text-decoration: none; box-shadow: inset 0 0 0 1px var(--primary); }
+.nt-filters .nt-clear.nt-clear-btn:disabled { background: #F5F5F5; color: #767676; border-color: #D6D5D4; cursor: not-allowed; }
+/* Clear Search: 32px secondary CTA, centred on the 40px fields (align to their bottom edge) */
+.nt-filters .nt-clear.nt-clear-btn { height: 32px; min-width: 0; padding: 0 16px; margin-bottom: 4px; }
+/* Disabled Clear Search: grey stroke + grey text only, white background */
+.nt-filters .nt-clear.nt-clear-btn:disabled { background: #fff; color: #767676; border-color: #C5C5C5; }

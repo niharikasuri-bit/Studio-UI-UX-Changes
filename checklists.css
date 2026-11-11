@@ -1,0 +1,71 @@
+/* Manage Checklists — reuses the notification dashboard/wizard styles (notifications.css); extras below */
+.cl-view { display: flex; flex-direction: column; min-height: calc(100vh - 64px); }
+.cl-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }   /* short summary, max 2 lines */
+
+/* Builder */
+.clw .clw-desc { height: 80px; padding: 8px 12px; resize: vertical; }
+.clw-qbox { display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #FAFAFA; border: 1px solid #D6D5D4; border-radius: 8px; }
+.clw-q { background: #fff; border: 1px solid #D6D5D4; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.clw-q-head { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.clw-q-title { font-size: 20px; line-height: 1.2; font-weight: 700; color: #0B4B66; margin-right: auto; }
+.clw-req { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px; color: #363636; cursor: pointer; }
+.clw-req input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.clw-req input:checked + .ft-box { border-color: var(--primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C84C0E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
+.clw-req input:focus-visible + .ft-box { box-shadow: var(--focus-ring); }
+.clw-qdel { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 6px; border: 0; background: none; border-radius: 4px;
+            font: inherit; font-size: 14px; font-weight: 500; color: #A63E0B; }
+.clw-qdel:hover { background: var(--primary-tint); }
+.clw-qdel:focus-visible, .clw-addo:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.clw-q-main { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 12px; }
+@media (max-width: 599px) { .clw-q-main { grid-template-columns: 1fr; } }
+.clw-q-text { display: grid; gap: 4px; }
+.clw-opts { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--divider); }
+.clw-opt { display: flex; align-items: center; gap: 8px; }
+.clw-opt .input { flex: 1; min-width: 0; }
+.clw-odot { width: 18px; height: 18px; flex: none; border-radius: 50%; border: 2px solid #C5C5C5; }
+.clw-odel { width: 32px; height: 32px; color: #505A5F; }
+.clw-addo { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 4px; border: 0; background: none;
+            border-radius: 4px; font: inherit; font-size: 14px; font-weight: 700; color: #C84C0E; text-decoration: underline; text-underline-offset: 3px; }
+.clw-addq { align-self: flex-start; height: 40px; }
+
+/* ===== Checklist builder = process-flow #clDialog (styles copied from process-flow/styles.css) ===== */
+.modal.clw { width: min(1000px, calc(100vw - 32px)); }
+.cl-questions { display: grid; gap: 16px; padding: 16px; background: #FAFAFA; border: 1px solid #D6D5D4; border-radius: 8px; }
+.cl-q { display: grid; gap: 12px; padding: 20px 24px; background: #fff; border: 1px solid #D6D5D4; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.cl-q__head { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.cl-q__title { margin: 0; font-size: 20px; font-weight: 700; color: #0B4B66; }
+.cl-q__delete { margin-left: auto; }
+.cl-check { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px; color: #363636; cursor: pointer; }
+.cl-check input { width: 20px; height: 20px; margin: 0; accent-color: #C84C0E; }
+.cl-q__row { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 16px; }
+.cl-opts { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid #D6D5D4; }
+.cl-opt { display: flex; align-items: center; gap: 12px; min-height: 44px; }
+.cl-opt__mark { flex: none; width: 22px; height: 22px; border: 1.5px solid #767676; }
+.cl-opt__mark--radio { border-radius: 50%; }
+.cl-opt__input { flex: 1; min-width: 0; height: 36px; padding: 0 8px; border: 1px solid transparent; border-radius: 4px; background: none; font: inherit; font-size: 16px; color: #363636; }
+.cl-opt__input::placeholder { color: #5E5E5E; }
+.cl-opt__input:hover { border-color: #D6D5D4; }
+.cl-opt__input:focus { border-color: #C84C0E; outline: none; box-shadow: none; }
+.cl-nested { display: inline-flex; align-items: center; gap: 2px; flex: none; }
+.cl-opt__delete { width: 32px; height: 32px; flex: none; color: #505A5F; }
+.cl-link { display: inline-flex; align-items: center; gap: 6px; justify-self: start; min-height: 32px; padding: 2px 0; border: 0; background: none; cursor: pointer;
+           font: inherit; font-size: 16px; color: #C84C0E; text-decoration: underline; text-underline-offset: 3px; }
+.cl-link:hover { color: #A63E0B; }
+.cl-link svg { color: #C84C0E; flex: none; }
+.cl-link:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
+.cl-add-q { justify-self: start; align-self: flex-start; gap: 8px; height: 40px; }
+.cl-add-q svg { color: #C84C0E; }
+@media (max-width: 700px) { .cl-q__row { grid-template-columns: minmax(0, 1fr); } .cl-opt { flex-wrap: wrap; } }
+
+/* Add Question sits inside the questions box, after the cards (process flow) */
+.cl-questions { display: grid; gap: 16px; }
+.cl-qlist { display: grid; gap: 16px; }
+.clw .ntw-bars-wrap[hidden], .clw section[hidden] { display: none; }
+
+/* DIGIT checkbox: white box, orange border + orange tick when checked (not filled) */
+.cl-check input { appearance: none; -webkit-appearance: none; flex: none; width: 20px; height: 20px; margin: 0; border: 2px solid #505A5F; border-radius: 3px;
+  background: #fff center / 14px 14px no-repeat; cursor: pointer; }
+.cl-check input:checked { border-color: var(--primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C84C0E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
+.cl-check input:focus-visible { outline: none; box-shadow: var(--focus-ring); }
