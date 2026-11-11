@@ -74,7 +74,7 @@
 
           <section data-step="how">
             <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="clw-title-how">How would you like to add the checklist?</h2>
-            <p class="ntw-desc">Pick a starting point for adding your checklist. You can edit its content after this step.</p></div>
+            <p class="ntw-desc">Pick a starting point for adding your checklist. You can edit its content once it is added.</p></div>
             <fieldset class="ntw-options"><legend class="sr-only">How to add the checklist</legend>
               <label class="ntw-radio"><input type="radio" name="clw-mode" value="new" checked><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">Create new checklist</span><span class="ntw-rtext">Create a new checklist for this action.</span></span></label>
               <label class="ntw-radio"><input type="radio" name="clw-mode" value="copy"><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">Copy existing checklist</span><span class="ntw-rtext">Copy a checklist and edit the copy.</span></span></label>

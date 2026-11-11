@@ -339,7 +339,7 @@
         <div class="ntw-body">
           <button type="button" class="icon-btn ntw-close" data-close aria-label="Close">${I.close}</button>
           <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="dcw-how-title">How would you like to create your document?</h2>
-          <p class="ntw-desc" id="dcw-how-desc">Pick a starting point for creating your document. You can edit its content after this step.</p></div>
+          <p class="ntw-desc" id="dcw-how-desc">Pick a starting point for creating your document. You can edit its content once it is created.</p></div>
           <fieldset class="ntw-tiles"><legend class="sr-only">How to create the document</legend>
             <label class="ntw-tile"><input type="radio" name="dc-how" value="TEMPLATE"><span class="ntw-tile-ico">${I.tplTile}</span>
               <span class="ntw-tile-title">Predefined Document Template</span><span class="ntw-tile-text">Start from a ready-made template and customize it.</span></label>

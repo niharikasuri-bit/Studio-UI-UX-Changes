@@ -439,7 +439,7 @@
     const n = noun.toLowerCase();
     const text = (id, value) => { $(id).textContent = value; };
     text('#addTitle', `How do you want to add the ${n}?`);
-    text('#addDesc', `Pick a starting point for adding your ${n}. You can edit its content after this step.`);
+    text('#addDesc', `Pick a starting point for adding your ${n}. You can edit its content once it is added.`);
     text('#addLegend', `How to add the ${n}`);
     text('#addNewLabel', `Create new ${n}`);
     text('#addNewHint', `Create a new ${n} for this state.`);
