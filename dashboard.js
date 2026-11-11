@@ -318,7 +318,7 @@
       <form id="db-src-form" novalidate>
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
         <h2 class="dc-vd-title" id="db-src-t">Add Visualisation</h2>
-        <p class="dc-vd-desc" id="db-src-d">Choose where this visualisation gets its data and what to call it. You can change both later in Item Properties.</p>
+        <p class="dc-vd-desc" id="db-src-d">Choose the module this visualisation counts records from, and give it a title to show on the dashboard. You can change both later in Item Properties.</p>
         <div class="db-src-row">
         <div class="dc-vd-field">
           <span class="dc-vd-label" id="db-src-type-l">Type</span>
@@ -326,13 +326,11 @@
         </div>
         <div class="dc-vd-field">
           <label class="dc-vd-label" for="db-src-sel">Data Source <span class="req" aria-hidden="true">*</span></label>
-          <select class="input" id="db-src-sel" aria-describedby="db-src-sel-h">${opts(Object.entries(MODULES), 'all')}</select>
-          <p class="db-src-help" id="db-src-sel-h">The module whose records this visualisation counts.</p>
+          <select class="input" id="db-src-sel">${opts(Object.entries(MODULES), 'all')}</select>
         </div>
         <div class="dc-vd-field">
           <label class="dc-vd-label" for="db-src-title">Title <span class="req" aria-hidden="true">*</span></label>
-          <input class="input" id="db-src-title" type="text" maxlength="${LIMIT.title}" autocomplete="off" required aria-describedby="db-src-title-h db-src-title-e">
-          <p class="db-src-help" id="db-src-title-h">Shown at the top of this visualisation on the dashboard.</p>
+          <input class="input" id="db-src-title" type="text" maxlength="${LIMIT.title}" autocomplete="off" required aria-describedby="db-src-title-e">
           <p class="fp-error" id="db-src-title-e"></p>
         </div>
         </div>

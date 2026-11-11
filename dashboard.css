@@ -406,9 +406,8 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 #view-dashboard.db-is-empty .db-main { margin-right: 0; padding-right: 32px; }
 @media (max-width: 1279px) { #view-dashboard.db-is-empty .db-body { grid-template-columns: 240px minmax(0, 1fr); } }
 @media (min-width: 1024px) and (max-width: 1099px) { #view-dashboard.db-is-empty .db-body { grid-template-columns: 220px minmax(0, 1fr); } }
-/* Add Visualisation popup: type of visualisation being added + one-line help under each field */
+/* Add Visualisation popup: type of visualisation being added */
 .db-src-type { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 500; color: #363636; min-height: 40px; }
 .db-src-ico, .db-src-ico svg { width: 28px; height: 28px; display: block; }
-.db-src-help { grid-column: 2; margin: 0; font-size: 14px; line-height: 1.4; color: #767676; }
 .db-src-row .dc-vd-field { align-items: start; }
 .db-src-row .dc-vd-field > .dc-vd-label { min-height: 40px; display: flex; align-items: center; gap: 4px; }
