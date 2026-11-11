@@ -150,7 +150,9 @@
     st.style.paddingLeft = shift > 0 ? 2 * shift + 'px' : '';
     main.classList.toggle('lp-tall', fitsBeside);
     const avail = H - padT - padB - (fitsBeside ? 0 : headH) - 8;
-    const ph = Math.max(240, Math.min(PH, avail));
+    // never squat: at least 1.45 × its width tall; if the window is shorter, the phone area scrolls (the title stays put)
+    const ph = Math.max(Math.round(PW * 1.45), Math.min(PH, avail));
+    st.classList.toggle('is-scroll', ph > avail + 1);
     fit.style.width = PW + 'px'; fit.style.height = ph + 'px';
     phone.style.height = ph + 'px';
   }
@@ -185,13 +187,9 @@
     const el = scr.querySelector('.lp-faq.is-sel, .lp-tile.is-sel') || scr.querySelector('.is-sel');
     const key = el ? el.className + '|' + [...scr.querySelectorAll('*')].indexOf(el) : '';
     if (key === lastSel) return; lastSel = key; if (!el) return;
-    const top = scr.querySelector('.lp-top'), barH = top ? top.offsetHeight : 0;
-    const sr = scr.getBoundingClientRect(), er = el.getBoundingClientRect();
-    const visTop = sr.top + barH + 8, visBot = sr.bottom - 8;
-    if (er.top >= visTop && er.bottom <= visBot) return;                     // already fully visible
-    const delta = er.height > visBot - visTop || er.top < visTop ? er.top - visTop : er.bottom - visBot;
+    // scrolls the phone screen and, on short windows, the phone area too; scroll-margin keeps it clear of the phone's top bar
     const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-    scr.scrollBy({ top: delta, behavior: smooth ? 'smooth' : 'auto' });
+    el.scrollIntoView({ block: 'nearest', behavior: smooth ? 'smooth' : 'auto' });
   }
   $('lp-screen').addEventListener('click', e => {
     const ta = e.target.closest('[data-pact]'); if (ta) return openAct(ta.dataset.pact, true);

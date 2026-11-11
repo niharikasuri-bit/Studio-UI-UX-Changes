@@ -250,3 +250,10 @@ button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff;
 
 /* v32: phone screen scrolls inside the phone; visible focus ring for keyboard scrolling */
 .lp-screen:focus-visible { outline: 3px solid #C84C0E; outline-offset: 2px; }
+
+/* v33: short windows — the phone area scrolls (title fixed); selected items stay clear of the phone's top bar */
+@media (min-width: 1100px) {
+  .lp-stage.is-scroll { overflow-y: auto; scrollbar-width: thin; padding-left: 24px; padding-right: 24px; }
+  .lp-main:not(.lp-tall) .lp-stage.is-scroll { flex: 1; min-height: 0; }
+}
+.lp-screen .lp-hero, .lp-screen .lp-sec, .lp-screen .lp-faq, .lp-screen .lp-tile { scroll-margin-top: 60px; scroll-margin-bottom: 12px; }
