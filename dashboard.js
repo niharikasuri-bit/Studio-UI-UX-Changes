@@ -315,8 +315,8 @@
     <dialog class="modal dc-vd" id="db-src-dlg" aria-labelledby="db-src-t" aria-describedby="db-src-d">
       <form id="db-src-form" novalidate>
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
-        <h2 class="dc-vd-title" id="db-src-t">Choose data source</h2>
-        <p class="dc-vd-desc" id="db-src-d">Choose the module this visualisation takes its data from. You can change it later in its Data tab.</p>
+        <h2 class="dc-vd-title" id="db-src-t">Choose Data Source</h2>
+        <p class="dc-vd-desc" id="db-src-d">Choose the module this visualisation takes its data from. You can change it later.</p>
         <div class="dc-vd-field">
           <label class="dc-vd-label" for="db-src-sel">Module <span class="req" aria-hidden="true">*</span></label>
           <select class="input" id="db-src-sel">${opts(Object.entries(MODULES), 'all')}</select>
