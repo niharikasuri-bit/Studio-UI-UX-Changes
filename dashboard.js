@@ -318,15 +318,21 @@
       <form id="db-src-form" novalidate>
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
         <h2 class="dc-vd-title" id="db-src-t">Add Visualisation</h2>
-        <p class="dc-vd-desc" id="db-src-d">Pick where the data comes from and name this visualisation. You can change both later.</p>
+        <p class="dc-vd-desc" id="db-src-d">Choose where this visualisation gets its data and what to call it. You can change both later in Item Properties.</p>
         <div class="db-src-row">
         <div class="dc-vd-field">
-          <label class="dc-vd-label" for="db-src-sel">Module <span class="req" aria-hidden="true">*</span></label>
-          <select class="input" id="db-src-sel">${opts(Object.entries(MODULES), 'all')}</select>
+          <span class="dc-vd-label" id="db-src-type-l">Type</span>
+          <p class="db-src-type" id="db-src-type" aria-labelledby="db-src-type-l db-src-type"></p>
+        </div>
+        <div class="dc-vd-field">
+          <label class="dc-vd-label" for="db-src-sel">Data Source <span class="req" aria-hidden="true">*</span></label>
+          <select class="input" id="db-src-sel" aria-describedby="db-src-sel-h">${opts(Object.entries(MODULES), 'all')}</select>
+          <p class="db-src-help" id="db-src-sel-h">The module whose records this visualisation counts.</p>
         </div>
         <div class="dc-vd-field">
           <label class="dc-vd-label" for="db-src-title">Title <span class="req" aria-hidden="true">*</span></label>
-          <input class="input" id="db-src-title" type="text" maxlength="${LIMIT.title}" autocomplete="off" required aria-describedby="db-src-title-e">
+          <input class="input" id="db-src-title" type="text" maxlength="${LIMIT.title}" autocomplete="off" required aria-describedby="db-src-title-h db-src-title-e">
+          <p class="db-src-help" id="db-src-title-h">Shown at the top of this visualisation on the dashboard.</p>
           <p class="fp-error" id="db-src-title-e"></p>
         </div>
         </div>
@@ -422,15 +428,7 @@
   function drawGrid() {
     drawStats();
     grid.innerHTML = data.widgets.length ? data.widgets.map(cardHTML).join('')
-      : `<div class="db-empty"><section class="db-guide" aria-labelledby="db-guide-t">
-          <div class="db-guide-head"><h2 id="db-guide-t">Guide to make a dashboard</h2><p>Five steps from an empty dashboard to a saved one.</p></div>
-          <ol class="db-guide-steps">
-            <li><strong>Add a visualisation</strong><span>Click a KPI card or chart in the left panel, or drag it onto the dashboard. Choose its module and give it a title.</span></li>
-            <li><strong>Choose its data</strong><span>Select a visualisation to open <em>Item Properties</em>. In the <em>Data</em> tab, choose what to show and add filters.</span></li>
-            <li><strong>Set how it looks</strong><span>In the <em>Appearance</em> tab, set the chart style, data labels, legend and number format.</span></li>
-            <li><strong>Arrange the dashboard</strong><span>Drag a visualisation to move it, and drag its edges to resize it. The toolbar on each visualisation also has <em>Move</em> and <em>Resize</em>.</span></li>
-            <li><strong>Preview and save</strong><span>Use <em>Preview Dashboard</em> to see the dashboard as viewers will, then <em>Save</em>.</span></li>
-          </ol></section></div>`;
+      : `<div class="db-empty"><p class="sr-only">The dashboard is empty. Add a visualisation from the Visualisations panel.</p></div>`;
     view.classList.toggle('db-is-empty', !data.widgets.length);
     drawCharts();
   }
@@ -634,6 +632,7 @@
     $('db-src-sel').value = lastSrc;
     srcTitle.value = preset != null && PRESETS[+preset] ? (PRESETS[+preset][1].title || TYPES[type].name) : TYPES[type].name;
     titleErr('');
+    $('db-src-type').innerHTML = `<span class="db-src-ico" aria-hidden="true">${LOOK[type]}</span><span>${TYPES[type].name}</span>`;
     srcDlg.showModal(); $('db-src-sel').focus();
   }
   srcTitle.addEventListener('input', () => { if (srcTitle.value.trim()) titleErr(''); });
