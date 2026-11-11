@@ -151,10 +151,16 @@
     main.classList.toggle('lp-tall', fitsBeside);
     const avail = H - padT - padB - (fitsBeside ? 0 : headH) - 8;
     // never squat: at least 1.45 × its width tall; if the window is shorter, the phone area scrolls (the title stays put)
-    const ph = Math.max(Math.round(PW * 1.45), Math.min(PH, avail));
-    st.classList.toggle('is-scroll', ph > avail + 1);
-    fit.style.width = PW + 'px'; fit.style.height = ph + 'px';
+    // Same on-screen size as the 67% view (the agreed look) at 80–100% zoom: scale = 1 / devicePixelRatio, kept between 0.67 and 1,
+    // so above 100% zoom it stops shrinking and the phone text grows with zoom again.
+    const kZoom = Math.min(1, Math.max(0.67, 1 / (window.devicePixelRatio || 1)));
+    // whole phone visible and phone-shaped (at least 1.3 × as tall as wide): shrink a little more only when the space is short
+    const k = Math.max(0.5, Math.min(kZoom, avail / (PW * 1.3)));
+    const ph = Math.max(Math.round(PW * 1.3), Math.min(PH, avail / k));
+    st.classList.toggle('is-scroll', ph * k > avail + 1);
+    fit.style.width = PW * k + 'px'; fit.style.height = ph * k + 'px';
     phone.style.height = ph + 'px';
+    phone.style.transform = k < 1 ? `scale(${k})` : '';
   }
   if (window.ResizeObserver) new ResizeObserver(fitPhone).observe($('lp-stage').parentElement);
   window.addEventListener('resize', fitPhone);
