@@ -409,7 +409,7 @@
         <div class="db-card-tt">
           ${preview ? `<h3 class="db-card-title" id="db-t-${w.id}">${esc(w.title || t.name)}</h3>`
             : `<h3 class="db-card-title" id="db-t-${w.id}"><button type="button" class="db-sel" data-sel="${w.id}" aria-pressed="${sel}" aria-describedby="db-kb-hint" aria-keyshortcuts="Delete Control+D Control+ArrowLeft Control+ArrowRight Control+Shift+ArrowRight Control+Shift+ArrowLeft Control+Shift+ArrowUp Control+Shift+ArrowDown">${esc(w.title || t.name)}</button></h3>`}
-          <p class="db-card-src"><span class="type-tag db-type-tag"><span class="sr-only">Data source: </span>${esc(MODULES[modOf(w)])}</span></p>
+          ${preview ? `<p class="db-card-src"><span class="db-flt-tag db-mod-tag"><span class="sr-only">Data source: </span>${esc(MODULES[modOf(w)])}</span></p>` : ''}
           ${w.desc ? `<p class="db-card-desc">${esc(w.desc)}</p>` : ''}
         </div>
         ${preview ? '' : `<div class="db-card-acts" role="group" aria-label="${esc(w.title || t.name)} tools">
@@ -461,7 +461,7 @@
   const fresh = () => `<svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Data last updated: ${stamp.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}, ${stamp.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })}`;
   function drawTitle() { const d = $('db-desc'); d.textContent = data.desc || ''; d.hidden = !data.desc; }
 
-  /* ---------- Right panel: only while a visualisation is selected (Dashboard Items list removed; the canvas is the list) ---------- */
+  /* ---------- Right panel: Dashboard Items (list) → Item Properties (same pattern as the document designer) ---------- */
   const DL = { name: 60, desc: 150 };
   function drawItems() {
     $('db-items').innerHTML = `<div class="fp-section">
@@ -542,12 +542,12 @@
   }
   function openItem(focusTab) {
     const w = W(selId); if (!w) return closeItem();
-    $('db-list-view').hidden = true; const v = $('db-item-view'); v.hidden = false; view.classList.add('db-has-sel');
+    $('db-list-view').hidden = true; const v = $('db-item-view'); v.hidden = false;
     const y = v.querySelector('.fp-scroll')?.scrollTop || 0;
     v.innerHTML = `
-      <div class="db-ph">
-        <h2 class="db-ph-t" id="db-item-t">Visualisation Properties</h2>
-        <button type="button" class="icon-btn db-ph-x" id="db-item-close" aria-label="Close panel" title="Close">${I.close}</button>
+      <div class="fpp-top">
+        <button type="button" class="btn btn-secondary fpp-back" id="db-item-back">${I.left} Back to dashboard items</button>
+        <h2 class="fpp-title" id="db-item-t">Item Properties</h2>
       </div>
       <div class="fpp-tabs-wrap"><div class="fpp-tabs" role="tablist" aria-labelledby="db-item-t">
         ${[['data', 'Data'], ['display', 'Appearance']].map(([k, t]) => `<button type="button" role="tab" id="db-tab-${k}" aria-controls="db-tabpanel" aria-selected="${tab === k}" tabindex="${tab === k ? 0 : -1}" data-tab="${k}">${t}</button>`).join('')}
@@ -561,7 +561,7 @@
     v.querySelector('.fp-scroll').scrollTop = y;
     if (focusTab) $('db-tab-' + tab).focus();
   }
-  function closeItem() { $('db-item-view').hidden = true; $('db-list-view').hidden = true; view.classList.remove('db-has-sel'); }
+  function closeItem() { $('db-item-view').hidden = true; $('db-list-view').hidden = false; drawItems(); }
   function select(id, opts2 = {}) {
     selId = id; if (!opts2.keepTab) tab = 'data';
     grid.querySelectorAll('.db-card').forEach(c => { const on = c.dataset.w === id; c.classList.toggle('is-sel', on); c.querySelector('.db-sel')?.setAttribute('aria-pressed', on); });
@@ -792,7 +792,7 @@
   function areas() {
     return [view.querySelector('.db-pal-item'),
       grid.querySelector(`[data-sel="${selId}"]`) || grid.querySelector('.db-sel') || $('db-page-t'),
-      !$('db-item-view').hidden ? $('db-tab-' + tab) : null].filter(Boolean);
+      !$('db-item-view').hidden ? $('db-tab-' + tab) : ($('db-items').querySelector('[data-sel]') || $('db-items'))].filter(Boolean);
   }
   document.addEventListener('keydown', e => {
     if (view.hidden || document.querySelector('dialog[open]')) return;
@@ -936,7 +936,7 @@
   const iv = $('db-item-view');
   iv.addEventListener('click', e => {
     const t = e.target, w = W(selId); if (!w) return;
-    if (t.closest('#db-item-close')) { const id = selId; select(null); grid.querySelector(`[data-sel="${id}"]`)?.focus(); S.announce('Visualisation Properties closed.'); return; }
+    if (t.closest('#db-item-back')) { const id = selId; select(null); $('db-items').querySelector(`[data-sel="${id}"]`)?.focus(); return; }
     const tb = t.closest('[data-tab]'); if (tb) { tab = tb.dataset.tab; openItem(true); return; }
     const s = t.closest('[data-sw]'); if (s) { snap(); w[s.dataset.sw] = !w[s.dataset.sw]; drawGrid(); openItem(false); iv.querySelector(`[data-sw="${s.dataset.sw}"]`)?.focus(); return; }
     if (t.closest('#db-add-filter')) return openFilter(w, -1, t.closest('#db-add-filter'));
