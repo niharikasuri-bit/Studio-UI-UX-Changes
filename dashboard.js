@@ -433,7 +433,7 @@
             <path d="M48 90l0 20 5-5 4 9 4-2-4-9 7 0z" fill="#fff" stroke="#363636" stroke-width="1.5" stroke-linejoin="round"/>
           </svg>
           <h2 class="db-empty-t">Add your first visualisation</h2>
-          <p class="db-empty-d">You don’t have any visualisations at the moment. Drag a KPI card or chart from the visualisations offered to here, or click one to add it.</p></div>`;
+          <p class="db-empty-d">Drag a KPI card or chart from the visualisations offered to here, or click one to add it.</p></div>`;
     view.classList.toggle('db-is-empty', !data.widgets.length);
     drawCharts();
   }
