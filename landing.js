@@ -133,15 +133,23 @@
   const PW = 320, PH = 592;
   function fitPhone() {
     const st = $('lp-stage'), fit = $('lp-fit'); if (!st || !fit || view.hidden) return;
-    const cs = getComputedStyle(st);
-    // space = the centre column's height minus the title (measured on the column, so switching to scrolling can't change it)
-    const main = st.parentElement, mcs = getComputedStyle(main), head = main.querySelector('.lp-head');
-    const h = main.clientHeight - parseFloat(mcs.paddingTop) - parseFloat(mcs.paddingBottom)
-      - (head ? head.offsetHeight + parseFloat(getComputedStyle(head).marginBottom) : 0)
-      - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-    const w = st.clientWidth - 32;
-    // like the form configurator preview (video): the whole phone scales as one picture to fit the space between the title and the footer
-    const k = window.innerWidth >= 1100 ? Math.max(0.3, Math.min(1.25, h / PH, w / PW)) : 1;
+    const main = st.parentElement, head = main.querySelector('.lp-head'), title = $('lp-title');
+    if (window.innerWidth < 1100) { main.classList.remove('lp-tall'); fit.style.width = PW + 'px'; fit.style.height = PH + 'px'; fit.firstElementChild.style.transform = ''; return; }
+    const mcs = getComputedStyle(main);
+    const padT = parseFloat(mcs.paddingTop), padB = parseFloat(mcs.paddingBottom), padL = parseFloat(mcs.paddingLeft);
+    const M = main.clientWidth, H = main.clientHeight;
+    const headH = head.offsetHeight + parseFloat(getComputedStyle(head).marginBottom);
+    // A) phone uses the full height of the centre column, level with the title, if it can sit beside the title without touching it
+    const rg = document.createRange(); rg.selectNodeContents(title);
+    const titleR = rg.getBoundingClientRect().right - main.getBoundingClientRect().left;   // right edge of the title text itself
+    const tallK = Math.min(1.25, (H - padT - padB) / PH);
+    const pwT = PW * tallK, gap = 24;
+    const fitsBeside = M - titleR - gap - 32 >= pwT;                       // room to the right of the title
+    const shift = M / 2 - pwT / 2 < titleR + gap ? (titleR + gap + (M - titleR - gap - 32 - pwT) / 2) - (M / 2 - pwT / 2) : 0;   // centre in the space beside the title if the middle would touch it
+    st.style.paddingLeft = fitsBeside && shift > 0 ? 2 * shift + 'px' : '';
+    // B) otherwise it sits under the title
+    const k = Math.max(0.3, fitsBeside ? tallK : Math.min(1.25, (H - padT - padB - headH) / PH, (M - 64) / PW));
+    main.classList.toggle('lp-tall', fitsBeside);
     fit.style.width = PW * k + 'px'; fit.style.height = PH * k + 'px';
     fit.firstElementChild.style.height = PH + 'px';
     fit.firstElementChild.style.transform = `scale(${k})`;

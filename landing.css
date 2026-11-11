@@ -240,3 +240,10 @@ button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff;
 .lp-cam { top: 8px; width: 7px; height: 7px; margin-left: -3.5px; background: #2B2B2B; box-shadow: none; }
 .lp-screen { border-radius: 26px; }
 @media (min-width: 1100px) { .lp-stage { overflow: visible; } .lp-main { overflow: visible; } }   /* let the soft shadow show all round */
+
+/* v31: phone uses the full height of the centre column, level with the title (no empty band under the title) */
+@media (min-width: 1100px) {
+  .lp-main.lp-tall { position: relative; }
+  .lp-main.lp-tall .lp-stage { position: absolute; inset: 0; padding: 24px 0 32px; align-items: flex-start; }
+  .lp-main.lp-tall .lp-head { position: relative; z-index: 1; }
+}
