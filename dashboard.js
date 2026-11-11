@@ -318,7 +318,7 @@
       <form id="db-src-form" novalidate>
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
         <h2 class="dc-vd-title" id="db-src-t">Add Visualisation</h2>
-        <p class="dc-vd-desc" id="db-src-d">Choose the module this visualisation takes its data from and give it a title. You can change both later.</p>
+        <p class="dc-vd-desc" id="db-src-d">Pick where the data comes from and name this visualisation. You can change both later.</p>
         <div class="db-src-row">
         <div class="dc-vd-field">
           <label class="dc-vd-label" for="db-src-sel">Module <span class="req" aria-hidden="true">*</span></label>

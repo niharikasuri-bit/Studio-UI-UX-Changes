@@ -402,3 +402,4 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 .db-src-row { display: flex; flex-direction: column; gap: 16px; }
 .db-src-row .dc-vd-field { display: grid; grid-template-columns: 120px 1fr; column-gap: 16px; row-gap: 4px; align-items: center; }
 .db-src-row .dc-vd-field .fp-error { grid-column: 2; }
+.db-src-row .dc-vd-label { color: var(--heading); font-weight: 700; }
