@@ -658,7 +658,7 @@
     const w = make(type, { module, ...(preset != null && PRESETS[+preset] ? PRESETS[+preset][1] : {}), ...(title ? { title } : {}) }); data.widgets.splice(at, 0, w); selId = w.id; tab = 'data';
     redraw(`[data-sel="${w.id}"]`); grid.querySelector(`[data-w="${w.id}"]`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     const msg = `${w.title} added from ${MODULES[module]}`;
-    S.toast(msg); S.announce(`${msg}. Its properties are open on the right. You can change the data source in its Data tab.`);
+    S.announce(`${msg}. Its properties are open on the right. You can change the data source in its Data tab.`);
   }
   function copy(id) {
     const i = data.widgets.findIndex(w => w.id === id), src = data.widgets[i];
@@ -961,7 +961,7 @@
     if (id === 'db-range-from') rFrom = e.target.value; else rTo = e.target.value;
     if (rFrom && rTo) { drawGrid(); S.announce(`Showing ${rFrom} to ${rTo}.`); }
   }));
-  $('db-save').addEventListener('click', () => { save(); S.toast('Dashboard saved successfully'); S.announce('Dashboard saved.'); });
+  $('db-save').addEventListener('click', () => { save(); S.announce('Dashboard saved.'); });
 
   window.StudioDashboard = {
     render(focus) {
