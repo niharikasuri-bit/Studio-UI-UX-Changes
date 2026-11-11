@@ -96,6 +96,34 @@
   data.widgets.forEach(w => { if (!w.module) w.module = data.module || 'all'; }); delete data.module;
   const modOf = w => w.module || 'all';
   data.widgets.forEach(w => { if (TYPES[w.type] && TYPES[w.type].kind === 'pie' && !ADDS_UP.includes(w.measure)) w.measure = 'count'; });
+  /* Grid placement (Grafana / Metabase style): each card keeps its own column and row. Deleting a card never moves the
+     others; dropping or widening a card onto others pushes them DOWN (never sideways); a row left completely empty closes up.
+     Older saves had only an order: they are laid out once exactly as the old flowing grid showed them. */
+  const COLS = 12;
+  const hit = (a, b) => a !== b && a.y === b.y && a.x < b.x + b.w && b.x < a.x + a.w;
+  function flowLayout(list) { let x = 0, y = 0; list.forEach(w => { if (x + w.w > COLS) { x = 0; y++; } w.x = x; w.y = y; x += w.w; }); }
+  if (data.widgets.some(w => w.x == null || w.y == null)) flowLayout(data.widgets);
+  // pin = the card that was just placed / moved / widened: it stays put and the others make room below it
+  function settle(list, pin) {
+    list.forEach(w => { w.w = w.w || 6; w.x = Math.max(0, Math.min(COLS - w.w, Math.round(w.x || 0))); w.y = Math.max(0, Math.round(w.y || 0)); });
+    const P = pin && list.find(w => w.id === pin), placed = P ? [P] : [];
+    // a card in the way goes into a NEW row right below (other rows stay as they are)
+    list.filter(w => w !== P).sort((a, b) => (a.y - b.y) || (a.x - b.x)).forEach(w => { while (placed.some(o => hit(w, o))) w.y = Number.isInteger(w.y) ? w.y + 0.5 : w.y + 0.01; placed.push(w); });
+    const rows = [...new Set(list.map(w => w.y))].sort((a, b) => a - b);   // close rows that are completely empty
+    list.forEach(w => { w.y = rows.indexOf(w.y); });
+    list.sort((a, b) => (a.y - b.y) || (a.x - b.x));                        // list order = reading order
+    return list;
+  }
+  // first free place (top to bottom, left to right) that fits w columns, starting at row `from`
+  function freeSpot(wcols, from = 0) {
+    const maxY = data.widgets.reduce((m, o) => Math.max(m, o.y), -1);
+    for (let y = from; y <= maxY + 1; y++) for (let x = 0; x + wcols <= COLS; x++) {
+      const t = { x, y, w: wcols }; if (!data.widgets.some(o => hit(t, o))) return { x, y };
+    }
+    return { x: 0, y: maxY + 1 };
+  }
+  let pinId = null;   // set by an action; drawGrid settles the layout around it once
+  settle(data.widgets);
   let saved = JSON.stringify(data);
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {} saved = JSON.stringify(data); };
   let selId = null, tab = 'data', preview = false;
@@ -351,7 +379,7 @@
         <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
         <div class="vd-head"><h2 class="dc-vd-title" id="db-kb-t"><span class="dc-vd-ico" aria-hidden="true">${I.kb}</span><span>Keyboard Shortcuts</span></h2>
         <p class="dc-vd-desc" id="db-kb-d">Everything you can do with a mouse, you can also do with these keys. On a Mac, use Cmd instead of Ctrl.</p></div>
-        <div class="db-kb-body" tabindex="0" role="region" aria-label="Shortcut list"><h3 class="db-kb-h">Anywhere on this page</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>Ctrl + /</kbd></td><td>Show these keyboard shortcuts</td></tr><tr><td><kbd>Ctrl + S</kbd></td><td>Save the dashboard</td></tr><tr><td><kbd>Ctrl + Z</kbd></td><td>Undo the last change</td></tr><tr><td><kbd>Ctrl + Y or Ctrl + Shift + Z</kbd></td><td>Redo</td></tr><tr><td><kbd>F6 / Shift + F6</kbd></td><td>Go to the next / previous area: Visualisations panel, dashboard, properties panel</td></tr><tr><td><kbd>Esc</kbd></td><td>Close Item Properties, or leave Preview Dashboard</td></tr></tbody></table><h3 class="db-kb-h">Visualisations (left)</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>↑ / ↓</kbd></td><td>Go to the previous / next visualisation</td></tr><tr><td><kbd>Enter or Space</kbd></td><td>Add the visualisation at the end of the dashboard</td></tr></tbody></table><h3 class="db-kb-h">A visualisation on the dashboard</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>← → ↑ ↓</kbd></td><td>Go to the previous / next visualisation</td></tr><tr><td><kbd>Home / End</kbd></td><td>Go to the first / last visualisation</td></tr><tr><td><kbd>Enter or Space</kbd></td><td>Select it and open its properties</td></tr><tr><td><kbd>Ctrl + ← / Ctrl + →</kbd></td><td>Move it left / right</td></tr><tr><td><kbd>Ctrl + Home / Ctrl + End</kbd></td><td>Move it to the first / last place</td></tr><tr><td><kbd>Ctrl + Shift + → / ←</kbd></td><td>Make it wider / narrower</td></tr><tr><td><kbd>Ctrl + Shift + ↑ / ↓</kbd></td><td>Make a chart shorter / taller</td></tr><tr><td><kbd>Ctrl + D</kbd></td><td>Copy it</td></tr><tr><td><kbd>Delete</kbd></td><td>Delete it</td></tr></tbody></table></div>
+        <div class="db-kb-body" tabindex="0" role="region" aria-label="Shortcut list"><h3 class="db-kb-h">Anywhere on this page</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>Ctrl + /</kbd></td><td>Show these keyboard shortcuts</td></tr><tr><td><kbd>Ctrl + S</kbd></td><td>Save the dashboard</td></tr><tr><td><kbd>Ctrl + Z</kbd></td><td>Undo the last change</td></tr><tr><td><kbd>Ctrl + Y or Ctrl + Shift + Z</kbd></td><td>Redo</td></tr><tr><td><kbd>F6 / Shift + F6</kbd></td><td>Go to the next / previous area: Visualisations panel, dashboard, properties panel</td></tr><tr><td><kbd>Esc</kbd></td><td>Close Item Properties, or leave Preview Dashboard</td></tr></tbody></table><h3 class="db-kb-h">Visualisations (left)</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>↑ / ↓</kbd></td><td>Go to the previous / next visualisation</td></tr><tr><td><kbd>Enter or Space</kbd></td><td>Add the visualisation at the end of the dashboard</td></tr></tbody></table><h3 class="db-kb-h">A visualisation on the dashboard</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>← → ↑ ↓</kbd></td><td>Go to the previous / next visualisation</td></tr><tr><td><kbd>Home / End</kbd></td><td>Go to the first / last visualisation</td></tr><tr><td><kbd>Enter or Space</kbd></td><td>Select it and open its properties</td></tr><tr><td><kbd>Ctrl + ← / Ctrl + →</kbd></td><td>Move it left / right (swaps with the visualisation next to it)</td></tr><tr><td><kbd>Ctrl + ↑ / Ctrl + ↓</kbd></td><td>Move it up / down a row</td></tr><tr><td><kbd>Ctrl + Shift + → / ←</kbd></td><td>Make it wider / narrower</td></tr><tr><td><kbd>Ctrl + Shift + ↑ / ↓</kbd></td><td>Make a chart shorter / taller</td></tr><tr><td><kbd>Ctrl + D</kbd></td><td>Copy it</td></tr><tr><td><kbd>Delete</kbd></td><td>Delete it</td></tr></tbody></table></div>
         <div class="dc-vd-actions"><button type="button" class="btn btn-primary" data-close>Close</button></div>
       </div>
     </dialog>
@@ -404,16 +432,16 @@
             : `<li><span class="db-sw" style="background:${COLOURS[0]}"></span>${MEASURES[w.measure]}</li>`}</ul>` : ''}
         </div>${table(w)}`;
     }
-    return `<article class="db-card${sel ? ' is-sel' : ''}"${preview ? '' : ' draggable="true"'} data-w="${w.id}" data-span="${w.w}" style="--span:${w.w}" aria-labelledby="db-t-${w.id}">
+    return `<article class="db-card${sel ? ' is-sel' : ''}"${preview ? '' : ' draggable="true"'} data-w="${w.id}" data-span="${w.w}" style="grid-column:${w.x + 1} / span ${w.w};grid-row:${w.y + 1}" aria-labelledby="db-t-${w.id}">
       <header class="db-card-head">
         <div class="db-card-tt">
           ${preview ? `<h3 class="db-card-title" id="db-t-${w.id}">${esc(w.title || t.name)}</h3>`
-            : `<h3 class="db-card-title" id="db-t-${w.id}"><button type="button" class="db-sel" data-sel="${w.id}" aria-pressed="${sel}" aria-describedby="db-kb-hint" aria-keyshortcuts="Delete Control+D Control+ArrowLeft Control+ArrowRight Control+Shift+ArrowRight Control+Shift+ArrowLeft Control+Shift+ArrowUp Control+Shift+ArrowDown">${esc(w.title || t.name)}</button></h3>`}
+            : `<h3 class="db-card-title" id="db-t-${w.id}"><button type="button" class="db-sel" data-sel="${w.id}" aria-pressed="${sel}" aria-describedby="db-kb-hint" aria-keyshortcuts="Delete Control+D Control+ArrowLeft Control+ArrowRight Control+ArrowUp Control+ArrowDown Control+Shift+ArrowRight Control+Shift+ArrowLeft Control+Shift+ArrowUp Control+Shift+ArrowDown">${esc(w.title || t.name)}</button></h3>`}
           ${preview ? `<p class="db-card-src"><span class="db-flt-tag db-mod-tag"><span class="sr-only">Data source: </span>${esc(MODULES[modOf(w)])}</span></p>` : ''}
           ${w.desc ? `<p class="db-card-desc">${esc(w.desc)}</p>` : ''}
         </div>
         ${preview ? '' : `<div class="db-card-acts" role="group" aria-label="${esc(w.title || t.name)} tools">
-          <span class="db-grip-wrap"><button type="button" class="grip db-grip" draggable="true" data-grip="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Move ${esc(w.title || t.name)}" title="Drag, or click to move">${I.grip}</button></span>
+          <span class="db-grip-wrap"><button type="button" class="grip db-grip" draggable="true" data-grip="${w.id}" aria-haspopup="menu" aria-expanded="false" aria-label="Move ${esc(w.title || t.name)}" title="Drag, or click to move">${I.grip}</button></span>
           <button type="button" class="db-act" data-copy="${w.id}" aria-label="Copy ${esc(w.title || t.name)}" title="Copy">${I.copy}</button>
           <button type="button" class="db-act" data-del="${w.id}" aria-label="Delete ${esc(w.title || t.name)}" title="Delete">${I.trash}</button>
         </div>`}
@@ -429,6 +457,7 @@
       + st(kpis, 'KPI card', 'KPI cards') + '<span class="db-stat-sep" aria-hidden="true"></span>' + st(n - kpis, 'chart', 'charts');
   }
   function drawGrid() {
+    settle(data.widgets, pinId); pinId = null;
     drawStats();
     grid.innerHTML = data.widgets.length ? data.widgets.map(cardHTML).join('')
       : `<div class="db-empty"><svg class="db-empty-art" aria-hidden="true" focusable="false" width="220" height="120" viewBox="0 0 220 120" fill="none">
@@ -547,7 +576,7 @@
     v.innerHTML = `
       <div class="fpp-top">
         <button type="button" class="btn btn-secondary fpp-back" id="db-item-back">${I.left} Back to dashboard items</button>
-        <h2 class="fpp-title" id="db-item-t">Item Properties</h2>
+        <h2 class="fpp-title" id="db-item-t" tabindex="-1">Item Properties</h2>
       </div>
       <div class="fpp-tabs-wrap"><div class="fpp-tabs" role="tablist" aria-labelledby="db-item-t">
         ${[['data', 'Data'], ['display', 'Appearance']].map(([k, t]) => `<button type="button" role="tab" id="db-tab-${k}" aria-controls="db-tabpanel" aria-selected="${tab === k}" tabindex="${tab === k ? 0 : -1}" data-tab="${k}">${t}</button>`).join('')}
@@ -642,7 +671,7 @@
   let lastSrc = 'all', pending = null;
   const srcDlg = $('db-src-dlg'), srcTitle = $('db-src-title'), srcErr = $('db-src-title-e');
   const titleErr = msg => { srcErr.textContent = msg; if (msg) srcTitle.setAttribute('aria-invalid', 'true'); else srcTitle.removeAttribute('aria-invalid'); };
-  function add(type, at = data.widgets.length, preset) {
+  function add(type, at = null, preset) {   // at = { x, y } where it was dropped, or null = first free place
     pending = { type, at, preset, opener: document.activeElement };
     $('db-src-sel').value = 'all';   // Data Source always starts on All modules
     srcTitle.value = '';   // no default title: the user names every visualisation
@@ -665,8 +694,10 @@
   srcDlg.addEventListener('close', () => { if (pending) { const o = pending.opener; pending = null; o && document.contains(o) && o.focus(); } });
   function place(type, at, preset, module, title) {
     snap();
-    const w = make(type, { module, ...(preset != null && PRESETS[+preset] ? PRESETS[+preset][1] : {}), ...(title ? { title } : {}) }); data.widgets.splice(at, 0, w); selId = w.id; tab = 'data';
-    redraw(`[data-sel="${w.id}"]`); grid.querySelector(`[data-w="${w.id}"]`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    const w = make(type, { module, ...(preset != null && PRESETS[+preset] ? PRESETS[+preset][1] : {}), ...(title ? { title } : {}) });
+    Object.assign(w, at || freeSpot(w.w)); data.widgets.push(w); pinId = w.id; selId = w.id; tab = 'data';
+    // focus goes to the properties panel (where setup continues), not the card title: no focus ring on the new card's heading
+    redraw(); $('db-item-t')?.focus({ preventScroll: true }); grid.querySelector(`[data-w="${w.id}"]`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     const msg = `${w.title} added from ${MODULES[module]}`;
     S.announce(`${msg}. Its properties are open on the right. You can change the data source in its Data tab.`);
   }
@@ -681,13 +712,37 @@
   function copy(id) {
     const i = data.widgets.findIndex(w => w.id === id), src = data.widgets[i];
     snap(); const c = JSON.parse(JSON.stringify(src)); c.id = nid(); c.title = copyName(src.title);
-    data.widgets.splice(i + 1, 0, c); selId = c.id; redraw(`[data-sel="${c.id}"]`); S.announce(`${c.title} added after ${src.title}.`);
+    Object.assign(c, freeSpot(c.w, src.y));   // next free place from the original's row down
+    data.widgets.push(c); pinId = c.id; selId = c.id; redraw(`[data-sel="${c.id}"]`); S.announce(`${c.title} added.`);
   }
-  function move(from, to, focus = 'grip') {
-    if (to < 0 || to >= data.widgets.length || to === from) return;
-    snap(); const [w] = data.widgets.splice(from, 1); data.widgets.splice(to, 0, w);
-    redraw(focus === 'grip' ? `[data-grip="${to}"]` : `[data-sel="${w.id}"]`);
-    S.announce(`${w.title} moved to place ${to + 1} of ${data.widgets.length}.`);
+  const where = w => `row ${w.y + 1}, column ${w.x + 1}`;
+  // Move left / right: swap with the card next to it in the row, or shift one column into free space
+  function moveH(w, dir) {
+    const row = data.widgets.filter(o => o !== w && o.y === w.y);
+    const n = dir < 0 ? row.find(o => o.x + o.w === w.x) : row.find(o => o.x === w.x + w.w);
+    if (n) { if (dir < 0) { w.x = n.x; n.x = w.x + w.w; } else { n.x = w.x; w.x = n.x + n.w; } }
+    else if (dir < 0 ? w.x > 0 : w.x + w.w < COLS) w.x += dir;
+    else return false;
+    return true;
+  }
+  const canMove = (w, d) => d === 'up' ? w.y > 0 : d === 'down' ? data.widgets.some(o => o.y > w.y) || data.widgets.some(o => o !== w && o.y === w.y)
+    : d === 'left' ? w.x > 0 : w.x + w.w < COLS;
+  function moveDir(id, d, focus = 'grip') {
+    const w = W(id); if (!w) return;
+    if (!canMove(w, d)) return S.announce(d === 'up' ? 'Already in the top row.' : d === 'down' ? 'Already in the bottom row.' : d === 'left' ? 'Already at the left edge.' : 'Already at the right edge.');
+    snap();
+    if (d === 'left' || d === 'right') moveH(w, d === 'left' ? -1 : 1);
+    else if (d === 'up') { const below = data.widgets.filter(o => o !== w && o.y === w.y - 1 && o.x < w.x + w.w && w.x < o.x + o.w);   // cards it passes drop into its old row
+      w.y -= 1; below.forEach(o => { o.y = w.y + 1; }); }
+    else { const below = data.widgets.filter(o => o !== w && o.y === w.y + 1 && o.x < w.x + w.w && w.x < o.x + o.w);   // swap rows with the cards it passes
+      below.forEach(o => { o.y = w.y; }); w.y += 1; }
+    pinId = w.id; redraw(focus === 'grip' ? `[data-grip="${w.id}"]` : `[data-sel="${w.id}"]`);
+    S.announce(`${w.title} moved to ${where(w)}.`);
+  }
+  // drop on the grid: the card goes exactly there; cards in the way move down
+  function dropAt(id, x, y) {
+    const w = W(id); if (!w) return; if (w.x === x && w.y === y) return;
+    snap(); w.x = x; w.y = y; pinId = w.id; redraw(`[data-sel="${w.id}"]`); S.announce(`${w.title} moved to ${where(w)}.`);
   }
   // Delete (Studio confirm popup)
   const conf = $('db-confirm'); let confOk = null, confBack = null;
@@ -709,9 +764,8 @@
   function closeMenu(refocus) { if (!menu) return; const g = menu.grip; menu.el.remove(); g.setAttribute('aria-expanded', 'false'); menu = null; if (refocus) g.focus(); }
   function openMenu(g) {
     const was = menu && menu.grip === g; closeMenu(false); if (was) return;
-    const i = +g.dataset.grip, n = data.widgets.length;
-    const items = [['Move left', i - 1, i === 0], ['Move right', i + 1, i === n - 1], ['Move to first place', 0, i === 0], ['Move to last place', n - 1, i === n - 1]];
-    const w = data.widgets[i];
+    const w = W(g.dataset.grip), i = w.id;
+    const items = [['Move left', 'left'], ['Move right', 'right'], ['Move up', 'up'], ['Move down', 'down']].map(([t, d]) => [t, d, !canMove(w, d)]);
     // ⋮⋮ = move only. Resizing without dragging (WCAG 2.5.7) = Appearance → Size, or Ctrl+Shift+arrows
     const el = document.createElement('div'); el.className = 'move-menu'; el.setAttribute('role', 'menu'); el.setAttribute('aria-label', `Move ${w.title}`);
     el.innerHTML = items.map(([t, to, dis]) => `<button type="button" role="menuitem" data-to="${to}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('');
@@ -736,7 +790,7 @@
     const t = e.target;
     const it = t.closest('.move-menu [role^="menuitem"]');
     if (it) { if (it.getAttribute('aria-disabled') === 'true') return; const from = menu.from; closeMenu(false);
-      return move(from, +it.dataset.to); }
+      return moveDir(from, it.dataset.to); }
     const g = t.closest('[data-grip]'); if (g) return openMenu(g);
     const c = t.closest('[data-copy]'); if (c) return copy(c.dataset.copy);
     const d = t.closest('[data-del]'); if (d) return askDelete(d.dataset.del, d);
@@ -767,12 +821,10 @@
     if (mod(e) && e.shiftKey && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
       e.preventDefault(); const k = ORDER.indexOf(w.w), n = ORDER[Math.max(0, Math.min(ORDER.length - 1, (k < 0 ? 2 : k) + (e.key === 'ArrowRight' ? 1 : -1)))];
       if (n === w.w) { S.announce(e.key === 'ArrowRight' ? 'Already full width.' : 'Already the narrowest size.'); return; }
-      snap(); w.w = n; redraw(`[data-sel="${id}"]`); S.announce(`${w.title} is now ${WIDTHS[n].toLowerCase()}.`); return;
+      snap(); w.w = n; pinId = w.id; redraw(`[data-sel="${id}"]`); S.announce(`${w.title} is now ${WIDTHS[n].toLowerCase()}.`); return;
     }
-    if (mod(e) && (e.key === 'ArrowLeft' || e.key === 'ArrowUp')) { e.preventDefault(); if (i === 0) return S.announce('Already first.'); return move(i, i - 1, 'sel'); }
-    if (mod(e) && (e.key === 'ArrowRight' || e.key === 'ArrowDown')) { e.preventDefault(); if (i === titles.length - 1) return S.announce('Already last.'); return move(i, i + 1, 'sel'); }
-    if (mod(e) && e.key === 'Home') { e.preventDefault(); return move(i, 0, 'sel'); }
-    if (mod(e) && e.key === 'End') { e.preventDefault(); return move(i, titles.length - 1, 'sel'); }
+    const DIR = { ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down' }[e.key];
+    if (mod(e) && DIR) { e.preventDefault(); return moveDir(id, DIR, 'sel'); }
     if (mod(e) && (e.key === 'd' || e.key === 'D')) { e.preventDefault(); return copy(id); }
     if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); return askDelete(id, b); }
     if (mod(e)) return;
@@ -856,61 +908,68 @@
     if (!rs) return; const { w, span, h, card, ghost, tag, axis } = rs; rs = null;
     ghost.remove(); tag.remove(); card.classList.remove('is-resizing'); document.body.classList.remove('db-resizing-' + axis); grid.classList.remove('db-cols');
     if (span === w.w && h === w.h) return;
-    snap(); w.w = span; w.h = h; redraw(`[data-sel="${w.id}"]`);
+    snap(); w.w = span; w.h = h; pinId = w.id; redraw(`[data-sel="${w.id}"]`);
     S.announce(`${w.title} resized to ${WIDTHS[span].toLowerCase()}${TYPES[w.type].kind !== 'kpi' ? `, ${HEIGHTS[h][0].toLowerCase()} height` : ''}.`);
   };
   grid.addEventListener('pointerup', endResize); grid.addEventListener('pointercancel', endResize);
 
-  /* ---------- Drag: palette → dashboard, and grip → new place (pointer only; click / Move menu do the same) ---------- */
+  /* ---------- Drag: palette → dashboard, and card → new place. The dashed spot shows the exact column and row;
+     cards in the way move down while you drag (preview), nothing moves sideways. Release = drop there. ---------- */
   let drag = null; const ph = document.createElement('div'); ph.className = 'db-drop'; ph.setAttribute('aria-hidden', 'true');
   view.addEventListener('dragstart', e => {
     const p = e.target.closest('[data-add]'), g = e.target.closest('[data-grip]'), card = e.target.closest?.('.db-card');
-    if (p) { ph.style.minHeight = ''; drag = { add: p.dataset.add, preset: p.dataset.preset, span: TYPES[p.dataset.add].kind === 'kpi' ? 3 : 6 }; }
+    let wcols, hpx;
+    if (p) { wcols = TYPES[p.dataset.add].kind === 'kpi' ? 3 : 6; drag = { add: p.dataset.add, preset: p.dataset.preset }; }
     else if (card && !preview) {   // drag by the ⋮⋮ grip OR anywhere on the card (not its other buttons / resize handles)
       if (!g && e.target.closest('button, a, input, select, textarea, [data-rs]')) { e.preventDefault(); return; }
-      const i = data.widgets.findIndex(x => x.id === card.dataset.w); drag = { from: i, span: data.widgets[i].w }; closeMenu(false);
-      const r = card.getBoundingClientRect();
-      e.dataTransfer.setDragImage(card, Math.max(0, e.clientX - r.left), Math.max(0, e.clientY - r.top)); setTimeout(() => { ph.style.setProperty('--span', drag.span); ph.style.minHeight = r.height + 'px'; card.before(ph); card.classList.add('is-dragging'); }); }
-    else return;
+      const w = W(card.dataset.w); wcols = w.w; drag = { id: w.id }; closeMenu(false);
+      const r = card.getBoundingClientRect(); hpx = r.height;
+      e.dataTransfer.setDragImage(card, Math.max(0, e.clientX - r.left), Math.max(0, e.clientY - r.top));
+      setTimeout(() => card.classList.add('is-dragging'));
+    } else return;
+    // geometry taken once, before anything moves, so the target never jumps while the preview reflows
+    const gr = grid.getBoundingClientRect(), gs = getComputedStyle(grid), gap = parseFloat(gs.columnGap) || 16;
+    const left = parseFloat(gs.paddingLeft), colW = (grid.clientWidth - parseFloat(gs.paddingLeft) - parseFloat(gs.paddingRight) - gap * (COLS - 1)) / COLS;
+    const rows = []; grid.querySelectorAll('.db-card').forEach(c => { const w = W(c.dataset.w), r = c.getBoundingClientRect(); if (!w) return;
+      const t = r.top - gr.top, b = r.bottom - gr.top;
+      rows[w.y] = rows[w.y] ? { top: Math.min(rows[w.y].top, t), bottom: Math.max(rows[w.y].bottom, b) } : { top: t, bottom: b }; });
+    Object.assign(drag, { w: wcols, left, colW, gap, rows, at: null });
+    ph.style.minHeight = hpx ? hpx + 'px' : '';
     e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', 'db');
-    ph.style.setProperty('--span', drag.span);
   });
-  function dropIndex(x, y) {
-    const cards = [...grid.querySelectorAll('.db-card:not(.is-dragging)')];
-    for (let k = 0; k < cards.length; k++) { const r = cards[k].getBoundingClientRect();
-      if (y < r.top) return k; if (y <= r.bottom && x < r.left + r.width / 2) return k; }
-    return cards.length;
+  // pointer → column and row (on the geometry from when the drag started)
+  function cellAt(cx, cy) {
+    const g = grid.getBoundingClientRect(), px = cx - g.left, py = cy - g.top, d = drag, x = Math.max(0, Math.min(COLS - d.w, Math.round((px - d.left) / (d.colW + d.gap) - d.w / 2)));
+    let y = 0; const n = d.rows.length;
+    if (!n) return { x, y: 0 };
+    y = n; for (let k = 0; k < n; k++) { const r = d.rows[k]; if (r && py <= r.bottom + d.gap / 2) { y = k; break; } }
+    return { x, y };
   }
-  // where the dashed spot is = how many visible cards come before it (the dragged card is not counted)
-  const phIndex = () => { let k = 0; for (const c of grid.children) { if (c === ph) return k; if (c.classList.contains('db-card') && !c.classList.contains('is-dragging')) k++; } return k; };
-  /* The spot follows the card under the pointer: its left half = before it, right half = after it.
-     Over the spot itself or a gap between cards, the spot stays where it is (no jumping while the cards reflow).
-     It is only worked out from positions when there is no spot yet (e.g. entering an empty part of the dashboard). */
+  // show the layout as it will be after the drop
+  function preview_(at) {
+    const tmp = data.widgets.filter(w => w.id !== drag.id).map(w => ({ id: w.id, x: w.x, y: w.y, w: w.w }));
+    tmp.push({ id: '__drop', x: at.x, y: at.y, w: drag.w }); settle(tmp, '__drop');
+    tmp.forEach(t => { const el = t.id === '__drop' ? ph : grid.querySelector(`[data-w="${t.id}"]`); if (el) el.style.gridArea = `${t.y + 1} / ${t.x + 1} / auto / span ${t.w}`; });
+    if (!ph.parentNode) grid.appendChild(ph);
+  }
   const dzone = $('db-main');
   dzone.addEventListener('dragover', e => {
     if (!drag) return; e.preventDefault(); grid.classList.add('is-over');
     grid.querySelector('.db-empty')?.remove();
-    const over = e.target.closest && e.target.closest('.db-card:not(.is-dragging)');
-    if (over && grid.contains(over)) {
-      const r = over.getBoundingClientRect(), after = e.clientX > r.left + r.width / 2;
-      const ref = after ? over.nextElementSibling : over;
-      if (ref !== ph && !(after ? over.nextElementSibling === ph : ph.nextElementSibling === over)) grid.insertBefore(ph, ref);
-    } else if (!ph.parentNode) {
-      const k = dropIndex(e.clientX, e.clientY), cards = [...grid.querySelectorAll('.db-card:not(.is-dragging)')];
-      if (cards[k]) grid.insertBefore(ph, cards[k]); else grid.appendChild(ph);
-    }
-    drag.at = phIndex();
+    const at = cellAt(e.clientX, e.clientY);
+    if (drag.at && drag.at.x === at.x && drag.at.y === at.y) return;
+    drag.at = at; preview_(at);
   });
-  dzone.addEventListener('dragleave', e => { if (drag && !dzone.contains(e.relatedTarget)) { ph.remove(); grid.classList.remove('is-over'); if (!data.widgets.length) drawGrid(); } });
-  // releasing anywhere on the dashboard area drops at the dashed spot shown
+  dzone.addEventListener('dragleave', e => { if (drag && !dzone.contains(e.relatedTarget)) { ph.remove(); drag.at = null; grid.classList.remove('is-over'); drawGrid(); } });
   dzone.addEventListener('drop', e => {
-    if (!drag) return; e.preventDefault(); const shown = !!ph.parentNode; ph.remove(); grid.classList.remove('is-over');
-    const d = drag; drag = null; const at = shown ? (d.at ?? data.widgets.length) : data.widgets.length;
-    if (d.add) return add(d.add, at, d.preset);
-    if (!shown) return;
-    move(d.from, at, 'sel');   // index counted without the dragged card
+    if (!drag) return; e.preventDefault(); ph.remove(); grid.classList.remove('is-over');
+    const d = drag; drag = null;
+    if (d.add) return add(d.add, d.at, d.preset);
+    if (!d.at) return drawGrid();
+    grid.querySelectorAll('.is-dragging').forEach(c => c.classList.remove('is-dragging'));
+    dropAt(d.id, d.at.x, d.at.y);
   });
-  view.addEventListener('dragend', () => { grid.querySelectorAll('.is-dragging').forEach(c => c.classList.remove('is-dragging')); if (!drag) return; drag = null; ph.remove(); grid.classList.remove('is-over'); grid.querySelectorAll('.is-dragging').forEach(c => c.classList.remove('is-dragging')); if (!data.widgets.length) drawGrid(); });
+  view.addEventListener('dragend', () => { grid.querySelectorAll('.is-dragging').forEach(c => c.classList.remove('is-dragging')); if (!drag) return; drag = null; ph.remove(); grid.classList.remove('is-over'); drawGrid(); });
 
   // Palette click = add at the end
   // Clicking the empty grey canvas (not a visualisation, menu or control) deselects
@@ -918,7 +977,7 @@
     if (preview || !selId || e.target.closest('.db-card, .move-menu, button, a, input, select, textarea, label')) return;
     select(null); S.announce('Visualisation deselected.');
   });
-  view.querySelector('.db-palette').addEventListener('click', e => { const p = e.target.closest('[data-add]'); if (p) add(p.dataset.add, undefined, p.dataset.preset); });
+  view.querySelector('.db-palette').addEventListener('click', e => { const p = e.target.closest('[data-add]'); if (p) add(p.dataset.add, null, p.dataset.preset); });
 
   /* ---------- Right panel events ---------- */
   $('db-items').addEventListener('focusin', e => { if (e.target.dataset.dk) snap(); });
@@ -951,7 +1010,7 @@
     const t = e.target, w = W(selId); if (!w) return;
     if (t.dataset.chk) { snap(); w[t.dataset.chk] = t.checked; const k2 = t.dataset.chk; drawGrid(); openItem(false); iv.querySelector(`[data-chk="${k2}"]`)?.focus(); return; }
     if (!t.matches('input[type="text"], textarea')) snap();
-    if (t.dataset.k) { w[t.dataset.k] = t.dataset.k === 'w' ? +t.value : t.dataset.k === 'upGood' ? t.value === 'good' : t.value; }
+    if (t.dataset.k) { if (t.dataset.k === 'w') pinId = w.id; w[t.dataset.k] = t.dataset.k === 'w' ? +t.value : t.dataset.k === 'upGood' ? t.value === 'good' : t.value; }
     else if (t.hasAttribute('data-style')) w.type = t.value;
     else return;
     const id = t.id; drawGrid(); openItem(false); $(id)?.focus();

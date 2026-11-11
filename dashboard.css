@@ -422,3 +422,7 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
    above, it only reaches the empty bottom padding of the card in the row above. Top row gets room for it. */
 .db-card-acts { top: -26px; }
 .db-grid:not(.is-empty) { padding-top: 28px; }
+/* very narrow dashboard area: one visualisation per row in reading order (the column / row placement is ignored) */
+@container (max-width: 520px) { .db-grid > .db-card, .db-grid > .db-drop { grid-area: auto / 1 / auto / -1 !important; } }
+/* panel heading takes focus after a visualisation is added (a target to land on, not a control): no ring */
+#db-item-t:focus { outline: none; box-shadow: none; }
