@@ -507,7 +507,7 @@ button { cursor: pointer; }
 .tab[aria-selected='true'] { color: var(--primary); border-bottom-color: var(--primary); }
 .tab:hover { color: var(--text); }
 .modal__body { padding: 16px 24px; overflow-y: auto; flex: 1; display: grid; gap: 14px; align-content: start; }
-.modal__foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 24px; border-top: 1px solid var(--border); background: var(--surface-2); border-radius: 0 0 12px 12px; }
+.modal__foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 24px; border-top: 1px solid var(--border); border-radius: 0 0 12px 12px; }
 /* Black code container: the copy button is pinned top-right while the code scrolls under it */
 .code-box { position: relative; background: #1e2329; border-radius: var(--radius); }
 .code-box__copy {
