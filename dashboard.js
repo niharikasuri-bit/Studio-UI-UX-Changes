@@ -490,9 +490,9 @@
           <button type="button" class="btn btn-secondary dl-add" id="db-add-filter" aria-haspopup="dialog">${I.plus} Add Filter</button>
         </div>`);
   }
-  const numBox = w => box('Number Format',
-      field('db-nf', 'Show Numbers As', sel('db-nf', 'numFmt', [['full', 'Full number (12,45,000)'], ['short', 'Short number (12.5 L)']], w.numFmt || 'full'))
-      + field('db-dp', 'Decimal Places', sel('db-dp', 'dec', [['0', '0'], ['1', '1'], ['2', '2']], String(decOf(w, w.measure)))));
+  const numFields = w => field('db-nf', 'Show Numbers As', sel('db-nf', 'numFmt', [['full', 'Full number (12,45,000)'], ['short', 'Short number (12.5 L)']], w.numFmt || 'full'))
+      + field('db-dp', 'Decimal Places', sel('db-dp', 'dec', [['0', '0'], ['1', '1'], ['2', '2']], String(decOf(w, w.measure))));
+  const numBox = w => box('Number Format', numFields(w));
   function displayTab(w) {
     const k = TYPES[w.type].kind;
     const cnt = (key, max) => `<div class="fp-meta"><span class="fp-error"></span><span class="fp-count" data-cnt="${key}">${(w[key] || '').length}/${max}<span class="sr-only"> characters</span></span></div>`;
@@ -511,8 +511,8 @@
       h += box('Chart Style', field('db-style', 'Style', `<select class="input" id="db-style" data-style>${opts(STYLE_PAIRS[k], w.type)}</select>`))
         + (k !== 'pie' ? box('Axis Titles', w.type === 'hbar' ? yT + xT : xT + yT) : '')
         + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Data Labels</h3>${sw('values', w.values, 'Data Labels')}</div>
-            ${k === 'pie' && w.values ? field('db-sla', 'Slice Labels Show', sel('db-sla', 'sliceAs', [['pct', 'Percentage of the total'], ['value', 'Value']], w.sliceAs || 'pct')) : ''}</div>`
-        + numBox(w)
+            ${k === 'pie' && w.values ? field('db-sla', 'Slice Labels Show', sel('db-sla', 'sliceAs', [['pct', 'Percentage of the total'], ['value', 'Value']], w.sliceAs || 'pct')) : ''}
+            ${w.values ? numFields(w) : ''}</div>`
         + (k === 'line' ? `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Data Points</h3>${sw('points', w.points, 'Data Points')}</div></div>` : '')
         + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title" id="db-lg-t">Legend</h3>${sw('legend', w.legend, 'Legend')}</div>
             ${w.legend ? field('db-lpos', 'Legend Position', sel('db-lpos', 'legendPos', [['bottom', 'Below the chart'], ['right', 'Right of the chart']], w.legendPos)) : ''}</div>`;
