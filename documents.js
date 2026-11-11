@@ -300,7 +300,7 @@
     $('dc-new').hidden = !list.length;
     if (!shown.length) list.length
       ? S.setEmpty($('dc-empty'), false, 'No results found', 'Nothing matches your search or filters. Check the spelling, or change the filters.')
-      : S.setEmpty($('dc-empty'), true, 'No documents yet', 'Create a document to give applicants a document at any state of the process flow.');
+      : S.setEmpty($('dc-empty'), true, 'Nothing here yet', 'Create documents to give applicants the documents they need as they move through the process.');
     $('dc-count').textContent = (qq || f.state || f.kind) ? `${shown.length} document${shown.length === 1 ? '' : 's'} found.` : '';
     $('dc-results').hidden = !(qq || f.state || f.kind);
     $('dc-clear').disabled = !(qq || f.state || f.kind);
