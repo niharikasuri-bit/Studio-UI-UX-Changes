@@ -241,6 +241,7 @@
     plus: ic('<path d="M12 5v14M5 12h14"/>', 16),
     plusSq: '<svg aria-hidden="true" focusable="false" width="24" height="24" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="currentColor"/><path d="M12 7v10M7 12h10" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>',
     trash: ic('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>', 18),
+    resize: ic('<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>', 18),
     copy: ic('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>', 18),
     grip: '<svg aria-hidden="true" focusable="false" width="14" height="22" viewBox="0 0 14 22"><g fill="currentColor"><circle cx="4" cy="5" r="1.6"/><circle cx="10" cy="5" r="1.6"/><circle cx="4" cy="11" r="1.6"/><circle cx="10" cy="11" r="1.6"/><circle cx="4" cy="17" r="1.6"/><circle cx="10" cy="17" r="1.6"/></g></svg>',
     close: ic('<path d="M6 6l12 12M18 6 6 18"/>'),
@@ -394,7 +395,8 @@
           ${w.desc ? `<p class="db-card-desc">${esc(w.desc)}</p>` : ''}
         </div>
         ${preview ? '' : `<div class="db-card-acts" role="group" aria-label="${esc(w.title || t.name)} tools">
-          <span class="db-grip-wrap"><button type="button" class="grip db-grip" draggable="true" data-grip="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Move or resize ${esc(w.title || t.name)}" title="Drag to move, or click to move or resize">${I.grip}</button></span>
+          <span class="db-grip-wrap"><button type="button" class="grip db-grip" draggable="true" data-grip="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Move ${esc(w.title || t.name)}" title="Drag, or click to move">${I.grip}</button></span>
+          <span class="db-grip-wrap"><button type="button" class="db-act" data-rsz="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Resize ${esc(w.title || t.name)}" title="Resize">${I.resize}</button></span>
           <button type="button" class="db-act" data-copy="${w.id}" aria-label="Copy ${esc(w.title || t.name)}" title="Copy">${I.copy}</button>
           <button type="button" class="db-act" data-del="${w.id}" aria-label="Delete ${esc(w.title || t.name)}" title="Delete">${I.trash}</button>
         </div>`}
@@ -673,14 +675,14 @@
   function closeMenu(refocus) { if (!menu) return; const g = menu.grip; menu.el.remove(); g.setAttribute('aria-expanded', 'false'); menu = null; if (refocus) g.focus(); }
   function openMenu(g) {
     const was = menu && menu.grip === g; closeMenu(false); if (was) return;
-    const i = +g.dataset.grip, n = data.widgets.length;
+    const i = +(g.dataset.grip ?? g.dataset.rsz), n = data.widgets.length, sizeMenu = g.hasAttribute('data-rsz');
     const items = [['Move to start', 0, i === 0], ['Move earlier', i - 1, i === 0], ['Move later', i + 1, i === n - 1], ['Move to end', n - 1, i === n - 1]];
     const w = data.widgets[i], wi = ORDER.indexOf(w.w), hs = Object.keys(HEIGHTS), hi = hs.indexOf(w.h), chart = TYPES[w.type].kind !== 'kpi';
     const sizes = [['Make wider', 'w+', wi === ORDER.length - 1], ['Make narrower', 'w-', wi === 0]].concat(chart ? [['Make taller', 'h+', hi === hs.length - 1], ['Make shorter', 'h-', hi === 0]] : []);
-    const el = document.createElement('div'); el.className = 'move-menu'; el.setAttribute('role', 'menu'); el.setAttribute('aria-label', `Move or resize ${w.title}`);
-    el.innerHTML = items.map(([t, to, dis]) => `<button type="button" role="menuitem" data-to="${to}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('')
-      + '<div class="move-sep" role="separator"></div>'
-      + sizes.map(([t, sz, dis]) => `<button type="button" role="menuitem" data-size="${sz}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('');
+    const el = document.createElement('div'); el.className = 'move-menu'; el.setAttribute('role', 'menu'); el.setAttribute('aria-label', `${sizeMenu ? 'Resize' : 'Move'} ${w.title}`);
+    el.innerHTML = sizeMenu   // ⋮⋮ = move only; the Resize button = sizes (click alternative to dragging the handles, WCAG 2.5.7)
+      ? sizes.map(([t, sz, dis]) => `<button type="button" role="menuitem" data-size="${sz}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('')
+      : items.map(([t, to, dis]) => `<button type="button" role="menuitem" data-to="${to}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('');
     g.parentElement.appendChild(el); g.setAttribute('aria-expanded', 'true'); menu = { el, grip: g, from: i };
     el.querySelector('[role="menuitem"]:not([aria-disabled])')?.focus();
   }
@@ -700,7 +702,7 @@
     if (it) { if (it.getAttribute('aria-disabled') === 'true') return; const from = menu.from; closeMenu(false);
       if (it.dataset.size) return resizeBy(data.widgets[from], it.dataset.size);
       return move(from, +it.dataset.to); }
-    const g = t.closest('[data-grip]'); if (g) return openMenu(g);
+    const g = t.closest('[data-grip], [data-rsz]'); if (g) return openMenu(g);
     const c = t.closest('[data-copy]'); if (c) return copy(c.dataset.copy);
     const d = t.closest('[data-del]'); if (d) return askDelete(d.dataset.del, d);
     if (preview) return;
