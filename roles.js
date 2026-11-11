@@ -51,14 +51,13 @@
         </div>
         <button type="button" class="btn btn-primary roles-new" id="new-role-btn" aria-haspopup="dialog">${I.plusW} Create New Role</button>
       </div>
-      <div class="roles-bar">
-        <div class="roles-search">
-          <label class="rs-label" for="role-search">Search by role name</label>
-          <span class="rs-ico" aria-hidden="true">${I.search}</span>
-          <input class="input" id="role-search" type="search" autocomplete="off" aria-describedby="role-count">
+      <section class="section nt-filters" aria-label="Filter roles">
+        <div class="nt-filter">
+          <label class="nt-label" for="role-search">Search by role name</label>
+          <div class="nt-search"><input class="input" id="role-search" type="search" autocomplete="off" aria-describedby="role-count"><span class="rs-ico" aria-hidden="true">${I.search}</span></div>
         </div>
-        <p class="nt-count" id="role-count" role="status"></p>
-      </div>
+      </section>
+      <p class="nt-count" id="role-count" role="status"></p>
       <ul class="role-grid" id="role-cards" aria-label="Roles"></ul>
       ${S.emptyState({ id: 'roles-empty', ctaId: 're-create', ctaLabel: 'Create New Role' })}
     </main>
