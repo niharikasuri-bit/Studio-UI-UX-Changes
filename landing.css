@@ -220,7 +220,7 @@ button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff;
    so the phone and everything inside it look the same at every browser zoom */
 @media (min-width: 1100px) {
   .lp-main { min-height: 0; }
-  .lp-stage { min-height: 0; overflow: hidden; padding: 8px 0 32px; }
+  .lp-stage { min-height: 0; overflow: hidden; padding: 4px 0 20px; }
 }
 .lp-fit { position: relative; flex: none; }
 .lp-fit > .lp-phone { position: absolute; top: 0; left: 0; width: 320px; height: 592px; min-height: 0; max-height: none; aspect-ratio: auto; transform-origin: 0 0; }

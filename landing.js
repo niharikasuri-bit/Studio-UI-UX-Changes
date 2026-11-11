@@ -136,8 +136,8 @@
     const cs = getComputedStyle(st);
     const h = st.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     const w = st.clientWidth - 32;
-    // fixed size (320 × 592) whenever it fits; only when the window is shorter does the whole phone scale down to fit — never larger
-    const k = window.innerWidth >= 1100 ? Math.max(0.3, Math.min(1, h / PH, w / PW)) : 1;
+    // like the form configurator preview: the phone fills the height between the title and the footer and scales as one picture
+    const k = window.innerWidth >= 1100 ? Math.max(0.3, Math.min(1.25, h / PH, w / PW)) : 1;
     fit.style.width = PW * k + 'px'; fit.style.height = PH * k + 'px';
     fit.firstElementChild.style.transform = `scale(${k})`;
   }
