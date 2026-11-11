@@ -371,7 +371,6 @@
     if (t.kind === 'kpi') {
       const k = kpi(w), up = k.change >= 0, val = w.type === 'percent' && w.measure !== 'rate' ? fmt('rate', Math.min(99, Math.round(k.val % 100))) : fmtW(w, w.measure, k.val);
       body = `<div class="db-kpi"><p class="db-kpi-v">${val}</p>
-        ${w.type === 'percent' ? `<div class="db-kpi-bar" aria-hidden="true"><span style="width:${parseFloat(val)}%"></span></div>` : ''}
         ${w.compare ? (() => {
           const good = up === (w.upGood !== false), than = { month: 'the previous month', quarter: 'the previous 3 months', year: 'the same month last year' }[w.cmpWith || 'month'];
           const amt = (w.cmpAs || 'pct') === 'num' ? fmtW(w, w.measure, Math.round(Math.abs(k.change) / 100 * k.val * 10) / 10) : `${Math.abs(k.change)}%`;
