@@ -334,6 +334,11 @@
 /* the canvas (and its sticky bar) stays underneath both panels */
 .db-main { position: relative; z-index: 1; }
 
-/* Dashboard Items: bin on each card (form field-card pattern) */
-.db-item .field-actions { align-self: center; padding-right: 8px; }
-.db-item .del-btn { width: 32px; height: 32px; margin: 0; }
+/* Dashboard Items: bin placed like the form field cards (top right, 12px from the edges) */
+.db-item { align-items: flex-start; }
+.db-item .field-actions { align-self: flex-start; padding: 12px 12px 0 0; }
+#db-items .db-item .del-btn { width: 32px; height: 32px; margin: -6px -6px 0 0; }
+.db-item .del-btn svg { width: 20px; height: 20px; }
+/* hover = orange stroke only, no tint (document / form cards) */
+#db-items .lp-fc:has(.lp-fc-open):hover { border-color: var(--primary); }
+.db-pal-item:hover { border-color: #C84C0E; box-shadow: none; }

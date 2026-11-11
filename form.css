@@ -504,3 +504,6 @@
 
 /* ⓘ takes the colour of the text next to it (dark label → dark icon, blue heading → blue icon) */
 .fp-label .tip-btn, .fp-subtitle .tip-btn { color: inherit; }
+
+/* hover = orange stroke only (same as the document cards), no tint */
+.field-card:hover { border-color: var(--primary); }

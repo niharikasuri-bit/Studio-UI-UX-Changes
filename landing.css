@@ -129,7 +129,7 @@ button.lp-tile.is-sel { box-shadow: 0 0 0 2px #C84C0E; background: #FBEEE8; }
 .lp-fc-open { flex: 1; min-width: 0; min-height: 46px; display: flex; align-items: center; padding: 12px; border: 0; background: none;
               font: inherit; text-align: left; cursor: pointer; border-radius: 8px; }
 .lp-fc-open:focus-visible { outline: none; box-shadow: var(--focus-ring); }
-.lp-fc:has(.lp-fc-open):hover { border-color: var(--primary); background: #FFF8F5; }
+.lp-fc:has(.lp-fc-open):hover { border-color: var(--primary); }
 .lp-fc .field-actions { padding-right: 12px; align-items: center; }
 .lp-fc .field-actions .del-btn { margin: 0 -6px 0 0; }
 .lp-fc-sw { padding: 12px; }
@@ -145,7 +145,7 @@ button.lp-tile.is-sel { box-shadow: 0 0 0 2px #C84C0E; background: #FBEEE8; }
 .lp-ic { display: grid; gap: 12px; padding: 14px; background: #fff; border: 1px solid #D6D5D4; border-radius: 10px; }
 .lp-ll { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .lp-li { display: flex; align-items: center; gap: 2px; min-height: 44px; padding: 4px 4px 4px 12px; background: #FAFAFA; border: 1px solid #D6D5D4; border-radius: 8px; }
-.lp-li:hover { border-color: #C84C0E; background: #FFF8F5; }
+.lp-li:hover { border-color: #C84C0E; }
 .lp-li-open { flex: 1; min-width: 0; min-height: 34px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; color: #505A5F;
               text-align: left; cursor: pointer; }
 .lp-li-open:focus-visible, .lp-li-btn:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
@@ -155,7 +155,7 @@ button.lp-tile.is-sel { box-shadow: 0 0 0 2px #C84C0E; background: #FBEEE8; }
 
 /* v10: FAQ rows sit straight in the grey card, so they are white (process-flow inner-card--muted rows) */
 .lp-tc .lp-li { background: #fff; }
-.lp-tc .lp-li:hover { background: #FFF8F5; }
+
 
 /* v11: quick action names in the properties panel are #767676 */
 .lp-fc .field-name { color: #767676; }
@@ -214,3 +214,4 @@ button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff;
 /* Add FAQ popup: error left, count right */
 #lp-faq-form .fp-meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 4px; }
 #lp-faq-form .fp-meta .error { margin: 0; }
+

@@ -508,7 +508,7 @@ button.dp-qr-pos:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .dc-click-box { cursor: pointer; }
 .dc-click-box:hover { border-color: var(--primary); }
 .dc-uv-item { padding: 0; cursor: pointer; }
-.dc-uv-item:hover { border-color: var(--primary); background: #FFF8F5; }
+.dc-uv-item:hover { border-color: var(--primary); }
 .dc-uv-item .dc-uv-open { width: 100%; min-height: 40px; padding: 0 12px; color: #505A5F; }
 .dc-uv-item .dc-uv-open:hover { text-decoration: none; color: #363636; }
 .dc-uv-open-t:hover { text-decoration: none; }
@@ -605,3 +605,4 @@ button.dc-fcard-img:focus-visible { outline: none; box-shadow: inset 0 0 0 2px v
 
 /* 'Browse in my files' keeps a 24px target even though it sits in a sentence (WCAG 2.5.8) */
 .dc-browse { display: inline-flex; align-items: center; min-height: 24px; vertical-align: middle; }
+
