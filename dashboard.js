@@ -399,7 +399,6 @@
     </dialog>
 
     <dialog class="modal pfc" id="db-confirm" aria-labelledby="db-pfc-t" aria-describedby="db-pfc-d">
-      <button type="button" class="icon-btn pfc-close" data-close aria-label="Close">${I.close}</button>
       <div class="pfc-icon" aria-hidden="true"><svg viewBox="0 0 48 44" width="48" height="48"><path d="M24 2L46 42H2z" fill="#B91900"/><rect x="21.5" y="15" width="5" height="15" rx="1.5" fill="#fff"/><circle cx="24" cy="35.5" r="2.8" fill="#fff"/></svg></div>
       <h2 class="pfc-title" id="db-pfc-t"></h2>
       <p class="pfc-desc" id="db-pfc-d"></p>
