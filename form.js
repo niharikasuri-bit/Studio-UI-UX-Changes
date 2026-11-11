@@ -497,7 +497,7 @@
         <h4 class="dl-title fpp-with-tip" id="dl-title">Display Logic ${tip('tip-dl', 'display logic', 'Display logic decides when this field is shown to applicants, based on their answers to other fields.')}</h4>
         ${items.length ? `<ul class="dl-list" aria-labelledby="dl-title">${items.map((it, i) => `
           <li class="dl-item">
-            <span class="dl-name">${esc(it.name)}${it.conds.length ? `<span class="dl-meta">${it.conds.length} condition${it.conds.length > 1 ? 's' : ''}</span>` : ''}</span>
+            <span class="dl-name">${esc(it.name)}</span>
             <button type="button" class="dl-btn" data-act="editLogic" data-i="${i}" aria-label="Edit ${esc(it.name)}" aria-haspopup="dialog">${ICON.pencilU}</button>
             <button type="button" class="dl-btn" data-act="delLogic" data-i="${i}" aria-label="Delete ${esc(it.name)}">${ICON.binX}</button>
           </li>`).join('')}</ul>` : ''}
