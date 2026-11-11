@@ -136,7 +136,10 @@
     const cs = getComputedStyle(st);
     const h = st.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     const w = st.clientWidth - 32;
-    const k = window.innerWidth >= 1100 ? Math.max(0.4, Math.min(h / PH, w / PW, 1.4)) : 1;
+    // same on-screen size at every browser zoom: the size it has at 50% zoom (≈ 415 screen points tall), unless the space is smaller
+    const zoom = window.outerWidth && window.innerWidth ? window.outerWidth / window.innerWidth : 1;
+    const want = 415 / zoom / PH;
+    const k = window.innerWidth >= 1100 ? Math.max(0.3, Math.min(want, h / PH, w / PW)) : 1;
     fit.style.width = PW * k + 'px'; fit.style.height = PH * k + 'px';
     fit.firstElementChild.style.transform = `scale(${k})`;
   }
