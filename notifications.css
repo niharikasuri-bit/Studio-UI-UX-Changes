@@ -231,3 +231,6 @@
 .ntw-box .fp-count { color: #363636; }
 /* variable chips on the type scale */
 .var-chip { font-size: 14px; }
+
+/* Notification / Payment card names in #363636 (not on Checklists / Documents) */
+.nt-name[id^="nt-n-"], .nt-name[id^="py-n-"] { color: #363636; }
