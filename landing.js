@@ -176,6 +176,22 @@
               ${openFaq === i ? `<p class="lp-faq-a">${esc(x.a)}</p>` : ''}</div>`).join('')}</div></div>` : ''}
         ${!h.on && !(a.on && a.list.length) && !(f.on && f.list.length) ? '<p class="lp-empty">Turn on a section to add it to the landing page.</p>' : ''}
       </div>`;
+    revealSel();
+  }
+  // When an item is selected, scroll the phone screen so it is in view (only when the selection changes, not on every keystroke)
+  let lastSel = '';
+  function revealSel() {
+    const scr = $('lp-screen'); if (!scr) return;
+    const el = scr.querySelector('.lp-faq.is-sel, .lp-tile.is-sel') || scr.querySelector('.is-sel');
+    const key = el ? el.className + '|' + [...scr.querySelectorAll('*')].indexOf(el) : '';
+    if (key === lastSel) return; lastSel = key; if (!el) return;
+    const top = scr.querySelector('.lp-top'), barH = top ? top.offsetHeight : 0;
+    const sr = scr.getBoundingClientRect(), er = el.getBoundingClientRect();
+    const visTop = sr.top + barH + 8, visBot = sr.bottom - 8;
+    if (er.top >= visTop && er.bottom <= visBot) return;                     // already fully visible
+    const delta = er.height > visBot - visTop || er.top < visTop ? er.top - visTop : er.bottom - visBot;
+    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    scr.scrollBy({ top: delta, behavior: smooth ? 'smooth' : 'auto' });
   }
   $('lp-screen').addEventListener('click', e => {
     const ta = e.target.closest('[data-pact]'); if (ta) return openAct(ta.dataset.pact, true);
