@@ -134,14 +134,20 @@
   function fitPhone() {
     const st = $('lp-stage'), fit = $('lp-fit'); if (!st || !fit || view.hidden) return;
     const cs = getComputedStyle(st);
-    const h = st.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    // space = the centre column's height minus the title (measured on the column, so switching to scrolling can't change it)
+    const main = st.parentElement, mcs = getComputedStyle(main), head = main.querySelector('.lp-head');
+    const h = main.clientHeight - parseFloat(mcs.paddingTop) - parseFloat(mcs.paddingBottom)
+      - (head ? head.offsetHeight + parseFloat(getComputedStyle(head).marginBottom) : 0)
+      - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     const w = st.clientWidth - 32;
     // like the form configurator preview: the phone fills the height between the title and the footer and scales as one picture
-    const k = window.innerWidth >= 1100 ? Math.max(0.3, Math.min(1.25, h / PH, w / PW)) : 1;
+    // never below 80% (still readable); on very short windows the centre column scrolls instead of shrinking it further
+    const k = window.innerWidth >= 1100 ? Math.max(0.8, Math.min(1.25, h / PH, w / PW)) : 1;
+    st.classList.toggle('is-scroll', h / PH < 0.8);
     fit.style.width = PW * k + 'px'; fit.style.height = PH * k + 'px';
     fit.firstElementChild.style.transform = `scale(${k})`;
   }
-  if (window.ResizeObserver) new ResizeObserver(fitPhone).observe($('lp-stage'));
+  if (window.ResizeObserver) new ResizeObserver(fitPhone).observe($('lp-stage').parentElement);
   window.addEventListener('resize', fitPhone);
   window.addEventListener('hashchange', () => requestAnimationFrame(fitPhone));
 

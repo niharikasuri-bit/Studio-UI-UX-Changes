@@ -224,3 +224,13 @@ button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff;
 }
 .lp-fit { position: relative; flex: none; }
 .lp-fit > .lp-phone { position: absolute; top: 0; left: 0; width: 320px; height: 592px; min-height: 0; max-height: none; aspect-ratio: auto; transform-origin: 0 0; }
+
+/* v29: short windows — readable phone (min 80%), centre column scrolls; smaller page title to give the phone room */
+@media (min-width: 1100px) {
+  .lp-main:has(.lp-stage.is-scroll) { overflow-y: auto; }
+  .lp-stage.is-scroll { flex: none; overflow: visible; }
+}
+@media (min-width: 1100px) and (max-height: 760px) {
+  .lp-head { margin-bottom: 8px; }
+  .lp-head .page-title { font-size: 28px; }
+}
