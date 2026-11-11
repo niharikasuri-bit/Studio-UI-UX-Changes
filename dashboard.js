@@ -535,7 +535,8 @@
       h += sizeBox   // (no Chart Style box: the chart type is the one picked from the Visualisations panel)
         + (k !== 'pie' ? box('Axis Titles', w.type === 'hbar' ? yT + xT : xT + yT) : '')
         + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Data Labels</h3>${sw('values', w.values, 'Data Labels')}</div>
-            ${w.values && canPct(w) ? field('db-sla', 'Show Labels As', sel('db-sla', 'sliceAs', [['pct', 'Percentage'], ['value', 'Number']], labelAs(w))) : ''}</div>`   // only this question (user)
+            ${w.values && canPct(w) ? field('db-sla', 'Show Labels As', sel('db-sla', 'sliceAs', [['pct', 'Percentage'], ['value', 'Number']], labelAs(w))) : ''}
+            ${!w.values ? '' : labelAs(w) === 'pct' ? field('db-dp', 'Decimal Places', sel('db-dp', 'dec', [['0', '0'], ['1', '1'], ['2', '2']], String(decOf(w, 'pct')))) : numFields(w)}</div>`   // first Percentage / Number, then its follow-up questions
         + (k === 'line' ? `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Data Points</h3>${sw('points', w.points, 'Data Points')}</div></div>` : '')
         + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title" id="db-lg-t">Legend</h3>${sw('legend', w.legend, 'Legend')}</div>
             ${w.legend ? field('db-lpos', 'Legend Position', sel('db-lpos', 'legendPos', [['bottom', 'Below the chart'], ['right', 'Right of the chart']], w.legendPos)) : ''}</div>`;
