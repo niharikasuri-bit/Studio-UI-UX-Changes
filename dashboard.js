@@ -447,7 +447,7 @@
         </div>`}
       </header>
       <div class="db-card-body">${body}</div>
-      ${preview ? '' : `<span class="db-rz db-rz-x" data-rs="${w.id}" data-axis="x" aria-hidden="true" title="Drag to change the width"></span>${t.kind !== 'kpi' ? `<span class="db-rz db-rz-y" data-rs="${w.id}" data-axis="y" aria-hidden="true" title="Drag to change the height"></span>` : ''}<span class="db-resize" data-rs="${w.id}" data-axis="${t.kind !== 'kpi' ? 'xy' : 'x'}" aria-hidden="true" title="Drag to resize"></span>`}
+      ${preview ? '' : `<span class="db-rz db-rz-x" data-rs="${w.id}" data-axis="x" aria-hidden="true" title="Drag to change the width"></span>${t.kind !== 'kpi' ? `<span class="db-rz db-rz-y" data-rs="${w.id}" data-axis="y" aria-hidden="true" title="Drag to change the height"></span>` : ''}${t.kind !== 'kpi' ? `<span class="db-resize" data-rs="${w.id}" data-axis="xy" aria-hidden="true" title="Drag to resize"></span>` : ''}`}
     </article>`;
   }
   function drawStats() {

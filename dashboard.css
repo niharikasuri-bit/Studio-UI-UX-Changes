@@ -426,3 +426,6 @@ body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 @container (max-width: 520px) { .db-grid > .db-card, .db-grid > .db-drop { grid-area: auto / 1 / auto / -1 !important; } }
 /* panel heading takes focus after a visualisation is added (a target to land on, not a control): no ring */
 #db-item-t:focus { outline: none; box-shadow: none; }
+/* toolbar + handles show while focus is inside a card (keyboard): the card gets the same orange outline as on hover,
+   so the tools never float on a plain card. KPI cards have only the right-edge handle (width is their only size). */
+.db-card:focus-within:not(.is-sel) { border-color: #C84C0E; box-shadow: 0 0 0 1px #C84C0E; }

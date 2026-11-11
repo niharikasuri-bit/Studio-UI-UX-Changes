@@ -790,7 +790,9 @@
     stage.style.width = k * 595 > availW ? Math.ceil(595 * k) + 'px' : ''; stage.style.overflow = 'visible';
     main.style.overflow = k > fit + 0.001 ? 'auto' : 'hidden';   // zoomed past the fit: the centre scrolls
     // zoom control pinned to the bottom-right of the page area (same place as the process flow), also while the page scrolls
-    const zc = main.querySelector('.dc-zoom'); if (zc) { const r = main.getBoundingClientRect(); zc.style.left = (r.right - zc.offsetWidth - 16) + 'px'; zc.style.top = (r.bottom - zc.offsetHeight - 16) + 'px'; }
+    const zc = main.querySelector('.dc-zoom'); if (zc) { const r = main.getBoundingClientRect();   // visible area only, so it never sits on a scrollbar
+      const right = r.left + main.clientLeft + main.clientWidth, bottom = r.top + main.clientTop + main.clientHeight;
+      zc.style.left = (right - zc.offsetWidth - 16) + 'px'; zc.style.top = (bottom - zc.offsetHeight - 16) + 'px'; }
     const pct = Math.round(k / REAL * 100);
     const l = view.querySelector('#dc-zoom-l'); if (l) { l.textContent = W.zf ? pct + '%' : 'Fit'; l.title = W.zf ? 'Fit the page' : `Fitted: ${pct}% of actual size`; l.setAttribute('aria-label', `Zoom ${pct} percent of actual size${W.zf ? '. Select to fit the page' : ', fitted to the space'}`); }
   }
@@ -1221,7 +1223,7 @@
       document.body.classList.add('db-resizing-xy'); hd.setPointerCapture(e.pointerId); }, true);
     stage.addEventListener('pointermove', e => { if (!rs) return; const z = W.zoom || 1, dx = (e.clientX - rs.sx) / z, dy = (e.clientY - rs.sy) / z; rs.moved = true;
       if (isQR()) { setSize(rs.b, rs.w + dx, rs.h + dy); rs.el.style.width = rs.b.w + 'px'; rs.el.style.height = rs.b.h + 'px'; }
-      else { let f = Math.round(Math.max(6, Math.min(96, rs.fs * (rs.h + Math.max(dx * rs.h / rs.w, dy)) / rs.h))); rs.el.style.fontSize = f + 'px';
+      else { let f = Math.round(Math.max(6, Math.min(96, rs.fs * (1 + (dx * rs.w + dy * rs.h) / (rs.w * rs.w + rs.h * rs.h))))); rs.el.style.fontSize = f + 'px';   // f follows the pointer along the item's diagonal, so the corner stays under it
         while (f > 6 && (rs.el.offsetLeft + rs.el.offsetWidth > 595 || rs.el.offsetTop + rs.el.offsetHeight > 842)) { f--; rs.el.style.fontSize = f + 'px'; }   // stays on the page
         rs.b.size = f; }
       placeResize(); stage.querySelector('.dc-nudge')?.remove();
