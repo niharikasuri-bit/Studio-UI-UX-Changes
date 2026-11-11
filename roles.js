@@ -122,6 +122,7 @@
         <div class="rt-foot"><button type="button" class="btn btn-secondary nt-act rt-edit-btn" data-edit="${i}" aria-describedby="rt-n-${i}" aria-haspopup="dialog">${I.pencil} Edit Role</button></div>
       </li>`).join('');
     $('roles-empty').hidden = shown.length > 0;
+    $('role-cards').hidden = !shown.length;   // an empty list would add its own gap above "No results found"
     if (!shown.length) S.setEmpty($('roles-empty'), false, 'No results found', `Nothing matches “${query.trim()}”. Check the spelling, or try a different search.`);
     $('role-count').textContent = q ? `${shown.length} role${shown.length === 1 ? '' : 's'} found.` : '';
   }
