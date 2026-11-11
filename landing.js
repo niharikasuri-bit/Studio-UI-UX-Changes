@@ -63,10 +63,12 @@
         <div class="lp-head">
           <h1 class="page-title" id="lp-title" tabindex="-1">Service Landing Page</h1>
         </div>
-        <div class="lp-stage">
-          <div class="lp-phone" role="region" aria-label="Phone preview of the landing page">
-            <span class="lp-cam" aria-hidden="true"></span>
-            <div class="lp-screen" id="lp-screen"></div>
+        <div class="lp-stage" id="lp-stage">
+          <div class="lp-fit" id="lp-fit">
+            <div class="lp-phone" role="region" aria-label="Phone preview of the landing page">
+              <span class="lp-cam" aria-hidden="true"></span>
+              <div class="lp-screen" id="lp-screen"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -127,6 +129,21 @@
   });
 
   /* ---------- Phone preview ---------- */
+  // Scale the fixed-size phone (320 × 592) as one picture to fit the stage, so its inside never reflows with browser zoom
+  const PW = 320, PH = 592;
+  function fitPhone() {
+    const st = $('lp-stage'), fit = $('lp-fit'); if (!st || !fit || view.hidden) return;
+    const cs = getComputedStyle(st);
+    const h = st.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const w = st.clientWidth - 32;
+    const k = window.innerWidth >= 1100 ? Math.max(0.4, Math.min(h / PH, w / PW, 1.4)) : 1;
+    fit.style.width = PW * k + 'px'; fit.style.height = PH * k + 'px';
+    fit.firstElementChild.style.transform = `scale(${k})`;
+  }
+  if (window.ResizeObserver) new ResizeObserver(fitPhone).observe($('lp-stage'));
+  window.addEventListener('resize', fitPhone);
+  window.addEventListener('hashchange', () => requestAnimationFrame(fitPhone));
+
   function drawPhone() {
     const h = data.hero, a = data.actions, f = data.faq;
     $('lp-screen').innerHTML = `

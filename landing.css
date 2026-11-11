@@ -216,9 +216,11 @@ button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff;
 #lp-faq-form .fp-meta .error { margin: 0; }
 
 
-/* v10: phone always fits the space between the title and the footer at any zoom (same look as 67%) */
+/* v27: the phone is drawn at one fixed size and scaled as a whole to fit the space between the title and the footer,
+   so the phone and everything inside it look the same at every browser zoom */
 @media (min-width: 1100px) {
   .lp-main { min-height: 0; }
-  .lp-stage { min-height: 0; padding: 8px 0 32px; }
-  .lp-phone { height: 100%; max-height: 720px; min-height: 0; width: auto; aspect-ratio: 10 / 18.5; }
+  .lp-stage { min-height: 0; overflow: hidden; padding: 8px 0 32px; }
 }
+.lp-fit { position: relative; flex: none; }
+.lp-fit > .lp-phone { position: absolute; top: 0; left: 0; width: 320px; height: 592px; min-height: 0; max-height: none; aspect-ratio: auto; transform-origin: 0 0; }
