@@ -1453,3 +1453,7 @@ button { cursor: pointer; }
 /* required asterisk: same as Studio */
 .req { font-weight: 400; }
 .empty-note p { font-size: 14px; color: #363636; }
+
+/* ⓘ tooltips take the colour of the text next to them (same as Studio) */
+.info-btn, .inner-card .info-btn, .cl-nested .info-btn { color: inherit; }
+.panel-section__head .info-btn { color: var(--secondary); }   /* same blue as the heading beside it */

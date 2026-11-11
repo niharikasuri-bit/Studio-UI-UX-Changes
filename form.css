@@ -524,3 +524,10 @@ body .field-card.is-off .field-name { color: #767676; }
 
 /* required asterisk: same weight everywhere */
 body .req { font-weight: 400; }
+
+/* ⓘ tooltips take the colour of the text next to them, everywhere */
+body .tip-btn { color: inherit; }
+body .tip-btn:hover { color: inherit; }
+
+/* Section fields items in the form panel: primary text #363636 (user) */
+body #view-form .field-card .field-name { color: #363636; }

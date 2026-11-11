@@ -1013,6 +1013,8 @@
     payment: ['Payment Variable', PAY_VARS, 'payment', 'Details of the payment made, such as the amount paid and the transaction ID.'],
     bill: ['Bill Variable', BILL_VARS, 'bill', 'Details of the bill raised, such as the bill amount and the due date.'],
   };
+  // the last variable deleted -> Personalization Variables switches off and its boxes go away
+  function varsEmpty() { const d = W.doc; if (d.varsOn && !(d.vars || []).length) { d.varsOn = false; return true; } return false; }
   function drawUpProps() {
     const d = W.doc, here = (d.vars || []).filter(v => v.page === W.page);
     const group = (kind, title, tipText, all) => {
@@ -1086,9 +1088,9 @@
     }
     if (add && !add.disabled) return openVarDlg(add.dataset.uvadd, add);
     if (rm) {
-      const [gone] = d.vars.splice(+rm.dataset.rmvar, 1); drawStage(); drawUpProps();
-      ($('dc-up-props').querySelector('[data-rmvar]') || $('dc-up-props').querySelector('[data-uvadd]'))?.focus();
-      S.announce(`${gone.name} removed from page ${W.page + 1}.`);
+      const [gone] = d.vars.splice(+rm.dataset.rmvar, 1); const off = varsEmpty(); drawStage(); drawUpProps();
+      ($('dc-up-props').querySelector('[data-rmvar]') || $('dc-up-props').querySelector(off ? '[data-usw="varsOn"]' : '[data-uvadd]'))?.focus();
+      S.announce(`${gone.name} removed from page ${W.page + 1}.${off ? ' No variables left, so Personalization Variables is now off.' : ''}`);
     }
   }
   function showPage(i, focusThumb) {
@@ -1222,7 +1224,7 @@
       const mv = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
       if (mv) { e.preventDefault(); b.x += mv[0]; b.y += mv[1]; clampBox(b); drawStage(); syncUpInputs();
         stage.querySelector(w.t === 'qr' ? '[data-up-qr]' : `[data-var-i="${w.i}"]`)?.focus(); return; }
-      if (w.t === 'var' && (e.key === 'Delete' || e.key === 'Backspace')) { e.preventDefault(); const v = W.doc.vars[w.i]; W.doc.vars.splice(w.i, 1);
+      if (w.t === 'var' && (e.key === 'Delete' || e.key === 'Backspace')) { e.preventDefault(); const v = W.doc.vars[w.i]; W.doc.vars.splice(w.i, 1); varsEmpty();
         if (W.usel) { W.usel = null; $('dc-el-view').hidden = true; $('dc-list-view').hidden = false; }
         drawStage(); drawUpProps(); $('dc-stage').querySelector('.dp-var')?.focus(); S.announce(`${v.name} removed from page ${W.page + 1}.`); }
     });
@@ -1289,9 +1291,9 @@
       if (e.target.closest('#dc-el-back')) return closeUpEl();
       const tb = e.target.closest('[data-eltab]'); if (tb) { W.elTab = tb.dataset.eltab; return openUpEl(true); }
       if (e.target.closest('#dc-uv-remove')) {
-        const v = W.doc.vars[W.usel.i]; W.doc.vars.splice(W.usel.i, 1); W.usel = null;
+        const v = W.doc.vars[W.usel.i]; W.doc.vars.splice(W.usel.i, 1); W.usel = null; const off = varsEmpty();
         $('dc-el-view').hidden = true; $('dc-list-view').hidden = false; drawStage(); drawUpProps();
-        $('dc-up-props').querySelector('[data-uvadd]')?.focus(); S.announce(`${v.name} removed from page ${W.page + 1}.`);
+        $('dc-up-props').querySelector(off ? '[data-usw="varsOn"]' : '[data-uvadd]')?.focus(); S.announce(`${v.name} removed from page ${W.page + 1}.`);
       }
     });
     ev.addEventListener('keydown', e => {
