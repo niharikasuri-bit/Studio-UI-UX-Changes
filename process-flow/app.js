@@ -2137,7 +2137,7 @@
             renderInspector();
             toast(`${item.name} deleted`);
           }, '', { kind: cfg.noun }),
-        }, icon('M5 4h14v16H5zM9.5 9.5l5 5M14.5 9.5l-5 5', 18))
+        }, icon('M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3', 18))
       );
     };
 
@@ -2549,7 +2549,7 @@
               $('[data-add="checklist"]', inspector)?.focus();
               toast(`${item.name} deleted`);
             }, '', { kind: 'Checklist' }),
-          }, icon('M5 4h14v16H5zM9.5 9.5l5 5M14.5 9.5l-5 5', 18))
+          }, icon('M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3', 18))
         )
       );
     } else {
