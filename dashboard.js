@@ -398,7 +398,7 @@
         ${preview ? '' : `<div class="db-card-acts" role="group" aria-label="${esc(w.title || t.name)} tools">
           <span class="db-grip-wrap"><button type="button" class="grip db-grip" draggable="true" data-grip="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Move ${esc(w.title || t.name)}" title="Drag, or click to move">${I.grip}</button></span>
           <button type="button" class="db-act" data-copy="${w.id}" aria-label="Copy ${esc(w.title || t.name)}" title="Copy">${I.copy}</button>
-          <button type="button" class="db-act" data-del="${w.id}" aria-label="Delete ${esc(w.title || t.name)}" aria-haspopup="dialog" title="Delete">${I.trash}</button>
+          <button type="button" class="db-act" data-del="${w.id}" aria-label="Delete ${esc(w.title || t.name)}" title="Delete">${I.trash}</button>
         </div>`}
       </header>
       <div class="db-card-body">${body}</div>
@@ -449,7 +449,8 @@
       <h3 class="fp-subtitle" id="db-items-t">Dashboard Items ${tip('db-tip-di', 'dashboard items', 'Dashboard items are the visualisations (KPI cards and charts) on this dashboard, listed in the order they appear on it.')}</h3>
       ${data.widgets.length ? `<ul class="field-list" aria-labelledby="db-items-t">${data.widgets.map(w => `<li class="field-card lp-fc db-item${w.id === selId ? ' is-selected' : ''}">
         <button type="button" class="lp-fc-open" data-sel="${w.id}"><span class="field-info"><span class="field-name">${esc(w.title || TYPES[w.type].name)}</span>
-          <span class="db-item-tags"><span class="type-tag db-type-tag"><span class="sr-only">Type: </span>${TYPES[w.type].name}</span><span class="db-flt-tag db-mod-tag"><span class="sr-only">Data source: </span>${MODULES[modOf(w)]}</span></span></span></button></li>`).join('')}</ul>`
+          <span class="db-item-tags"><span class="type-tag db-type-tag"><span class="sr-only">Type: </span>${TYPES[w.type].name}</span><span class="db-flt-tag db-mod-tag"><span class="sr-only">Data source: </span>${MODULES[modOf(w)]}</span></span></span></button>
+          <span class="field-actions"><button type="button" class="del-btn" data-rmitem="${w.id}" aria-label="Delete ${esc(w.title || TYPES[w.type].name)}" title="Delete">${I.trash}</button></span></li>`).join('')}</ul>`
         : `<p class="db-items-none">No visualisations added yet. Click or drag one from the left.</p>`}
     </div>`;
   }
@@ -657,14 +658,13 @@
   }
   // Delete (Studio confirm popup)
   const conf = $('db-confirm'); let confOk = null, confBack = null;
-  function askDelete(id, back) {
-    const w = W(id); $('db-pfc-t').textContent = `Proceed to delete "${w.title}"?`; $('db-pfc-ok').textContent = 'Delete';
-    $('db-pfc-d').innerHTML = `Are you sure you want to delete <strong>"${esc(w.title)}"</strong> from this dashboard?`;
-    confOk = () => { snap(); const i = data.widgets.indexOf(w); data.widgets.splice(i, 1); if (selId === id) selId = null; redraw();
-      const next = data.widgets[Math.min(i, data.widgets.length - 1)];
-      (next ? grid.querySelector(`[data-sel="${next.id}"]`) : document.querySelector('.db-pal-item'))?.focus();
-      S.announce(`${w.title} deleted.`); };
-    confBack = back; conf.showModal(); $('db-pfc-cancel').focus();
+  // Delete straight away (no confirm popup on the dashboard); focus moves to the next visualisation
+  function askDelete(id) {
+    const w = W(id); if (!w) return;
+    snap(); const i = data.widgets.indexOf(w); data.widgets.splice(i, 1); if (selId === id) selId = null; redraw();
+    const next = data.widgets[Math.min(i, data.widgets.length - 1)];
+    (next ? grid.querySelector(`[data-sel="${next.id}"]`) : document.querySelector('.db-pal-item'))?.focus();
+    S.announce(`${w.title} deleted.`);
   }
   $('db-pfc-ok').addEventListener('click', () => { const f = confOk; confOk = null; conf.close(); f && f(); });
   conf.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => conf.close()));
@@ -843,7 +843,12 @@
     const c = $('db-items').querySelector(`[data-dcnt="${k}"]`); if (c) c.innerHTML = `${e.target.value.length}/${DL[k]}<span class="sr-only"> characters</span>`;
     drawTitle();
   });
-  $('db-items').addEventListener('click', e => { const b = e.target.closest('[data-sel]'); if (b) { select(b.dataset.sel, { focusPanel: true }); grid.querySelector(`[data-w="${b.dataset.sel}"]`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } });
+  $('db-items').addEventListener('click', e => {
+    const rm = e.target.closest('[data-rmitem]');
+    if (rm) { const ids = data.widgets.map(w => w.id), i = ids.indexOf(rm.dataset.rmitem); askDelete(rm.dataset.rmitem);
+      const items = [...$('db-items').querySelectorAll('[data-rmitem]')]; (items[Math.min(i, items.length - 1)] || $('db-dname'))?.focus(); }
+  });
+  $('db-items').addEventListener('click', e => { if (e.target.closest('[data-rmitem]')) return; const b = e.target.closest('[data-sel]'); if (b) { select(b.dataset.sel, { focusPanel: true }); grid.querySelector(`[data-w="${b.dataset.sel}"]`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } });
   const iv = $('db-item-view');
   iv.addEventListener('click', e => {
     const t = e.target, w = W(selId); if (!w) return;

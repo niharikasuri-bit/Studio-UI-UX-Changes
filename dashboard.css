@@ -333,3 +333,7 @@
 
 /* the canvas (and its sticky bar) stays underneath both panels */
 .db-main { position: relative; z-index: 1; }
+
+/* Dashboard Items: bin on each card (form field-card pattern) */
+.db-item .field-actions { align-self: center; padding-right: 8px; }
+.db-item .del-btn { width: 32px; height: 32px; margin: 0; }
