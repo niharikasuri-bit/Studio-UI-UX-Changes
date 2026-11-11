@@ -606,3 +606,12 @@ button.dc-fcard-img:focus-visible { outline: none; box-shadow: inset 0 0 0 2px v
 /* 'Browse in my files' keeps a 24px target even though it sits in a sentence (WCAG 2.5.8) */
 .dc-browse { display: inline-flex; align-items: center; min-height: 24px; vertical-align: middle; }
 
+
+/* Resize handle = the dashboard's: 12px white square, orange border, 28px grab area (scales with zoom) */
+.dc-resize { width: calc(12px * var(--uz, 1)); height: calc(12px * var(--uz, 1)); border: 0; border-radius: calc(2px * var(--uz, 1)); background: #fff;
+             box-shadow: 0 0 0 calc(1.5px * var(--uz, 1)) #C84C0E, 0 1px 2px rgba(0,0,0,.2); cursor: nwse-resize; }
+.dc-resize::after { content: ""; position: absolute; inset: calc(-8px * var(--uz, 1)); border: 0; }
+.dc-resize:hover { background: #C84C0E; }
+.dc-resize:focus-visible { box-shadow: 0 0 0 calc(1.5px * var(--uz, 1)) #C84C0E, 0 0 0 calc(4px * var(--uz, 1)) #fff, 0 0 0 calc(6px * var(--uz, 1)) #C84C0E; }
+/* Make smaller / Make bigger in the element's arrow bar */
+.dc-nudge-sep { width: 1px; align-self: stretch; margin: 0 calc(2px * var(--uz, 1)); background: #D6D5D4; }

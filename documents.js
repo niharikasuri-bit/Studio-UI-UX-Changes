@@ -191,8 +191,8 @@
       // keep the arrow bar inside the page: clamp left, and flip above the element if there is no room below
       const z = (W && W.zoom) || 1, bw = 58 / z, bh = 58 / z;   // compact + cross, centred under the element
       const nl = Math.max(0, Math.min(bx.x + (bx.w || 40) / 2 - bw / 2, 595 - bw)), below = bx.y + (bx.h || 24) + 8, nt = below + bh > 842 ? Math.max(0, bx.y - bh - 8) : below;
-      if (bx && (sel.t === 'qr' || bx.page === i)) nudge = `<div class="dc-nudge" role="group" aria-label="Move ${sel.t === 'qr' ? 'QR code' : esc(bx.name)}" style="left:${nl}px;top:${nt}px">
-        ${[['up', 'Move up'], ['left', 'Move left'], ['right', 'Move right'], ['down', 'Move down']].map(([k, l]) => `<button type="button" data-nudge="${k}" aria-label="${l}">${ARW[k]}</button>`).join('')}</div>`;
+      if (bx && (sel.t === 'qr' || bx.page === i)) nudge = `<div class="dc-nudge" role="group" aria-label="Move or resize ${sel.t === 'qr' ? 'QR code' : esc(bx.name)}" style="left:${nl}px;top:${nt}px">
+        ${[['up', 'Move up'], ['left', 'Move left'], ['right', 'Move right'], ['down', 'Move down']].map(([k, l]) => `<button type="button" data-nudge="${k}" aria-label="${l}">${ARW[k]}</button>`).join('')}<span class="dc-nudge-sep" aria-hidden="true"></span>${[['-', 'Make smaller', '<path d="M5 12h14"/>'], ['+', 'Make bigger', '<path d="M12 5v14M5 12h14"/>']].map(([k, l, ic]) => `<button type="button" data-size="${k}" aria-label="${l}" title="${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">${ic}</svg></button>`).join('')}</div>`;
       }
     }
     return `<div class="dp-page dp-up"><img src="${p.src}" alt="">
@@ -1179,12 +1179,20 @@
     const setSize = (b, w, h) => { w = Math.round(Math.max(16, Math.min(595 - b.x, w))); h = Math.round(Math.max(16, Math.min(842 - b.y, h)));
       if (isQR()) { const m = Math.min(Math.max(w, h), 595 - b.x, 842 - b.y); w = h = m; } b.w = w; b.h = h; };
     stage.addEventListener('pointerdown', e => { const hd = e.target.closest('[data-resize]'); if (!hd) return; e.stopPropagation(); e.preventDefault();
-      const el = selEl(), b = upBox(W.usel); rs = { b, el, sx: e.clientX, sy: e.clientY, w: b.w || el.offsetWidth, h: b.h || el.offsetHeight, fs: b.size || 13, moved: false }; hd.setPointerCapture(e.pointerId); }, true);
+      const el = selEl(), b = upBox(W.usel); rs = { b, el, sx: e.clientX, sy: e.clientY, w: b.w || el.offsetWidth, h: b.h || el.offsetHeight, fs: b.size || 13, moved: false };
+      rs.tag = document.createElement('div'); rs.tag.className = 'db-ghost-l'; rs.tag.setAttribute('aria-hidden', 'true'); document.body.appendChild(rs.tag);   // same size label as the dashboard
+      document.body.classList.add('db-resizing-xy'); hd.setPointerCapture(e.pointerId); }, true);
     stage.addEventListener('pointermove', e => { if (!rs) return; const z = W.zoom || 1, dx = (e.clientX - rs.sx) / z, dy = (e.clientY - rs.sy) / z; rs.moved = true;
       if (isQR()) { setSize(rs.b, rs.w + dx, rs.h + dy); rs.el.style.width = rs.b.w + 'px'; rs.el.style.height = rs.b.h + 'px'; }
-      else { const f = Math.round(Math.max(6, Math.min(96, rs.fs * (rs.h + Math.max(dx * rs.h / rs.w, dy)) / rs.h))); rs.b.size = f; rs.el.style.fontSize = f + 'px'; }
-      placeResize(); stage.querySelector('.dc-nudge')?.remove(); });
-    stage.addEventListener('pointerup', () => { if (!rs) return; const r = rs; rs = null; if (r.moved) { drawStage(); syncUpInputs(); $('dc-stage').querySelector('[data-resize]')?.focus(); } });
+      else { let f = Math.round(Math.max(6, Math.min(96, rs.fs * (rs.h + Math.max(dx * rs.h / rs.w, dy)) / rs.h))); rs.el.style.fontSize = f + 'px';
+        while (f > 6 && (rs.el.offsetLeft + rs.el.offsetWidth > 595 || rs.el.offsetTop + rs.el.offsetHeight > 842)) { f--; rs.el.style.fontSize = f + 'px'; }   // stays on the page
+        rs.b.size = f; }
+      placeResize(); stage.querySelector('.dc-nudge')?.remove();
+      const t = rs.tag; t.textContent = isQR() ? `${rs.b.w} × ${rs.b.h} px` : `Font ${rs.b.size} px`;
+      t.style.left = Math.min(innerWidth - t.offsetWidth - 8, e.clientX + 16) + 'px'; t.style.top = Math.min(innerHeight - t.offsetHeight - 8, e.clientY + 18) + 'px'; });
+    const endRs = () => { if (!rs) return; const r = rs; rs = null; r.tag.remove(); document.body.classList.remove('db-resizing-xy');
+      if (r.moved) { drawStage(); syncUpInputs(); $('dc-stage').querySelector('[data-resize]')?.focus(); } };
+    stage.addEventListener('pointerup', endRs); stage.addEventListener('pointercancel', endRs);
     stage.addEventListener('keydown', e => { const hd = e.target.closest('[data-resize]'); if (!hd) return;
       const step = e.shiftKey ? 24 : 4, d = { ArrowRight: [step, 0], ArrowLeft: [-step, 0], ArrowDown: [0, step], ArrowUp: [0, -step] }[e.key]; if (!d) return;
       e.preventDefault(); e.stopPropagation(); const el = selEl(), b = upBox(W.usel);
@@ -1204,6 +1212,7 @@
       if (d2.moved) { justDragged = true; drawStage(); syncUpInputs(); } });
     stage.addEventListener('click', e => {
       const n = e.target.closest('[data-nudge]'); if (n) return nudgeSel(n.dataset.nudge, e.shiftKey);
+      const z2 = e.target.closest('.dc-nudge [data-size]'); if (z2) return sizeSel(z2.dataset.size === '+', e.shiftKey);
       const w = which(e.target); if (!w) return;
       if (justDragged) { justDragged = false; return; }
       selectUp(w.t === 'qr' ? { t: 'qr' } : { t: 'var', i: w.i });
@@ -1303,6 +1312,13 @@
     });
   }
   // On-canvas arrows (process-flow style): 4px per press, 24px with Shift
+  function sizeSel(up, big) {
+    const b = upBox(W.usel), el = selEl(); if (!b) return;
+    if (W.usel.t === 'qr') { const m = Math.max(16, Math.min(595 - b.x, 842 - b.y, (b.w || el.offsetWidth) + (up ? 1 : -1) * (big ? 24 : 8))); b.w = b.h = Math.round(m); }
+    else b.size = Math.max(6, Math.min(96, (b.size || 13) + (up ? 1 : -1) * (big ? 4 : 1)));
+    drawStage(); syncUpInputs(); $('dc-stage').querySelector(`.dc-nudge [data-size="${up ? '+' : '-'}"]`)?.focus();
+    S.announce(W.usel.t === 'qr' ? `Size ${b.w} by ${b.h}.` : `Font size ${b.size} pixels.`);
+  }
   function nudgeSel(dir, big) {
     const b = upBox(W.usel), step = big ? 24 : 4;
     const mv = { left: [-step, 0], right: [step, 0], up: [0, -step], down: [0, step] }[dir];
