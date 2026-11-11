@@ -161,6 +161,8 @@
   .modal-title { font-size: 32px; line-height: var(--lh-heading); font-weight: 700; color: var(--heading); overflow-wrap: anywhere; }
   .modal-desc { margin-top: 8px; font-size: var(--bodyS); line-height: var(--lh-body); color: var(--text-muted); }
   .modal-close { position: absolute; top: 8px; right: 8px; }
+  /* close (×) buttons: no hover fill anywhere (process flow rule); the focus ring stays */
+  button[aria-label^="Close"]:hover { background: transparent !important; }
   /* Sticky popup header: title + description stay put while the body scrolls; close belongs to the dialog */
   .modal[open]:has(> form > .modal-body) { display: flex; flex-direction: column; }
   .modal > form:has(> .modal-body) { display: flex; flex-direction: column; flex: 1; min-height: 0; }
@@ -352,7 +354,7 @@
 <link rel="stylesheet" href="payments.css?v=1794421081" />
 <link rel="stylesheet" href="documents.css?v=1794421081" />
 <link rel="stylesheet" href="landing.css?v=1794421081" />
-<link rel="stylesheet" href="dashboard.css?v=1794424427" />
+<link rel="stylesheet" href="dashboard.css?v=1794429619" />
 </head>
 <body>
 <a class="skip" href="#content">Skip to main content</a>
@@ -1043,7 +1045,7 @@
       return;
     }
     if (flow) {
-      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794421645';   // version forces a fresh copy after edits
+      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794429457';   // version forces a fresh copy after edits
       if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
       frame.title = `Process flow designer for ${m.name}`;
       document.title = `Process Flow – ${m.name} – Studio Prototype – Studio`;
@@ -1208,7 +1210,7 @@
 <script src="payments.js?v=1794421081"></script>
 <script src="documents.js?v=1794426290"></script>
 <script src="landing.js?v=1794421081"></script>
-<script src="dashboard.js?v=1794428097"></script>
+<script src="dashboard.js?v=1794429340"></script>
 <script src="form.js?v=1794426631"></script>
 
 </body>

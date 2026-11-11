@@ -1472,3 +1472,6 @@ button { cursor: pointer; }
 .add-choice__body > .wizard[hidden] ~ section .pop-head,
 .add-choice__body > .wizard[style*="none"] ~ section .pop-head,
 .add-choice__body > .wizard[style*="none"] ~ section .nf-head { top: -24px; padding-top: 24px; margin-top: -24px; }
+
+/* close (×) buttons: no hover fill anywhere; the focus ring stays */
+button[aria-label^="Close"]:hover { background: transparent !important; }

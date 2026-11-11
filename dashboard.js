@@ -120,7 +120,6 @@
     if (w.measure === 'count' || w.measure === 'fees') vals = vals.map(v => Math.round(v * filterFactor(w) * rangeFactor() * modFactor(w)));
     if (w.measure === 'days') vals = vals.map(v => Math.round(v * 10) / 10);
     if (w.measure === 'rate') vals = vals.map(v => Math.min(99, Math.round(v)));
-    if (TYPES[w.type].kind === 'line' && w.running && w.by === 'month') { let t = 0; vals = vals.map(v => (t += v)); }
     return cats.map((c, i) => ({ label: c, value: vals[i] }));
   }
   function kpi(w) {
@@ -410,11 +409,11 @@
         <div class="db-card-tt">
           ${preview ? `<h3 class="db-card-title" id="db-t-${w.id}">${esc(w.title || t.name)}</h3>`
             : `<h3 class="db-card-title" id="db-t-${w.id}"><button type="button" class="db-sel" data-sel="${w.id}" aria-pressed="${sel}" aria-describedby="db-kb-hint" aria-keyshortcuts="Delete Control+D Control+ArrowLeft Control+ArrowRight Control+Shift+ArrowRight Control+Shift+ArrowLeft Control+Shift+ArrowUp Control+Shift+ArrowDown">${esc(w.title || t.name)}</button></h3>`}
+          <p class="db-card-src"><span class="type-tag db-type-tag"><span class="sr-only">Data source: </span>${esc(MODULES[modOf(w)])}</span></p>
           ${w.desc ? `<p class="db-card-desc">${esc(w.desc)}</p>` : ''}
         </div>
         ${preview ? '' : `<div class="db-card-acts" role="group" aria-label="${esc(w.title || t.name)} tools">
           <span class="db-grip-wrap"><button type="button" class="grip db-grip" draggable="true" data-grip="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Move ${esc(w.title || t.name)}" title="Drag, or click to move">${I.grip}</button></span>
-          <span class="db-grip-wrap"><button type="button" class="db-act" data-rsz="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="Resize ${esc(w.title || t.name)}" title="Resize">${I.resize}</button></span>
           <button type="button" class="db-act" data-copy="${w.id}" aria-label="Copy ${esc(w.title || t.name)}" title="Copy">${I.copy}</button>
           <button type="button" class="db-act" data-del="${w.id}" aria-label="Delete ${esc(w.title || t.name)}" title="Delete">${I.trash}</button>
         </div>`}
@@ -462,7 +461,7 @@
   const fresh = () => `<svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Data last updated: ${stamp.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}, ${stamp.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })}`;
   function drawTitle() { const d = $('db-desc'); d.textContent = data.desc || ''; d.hidden = !data.desc; }
 
-  /* ---------- Right panel: Dashboard Items ---------- */
+  /* ---------- Right panel: only while a visualisation is selected (Dashboard Items list removed; the canvas is the list) ---------- */
   const DL = { name: 60, desc: 150 };
   function drawItems() {
     $('db-items').innerHTML = `<div class="fp-section">
@@ -486,9 +485,7 @@
   // Which box sits on which axis: bar / line = groups across the bottom, numbers up the side; horizontal bar is the other way round
   function axesBoxes(w, k) {
     const groups = (title, label) => box(title, field('db-by', label, sel('db-by', 'by', Object.entries(BY).map(([v, [t]]) => [v, t]), w.by)));
-    const values = (title, label) => box(title, field('db-measure', label, sel('db-measure', 'measure', Object.entries(MEASURES), w.measure))
-      // how the value is shown (Excel "Show values as" / Looker "Running calculation"): only for a timeline
-      + (k === 'line' && w.by === 'month' ? field('db-sva', 'Show Value As', `<select class="input" id="db-sva" data-run>${opts([['each', 'Each month on its own'], ['running', 'Running total (adds up month by month)']], w.running ? 'running' : 'each')}</select>`) : ''));
+    const values = (title, label) => box(title, field('db-measure', label, sel('db-measure', 'measure', Object.entries(MEASURES), w.measure)))
     if (k === 'kpi') return values('Card Value', 'Value to Show');
     // a pie has no axes: one "Slices" box holds both choices
     if (k === 'pie') return box('Slices', field('db-by', 'Data to Show', sel('db-by', 'by', Object.entries(BY).map(([v, [t]]) => [v, t]), w.by))
@@ -522,7 +519,7 @@
     const sizeBox = box('Size', k === 'kpi' ? wSel
       : wSel + field('db-sz-h', 'Height', sel('db-sz-h', 'h', Object.entries(HEIGHTS).map(([v, [t]]) => [v, t]), w.h || 'medium')));
     let h = box('Title', field('db-ttl', 'Title', `<input class="fp-input" id="db-ttl" type="text" maxlength="${LIMIT.title}" data-k="title" value="${esc(w.title)}" autocomplete="off">`));
-    // (Size is also on the canvas: drag the handles, Ctrl+Shift+arrows, or the card's Resize menu)
+    // (Size is also on the canvas: drag the handles, or Ctrl+Shift+arrows on the card)
     if (k === 'kpi') h += sizeBox + numBox(w) + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Comparison</h3>${sw('compare', w.compare, 'Comparison')}</div>
       ${w.compare ? field('db-cw', 'Compare With', sel('db-cw', 'cmpWith', [['month', 'Previous month'], ['quarter', 'Previous 3 months'], ['year', 'Same month last year']], w.cmpWith || 'month'))
         + field('db-ca', 'Show Change As', sel('db-ca', 'cmpAs', [['pct', 'Percentage'], ['num', 'Number']], w.cmpAs || 'pct'))
@@ -545,12 +542,12 @@
   }
   function openItem(focusTab) {
     const w = W(selId); if (!w) return closeItem();
-    $('db-list-view').hidden = true; const v = $('db-item-view'); v.hidden = false;
+    $('db-list-view').hidden = true; const v = $('db-item-view'); v.hidden = false; view.classList.add('db-has-sel');
     const y = v.querySelector('.fp-scroll')?.scrollTop || 0;
     v.innerHTML = `
-      <div class="fpp-top">
-        <button type="button" class="btn btn-secondary fpp-back" id="db-item-back">${I.left} Back to dashboard items</button>
-        <h2 class="fpp-title" id="db-item-t">Item Properties</h2>
+      <div class="db-ph">
+        <h2 class="db-ph-t" id="db-item-t">Visualisation Properties</h2>
+        <button type="button" class="icon-btn db-ph-x" id="db-item-close" aria-label="Close panel" title="Close">${I.close}</button>
       </div>
       <div class="fpp-tabs-wrap"><div class="fpp-tabs" role="tablist" aria-labelledby="db-item-t">
         ${[['data', 'Data'], ['display', 'Appearance']].map(([k, t]) => `<button type="button" role="tab" id="db-tab-${k}" aria-controls="db-tabpanel" aria-selected="${tab === k}" tabindex="${tab === k ? 0 : -1}" data-tab="${k}">${t}</button>`).join('')}
@@ -564,7 +561,7 @@
     v.querySelector('.fp-scroll').scrollTop = y;
     if (focusTab) $('db-tab-' + tab).focus();
   }
-  function closeItem() { $('db-item-view').hidden = true; $('db-list-view').hidden = false; drawItems(); }
+  function closeItem() { $('db-item-view').hidden = true; $('db-list-view').hidden = true; view.classList.remove('db-has-sel'); }
   function select(id, opts2 = {}) {
     selId = id; if (!opts2.keepTab) tab = 'data';
     grid.querySelectorAll('.db-card').forEach(c => { const on = c.dataset.w === id; c.classList.toggle('is-sel', on); c.querySelector('.db-sel')?.setAttribute('aria-pressed', on); });
@@ -712,15 +709,17 @@
   function closeMenu(refocus) { if (!menu) return; const g = menu.grip; menu.el.remove(); g.setAttribute('aria-expanded', 'false'); menu = null; if (refocus) g.focus(); }
   function openMenu(g) {
     const was = menu && menu.grip === g; closeMenu(false); if (was) return;
-    const i = +(g.dataset.grip ?? g.dataset.rsz), n = data.widgets.length, sizeMenu = g.hasAttribute('data-rsz');
+    const i = +g.dataset.grip, n = data.widgets.length;
     const items = [['Move left', i - 1, i === 0], ['Move right', i + 1, i === n - 1], ['Move to first place', 0, i === 0], ['Move to last place', n - 1, i === n - 1]];
-    const w = data.widgets[i], wi = ORDER.indexOf(w.w), hs = Object.keys(HEIGHTS), hi = hs.indexOf(w.h), chart = TYPES[w.type].kind !== 'kpi';
-    const sizes = [['Make wider', 'w+', wi === ORDER.length - 1], ['Make narrower', 'w-', wi === 0]].concat(chart ? [['Make taller', 'h+', hi === hs.length - 1], ['Make shorter', 'h-', hi === 0]] : []);
-    const el = document.createElement('div'); el.className = 'move-menu'; el.setAttribute('role', 'menu'); el.setAttribute('aria-label', `${sizeMenu ? 'Resize' : 'Move'} ${w.title}`);
-    el.innerHTML = sizeMenu   // ⋮⋮ = move only; the Resize button = sizes (click alternative to dragging the handles, WCAG 2.5.7)
-      ? sizes.map(([t, sz, dis]) => `<button type="button" role="menuitem" data-size="${sz}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('')
-      : items.map(([t, to, dis]) => `<button type="button" role="menuitem" data-to="${to}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('');
+    const w = data.widgets[i];
+    // ⋮⋮ = move only. Resizing without dragging (WCAG 2.5.7) = Appearance → Size, or Ctrl+Shift+arrows
+    const el = document.createElement('div'); el.className = 'move-menu'; el.setAttribute('role', 'menu'); el.setAttribute('aria-label', `Move ${w.title}`);
+    el.innerHTML = items.map(([t, to, dis]) => `<button type="button" role="menuitem" data-to="${to}"${dis ? ' aria-disabled="true"' : ''} tabindex="-1">${t}</button>`).join('');
     g.parentElement.appendChild(el); g.setAttribute('aria-expanded', 'true'); menu = { el, grip: g, from: i };
+    // opens to the right; if that would run under the properties panel, it opens to the left instead
+    const area = $('db-main').getBoundingClientRect(), panel = view.querySelector('.db-panel:not([hidden])')?.getBoundingClientRect();
+    const edge = Math.min(area.right, panel && panel.width ? panel.left : Infinity) - 8;
+    if (el.getBoundingClientRect().right > edge) el.classList.add('is-left');
     el.querySelector('[role="menuitem"]:not([aria-disabled])')?.focus();
   }
   grid.addEventListener('keydown', e => {
@@ -737,9 +736,8 @@
     const t = e.target;
     const it = t.closest('.move-menu [role^="menuitem"]');
     if (it) { if (it.getAttribute('aria-disabled') === 'true') return; const from = menu.from; closeMenu(false);
-      if (it.dataset.size) return resizeBy(data.widgets[from], it.dataset.size);
       return move(from, +it.dataset.to); }
-    const g = t.closest('[data-grip], [data-rsz]'); if (g) return openMenu(g);
+    const g = t.closest('[data-grip]'); if (g) return openMenu(g);
     const c = t.closest('[data-copy]'); if (c) return copy(c.dataset.copy);
     const d = t.closest('[data-del]'); if (d) return askDelete(d.dataset.del, d);
     if (preview) return;
@@ -747,13 +745,6 @@
     if (mb) { tab = 'data'; select(mb.dataset.mod, { keepTab: true }); $('db-module')?.focus(); return; }
     const card = t.closest('.db-card'); if (card) select(card.dataset.w, { focusPanel: false });
   });
-  function resizeBy(w, sz) {
-    snap();
-    if (sz[0] === 'w') { const k = ORDER.indexOf(w.w); w.w = ORDER[Math.max(0, Math.min(ORDER.length - 1, (k < 0 ? 2 : k) + (sz[1] === '+' ? 1 : -1)))]; }
-    else { const hs = Object.keys(HEIGHTS), k = hs.indexOf(w.h); w.h = hs[Math.max(0, Math.min(hs.length - 1, k + (sz[1] === '+' ? 1 : -1)))]; }
-    redraw(`[data-sel="${w.id}"]`);
-    S.announce(`${w.title} is now ${WIDTHS[w.w].toLowerCase()}${TYPES[w.type].kind !== 'kpi' ? `, ${HEIGHTS[w.h][0].toLowerCase()} height` : ''}.`);
-  }
   // Delete key on a selected card's title button
   /* ---------- Keyboard shortcuts ---------- */
   const mod = e => e.ctrlKey || e.metaKey;
@@ -801,7 +792,7 @@
   function areas() {
     return [view.querySelector('.db-pal-item'),
       grid.querySelector(`[data-sel="${selId}"]`) || grid.querySelector('.db-sel') || $('db-page-t'),
-      !$('db-item-view').hidden ? $('db-tab-' + tab) : ($('db-items').querySelector('[data-sel]') || $('db-items'))].filter(Boolean);
+      !$('db-item-view').hidden ? $('db-tab-' + tab) : null].filter(Boolean);
   }
   document.addEventListener('keydown', e => {
     if (view.hidden || document.querySelector('dialog[open]')) return;
@@ -945,7 +936,7 @@
   const iv = $('db-item-view');
   iv.addEventListener('click', e => {
     const t = e.target, w = W(selId); if (!w) return;
-    if (t.closest('#db-item-back')) { const id = selId; select(null); $('db-items').querySelector(`[data-sel="${id}"]`)?.focus(); return; }
+    if (t.closest('#db-item-close')) { const id = selId; select(null); grid.querySelector(`[data-sel="${id}"]`)?.focus(); S.announce('Visualisation Properties closed.'); return; }
     const tb = t.closest('[data-tab]'); if (tb) { tab = tb.dataset.tab; openItem(true); return; }
     const s = t.closest('[data-sw]'); if (s) { snap(); w[s.dataset.sw] = !w[s.dataset.sw]; drawGrid(); openItem(false); iv.querySelector(`[data-sw="${s.dataset.sw}"]`)?.focus(); return; }
     if (t.closest('#db-add-filter')) return openFilter(w, -1, t.closest('#db-add-filter'));
@@ -960,8 +951,7 @@
     const t = e.target, w = W(selId); if (!w) return;
     if (t.dataset.chk) { snap(); w[t.dataset.chk] = t.checked; const k2 = t.dataset.chk; drawGrid(); openItem(false); iv.querySelector(`[data-chk="${k2}"]`)?.focus(); return; }
     if (!t.matches('input[type="text"], textarea')) snap();
-    if (t.hasAttribute('data-run')) w.running = t.value === 'running';
-    else if (t.dataset.k) { w[t.dataset.k] = t.dataset.k === 'w' ? +t.value : t.dataset.k === 'upGood' ? t.value === 'good' : t.value; }
+    if (t.dataset.k) { w[t.dataset.k] = t.dataset.k === 'w' ? +t.value : t.dataset.k === 'upGood' ? t.value === 'good' : t.value; }
     else if (t.hasAttribute('data-style')) w.type = t.value;
     else return;
     const id = t.id; drawGrid(); openItem(false); $(id)?.focus();
