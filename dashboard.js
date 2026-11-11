@@ -507,9 +507,12 @@
   function displayTab(w) {
     const k = TYPES[w.type].kind;
     const cnt = (key, max) => `<div class="fp-meta"><span class="fp-error"></span><span class="fp-count" data-cnt="${key}">${(w[key] || '').length}/${max}<span class="sr-only"> characters</span></span></div>`;
-    let h = box('Title',
-      field('db-ttl', 'Title', `<input class="fp-input" id="db-ttl" type="text" maxlength="${LIMIT.title}" data-k="title" value="${esc(w.title)}" autocomplete="off">`));   // limit kept, counter not shown
-    // (Size is not in the panel: resize by dragging the handles, Ctrl+Shift+arrows, or the card's ⋮⋮ menu)
+    // Title, then Size (named grid sizes, not px; Height only for charts) — chart titles sit with the look, as in Power BI / Looker / Sheets
+    const wSel = field('db-sz-w', 'Width', sel('db-sz-w', 'w', Object.entries(WIDTHS), w.w));
+    let h = box('Title', field('db-ttl', 'Title', `<input class="fp-input" id="db-ttl" type="text" maxlength="${LIMIT.title}" data-k="title" value="${esc(w.title)}" autocomplete="off">`))
+      + box('Size', k === 'kpi' ? wSel
+      : `<div class="dc-px-row">${wSel}${field('db-sz-h', 'Height', sel('db-sz-h', 'h', Object.entries(HEIGHTS).map(([v, [t]]) => [v, t]), w.h || 'medium'))}</div>`);
+    // (Size is also on the canvas: drag the handles, Ctrl+Shift+arrows, or the card's Resize menu)
     if (k === 'kpi') h += numBox(w) + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Comparison</h3>${sw('compare', w.compare, 'Comparison')}</div>
       ${w.compare ? field('db-cw', 'Compare With', sel('db-cw', 'cmpWith', [['month', 'Previous month'], ['quarter', 'Previous 3 months'], ['year', 'Same month last year']], w.cmpWith || 'month'))
         + field('db-ca', 'Show Change As', sel('db-ca', 'cmpAs', [['pct', 'Percentage'], ['num', 'Number']], w.cmpAs || 'pct'))
@@ -544,8 +547,8 @@
       </div></div>
       <div class="fp-scroll"><div class="fpp-body" id="db-tabpanel" role="tabpanel" aria-labelledby="db-tab-${tab}">
         <p class="fpp-intro">${tab === 'data'
-          ? 'Data controls what this visualisation shows and which records it counts.'
-          : 'Appearance controls how this visualisation looks on the dashboard.'}</p>
+          ? 'Data controls the records behind this item and how they are counted.'
+          : 'Appearance controls how this item looks on the dashboard.'}</p>
         ${tab === 'data' ? dataTab(w) : displayTab(w)}
       </div></div>`;
     v.querySelector('.fp-scroll').scrollTop = y;

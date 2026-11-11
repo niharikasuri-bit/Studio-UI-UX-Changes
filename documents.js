@@ -825,7 +825,7 @@
   const P = k => ((W.doc.props = W.doc.props || {})[k] = W.doc.props[k] || {});
   const seg = (name, label, opts2, cur) => `<fieldset class="dc-seg-fs"><legend class="fpp-label">${label}</legend>
       <div class="dc-seg">${opts2.map(([v, t]) => `<label class="dc-seg-opt"><input type="radio" name="${name}" value="${v}" data-look="${name}"${v === cur ? ' checked' : ''}><span>${t}</span></label>`).join('')}</div></fieldset>`;
-  const EL_INTRO = '<p class="fpp-intro">Element controls what this element shows on the document, such as its text, image or link. Any change you make here shows straight away in the preview.</p>';
+  const EL_INTRO = '<p class="fpp-intro">Element controls the content of this item on the document.</p>';
   const NO_VARS = ['orgName', 'orgAddr'];   // the organisation's real details, not per-application values
   const PH = { orgName: 'Enter organization name', orgAddr: 'Enter organization address' };
   let lastField = null;   // where a personalization variable is inserted
@@ -870,7 +870,7 @@
   }
   // Templates are approved designs: Appearance only explains that the layout is locked
   function appearanceTabHTML() {
-    return `<p class="fpp-intro">Appearance controls how this element looks on the document, such as its size, alignment and position on the page.</p>
+    return `<p class="fpp-intro">Appearance controls how this item looks and where it sits on the document.</p>
       <div class="ntw-info dc-lock" role="note" aria-labelledby="dc-lock-t">
         <p class="ntw-info-title" id="dc-lock-t">${I.lock} Template Locked</p>
         <p class="ntw-info-text">Layout, size and position are locked to preserve the approved document design. You can still edit the element content.</p>
@@ -1284,7 +1284,7 @@
             <input class="fp-input" id="dc-uq-link" type="url" inputmode="url" value="${esc(d.qrLink || '')}" placeholder="Enter the link the QR code opens" autocomplete="off"></div></div>`
         : `<div class="fpp-box"><h3 class="fpp-box-title">Personalization Variable</h3><div class="fpp-field"><label class="fpp-label" for="dc-uv-name">Variable</label>
             <input class="fp-input dc-readonly" id="dc-uv-name" type="text" readonly aria-readonly="true" value="{${esc(b.name)}}"></div></div>`)
-      : `<p class="fpp-intro">Appearance controls how this element looks on the document, such as its size, alignment and position on the page.</p>
+      : `<p class="fpp-intro">Appearance controls how this item looks and where it sits on the document.</p>
          <div class="fpp-box"><h3 class="fpp-box-title">Position</h3><div class="dc-px-row">${px('dc-ap-x', 'X-Axis', b.x)}${px('dc-ap-y', 'Y-Axis', b.y)}</div></div>
          ${sel.t === 'qr'
            ? `<div class="fpp-box"><h3 class="fpp-box-title">Size</h3><div class="dc-px-row">${px('dc-ap-w', 'Width', b.w)}${px('dc-ap-h', 'Height', b.h)}</div></div>`

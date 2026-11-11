@@ -394,7 +394,7 @@
 
   function elementsHTML(f) {
     const typeOpts = Object.keys(TYPE_LABEL).filter(k => k !== 'document').map(k => ({ v: k, t: TYPE_LABEL[k] }));
-    let html = `<p class="fpp-intro">In Elements you can edit form labels, heading and fields. You can customise each field's name, type, and behaviour to match your service needs.</p>`;
+    let html = `<p class="fpp-intro">Elements controls the content of this item on the form.</p>`;
     html += box(`<span class="fpp-label" id="fpp-type-l">Field type</span>${sel('type', 'fpp-type', 'fpp-type-l', typeOpts, f.type === 'document' ? 'docUpload' : f.type, { disabled: true })}`, 'is-disabled');
     html += box(inp('fpp-label', 'Label', f.label, 'label', ' maxlength="60"'));
     html += box(`<div class="fpp-box-head"><h3 class="fpp-box-title">Required</h3>${sw('mandatory', !!f.required, 'Required', f.fixed || f.logic.dep.on, f.logic.dep.on && !f.fixed ? 'This field is shown only to some applicants, so it can\u2019t be required. Turn off Dependent Field to make it required.' : '')}</div>
@@ -450,7 +450,7 @@
     : {};   // mobile, email (format already checked), dropdown (fixed options)
   function logicHTML(f) {
     const L = f.logic, r = RULES[L.rule] || RULES.none, use = LOGIC_FOR(f);
-    let html = `<p class="fpp-intro">Define the rules and behaviours that control how this field responds to user input. Add visibility conditions, dependencies, validations, and expressions to make your form dynamic.</p>`;
+    let html = `<p class="fpp-intro">Logic controls the rules for this item on the form.</p>`;
     if (use.files) {
       // "File validation" switch; when on, choose the accepted file types (no size limit)
       const d = f.doc || (f.doc = { on: false, types: ['pdf', 'jpg', 'png'] });
