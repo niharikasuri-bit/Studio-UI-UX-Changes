@@ -344,7 +344,7 @@
 <link rel="stylesheet" href="notifications.css?v=1794408816" />
 <link rel="stylesheet" href="checklists.css?v=1794408816" />
 <link rel="stylesheet" href="payments.css?v=1794408816" />
-<link rel="stylesheet" href="documents.css?v=1794410800" />
+<link rel="stylesheet" href="documents.css?v=1794420463" />
 <link rel="stylesheet" href="landing.css?v=1794419528" />
 <link rel="stylesheet" href="dashboard.css?v=1794414100" />
 </head>
@@ -619,6 +619,28 @@
     <div class="modal-foot end">
       <button type="button" class="btn btn-secondary" data-close id="states-cancel">Cancel</button>
       <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- After a new module's activation state: how to create its form (same structure as "How would you like to create your document?") -->
+<dialog class="modal ntw dcw" id="fm-how" aria-labelledby="fm-how-title" aria-describedby="fm-how-desc">
+  <form id="fm-how-form" novalidate>
+    <div class="ntw-body">
+      <button type="button" class="icon-btn ntw-close" data-close aria-label="Close"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <h2 class="ntw-title" id="fm-how-title">How would you like to create your form?</h2>
+      <p class="ntw-desc" id="fm-how-desc">Choose how you would like to create your form.</p>
+      <fieldset class="ntw-tiles"><legend class="sr-only">How to create the form</legend>
+        <label class="ntw-tile"><input type="radio" name="fm-how" value="COPY"><span class="ntw-tile-ico"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="8" y="8" width="13" height="13" rx="2" fill="currentColor"/><path d="M5 16H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          <span class="ntw-tile-title">Copy Primary Module Form</span><span class="ntw-tile-text">Start from the primary module form and customize it.</span></label>
+        <label class="ntw-tile"><input type="radio" name="fm-how" value="SCRATCH"><span class="ntw-tile-ico"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="4" y="2" width="16" height="20" rx="2" fill="currentColor"/><path d="M12 8v8M8 12h8" fill="none" class="ntw-ico-cut" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+          <span class="ntw-tile-title">Create From Scratch</span><span class="ntw-tile-text">Start with a blank form and add your own fields.</span></label>
+      </fieldset>
+      <p class="error dc-how-err" id="fm-how-err" hidden>Select how you would like to create your form.</p>
+    </div>
+    <div class="ntw-foot">
+      <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+      <button type="submit" class="btn btn-primary">Next</button>
     </div>
   </form>
 </dialog>
@@ -1015,7 +1037,7 @@
       return;
     }
     if (flow) {
-      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794420038';   // version forces a fresh copy after edits
+      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1794420323';   // version forces a fresh copy after edits
       if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
       frame.title = `Process flow designer for ${m.name}`;
       document.title = `Process Flow – ${m.name} – Studio Prototype – Studio`;
@@ -1049,10 +1071,10 @@
      mode 'edit'  : from "Edit activation state" on a module page
      mode 'setup' : straight after a new module is added (primary states only) */
   const sDialog = $('states-dialog'), sForm = $('states-form'), sList = $('states-list');
-  let sKind = 'primary', sOpener = null, sModule = null, sMode = 'edit';
+  let sKind = 'primary', sOpener = null, sModule = null, sMode = 'edit', sSaved = false;
 
   function openStates(kind, module, mode, opener) {
-    sKind = kind; sModule = module; sMode = mode; sOpener = opener;
+    sKind = kind; sModule = module; sMode = mode; sOpener = opener; sSaved = false;
     const chosen = module[kind + 'States'] || [];
     const name = `<q>${esc(module.name)}</q>`;
     if (mode === 'setup') {
@@ -1084,6 +1106,8 @@
   }
   sList.addEventListener('change', () => { if (!$('states-error').hidden) clearStatesError(); });
   sDialog.addEventListener('close', () => {
+    // A new module's activation state is saved → next ask how its form should be created
+    if (sMode === 'setup' && sSaved && !sModule.formFrom) { sSaved = false; return openFormHow(sModule); }
     // After setup, focus lands on the new module's "Edit Configuration" link
     const target = sMode !== 'setup' ? sOpener
       : !viewModule.hidden ? $('activation-toggle')
@@ -1103,8 +1127,36 @@
     sModule[sKind + 'States'] = picked;
     saveModules();
     if (!viewModule.hidden && current === sModule) renderModule(sModule);
+    sSaved = true;
     sDialog.close();
     live.textContent = `${sKind === 'primary' ? 'Primary' : 'Secondary'} activation state(s) saved for ${sModule.name}.`;
+  });
+
+  /* ---------- How would you like to create your form? (after a new module's activation state) ---------- */
+  const fmDlg = $('fm-how'); let fmModule = null;
+  // Nothing is preselected: Next asks for a choice
+  function openFormHow(module) {
+    fmModule = module;
+    fmDlg.querySelectorAll('input[name="fm-how"]').forEach(r => { r.checked = false; });
+    clearFormHowError();
+    fmDlg.showModal(); fmDlg.querySelector('input[name="fm-how"]').focus();
+  }
+  function clearFormHowError() { $('fm-how-err').hidden = true; fmDlg.querySelector('.ntw-tiles').removeAttribute('aria-describedby'); }
+  fmDlg.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => fmDlg.close()));
+  fmDlg.addEventListener('change', clearFormHowError);
+  fmDlg.addEventListener('close', () => {
+    // Same landing as after the activation state: the module page's toggle, or the new module's card link
+    const target = !viewModule.hidden ? $('activation-toggle') : fmModule && grid.querySelector(`a[href="#/module/${fmModule.id}"]`);
+    if (target) target.focus();
+  });
+  $('fm-how-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const picked = fmDlg.querySelector('input[name="fm-how"]:checked');
+    if (!picked) { $('fm-how-err').hidden = false; fmDlg.querySelector('.ntw-tiles').setAttribute('aria-describedby', 'fm-how-err'); fmDlg.querySelector('input[name="fm-how"]').focus(); return; }
+    fmModule.formFrom = picked.value === 'COPY' ? 'copy' : 'scratch';
+    saveModules();
+    fmDlg.close();
+    live.textContent = picked.value === 'COPY' ? `${fmModule.name} form will start as a copy of the primary module form.` : `${fmModule.name} form will start from scratch.`;
   });
 
   /* ---------- Add module popup ---------- */
@@ -1145,12 +1197,12 @@
 })();
 </script>
 <script src="roles.js?v=1794413400"></script>
-<script src="notifications.js?v=1794419209"></script>
-<script src="checklists.js?v=1794419209"></script>
-<script src="payments.js?v=1794419209"></script>
-<script src="documents.js?v=1794419209"></script>
+<script src="notifications.js?v=1794420497"></script>
+<script src="checklists.js?v=1794420497"></script>
+<script src="payments.js?v=1794420497"></script>
+<script src="documents.js?v=1794420497"></script>
 <script src="landing.js?v=1794408816"></script>
-<script src="dashboard.js?v=1794419629"></script>
+<script src="dashboard.js?v=1794420323"></script>
 <script src="form.js?v=1794413200"></script>
 
 </body>
