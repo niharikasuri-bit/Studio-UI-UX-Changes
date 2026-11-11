@@ -340,7 +340,7 @@
 .db-item .del-btn svg { width: 20px; height: 20px; }
 /* hover = orange stroke only, no tint (document / form cards) */
 #db-items .lp-fc:has(.lp-fc-open):hover { border-color: var(--primary); }
-.db-pal-item:hover { border-color: #C84C0E; box-shadow: none; }
+.db-pal-item:hover { border-color: #C84C0E; box-shadow: 0 4px 12px rgba(0,0,0,.12); }
 
 /* palette item names #363636, same as the process flow's state names */
 .db-pal-name { color: #363636; }
