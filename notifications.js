@@ -75,7 +75,7 @@
 
           <section data-step="how">
             <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="ntw-title-how">How do you want to add the notification?</h2>
-            <p class="ntw-desc">Create a new notification, or copy one that already exists in this module.</p></div>
+            <p class="ntw-desc">Pick a starting point for adding your notification. You can edit its content after this step.</p></div>
             <fieldset class="ntw-options"><legend class="sr-only">How to add the notification</legend>
               <label class="ntw-radio"><input type="radio" name="ntw-mode" value="new" checked><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">Create new notification</span><span class="ntw-rtext">Create a new notification for this module.</span></span></label>
               <label class="ntw-radio"><input type="radio" name="ntw-mode" value="copy"><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">Copy existing notification</span><span class="ntw-rtext">Copy a notification and edit the copy.</span></span></label>
