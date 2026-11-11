@@ -282,10 +282,6 @@
       <div class="form-main db-main" id="db-main">
         <div class="db-bar" role="toolbar" aria-label="Dashboard tools">
           <p class="db-stats" id="db-stats" aria-live="polite"></p>
-          <div class="db-bar-acts">
-            <button type="button" class="btn btn-secondary db-bar-btn" id="db-undo" aria-keyshortcuts="Control+Z" disabled>${I.undo}<span class="db-bar-t">Undo</span></button>
-            <button type="button" class="btn btn-secondary db-bar-btn" id="db-redo" aria-keyshortcuts="Control+Y" disabled>${I.redo}<span class="db-bar-t">Redo</span></button>
-          </div>
         </div>
         <div class="db-head">
           <div class="dc-name-row"><h2 class="page-title" id="db-title" tabindex="-1"></h2></div>
@@ -902,8 +898,6 @@
     if (id === 'db-range-from') rFrom = e.target.value; else rTo = e.target.value;
     if (rFrom && rTo) { drawGrid(); S.announce(`Showing ${rFrom} to ${rTo}.`); }
   }));
-  $('db-undo').addEventListener('click', () => restore(past, future, 'Undo'));
-  $('db-redo').addEventListener('click', () => restore(future, past, 'Redo'));
   $('db-save').addEventListener('click', () => { save(); S.toast('Dashboard saved successfully'); S.announce('Dashboard saved.'); });
 
   window.StudioDashboard = {

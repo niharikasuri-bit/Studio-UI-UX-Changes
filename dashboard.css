@@ -264,9 +264,9 @@
 .db-bar-btn:disabled { border-color: #D6D5D4; color: #9E9E9E; background: #F5F5F5; cursor: not-allowed; }
 .db-head { padding-top: 8px; }
 
-/* side panels meet the white tools bar flush (no rounded corner leaving a grey notch), like process flow */
-.db-palette, .db-palette .fp-head { border-radius: 0; }
-.db-panel, .db-panel .fp-head, .db-panel .fpp-top { border-top-left-radius: 0; }
+/* side panels keep the Studio panel corner radius (16px on the inner top corner), like the form and document editors */
+.db-palette, .db-palette .fp-head { border-radius: 0 16px 0 0; }
+.db-panel, .db-panel .fp-head { border-radius: 16px 0 0 0; }
 
 /* Appearance → Description: shorter box (about 2 lines) */
 #db-dsc { min-height: 64px; height: 64px; }
