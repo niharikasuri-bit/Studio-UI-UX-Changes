@@ -131,10 +131,7 @@
 .db-grid { padding-top: 20px; }
 /* widths follow the space the dashboard has (container query): narrow canvas → quarter / third cards become half, two-thirds full */
 .db-main { container-type: inline-size; }
-@container (max-width: 860px) {
-  .db-card[data-span="4"] { grid-column: span 6; }
-  .db-card[data-span="8"] { grid-column: span 12; }
-}
+/* (removed the 860px remap: a third / two-thirds silently became half / full, so resizing looked stuck) */
 @container (max-width: 520px) { .db-card { grid-column: span 12 !important; } }
 .db-kpi-v { font-size: clamp(24px, 3.2vw, 32px); overflow-wrap: anywhere; }
 /* item names readable: dark text on the grey card (19:1) */
@@ -371,3 +368,8 @@ body.db-resizing-x, body.db-resizing-x * { cursor: ew-resize !important; }
 body.db-resizing-y, body.db-resizing-y * { cursor: ns-resize !important; }
 body.db-resizing-xy, body.db-resizing-xy * { cursor: nwse-resize !important; }
 @media (prefers-reduced-motion: reduce) { .db-ghost { transition: none; } }
+
+/* While resizing: faint 12-column guides so it is clear where the card will snap */
+.db-grid.db-cols { background-image: repeating-linear-gradient(to right, rgba(200, 76, 14, .08) 0 var(--db-col), transparent var(--db-col) calc(var(--db-col) + var(--db-gap)));
+                   background-origin: content-box; background-clip: content-box; }
+.db-card.is-resizing .db-card-body { opacity: 1; }

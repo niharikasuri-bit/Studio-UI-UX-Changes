@@ -55,7 +55,9 @@
   const OPS = [['eq', 'Is equal to', 'is'], ['ne', 'Is not equal to', 'is not']];
   // a filter = conditions joined by "And" (same as the form's Display Logic); older saved filters are converted
   const normFilters = w => { w.filters = (w.filters || []).map((f, i) => f.conds ? f : { name: `Filter ${i + 1}`, conds: f.field ? [{ field: f.field, op: 'eq', value: f.value }] : [] }); return w.filters; };
-  const WIDTHS = { 3: 'Quarter', 4: 'One Third', 6: 'Half', 8: 'Two Thirds', 12: 'Full Width' };
+  // every column from 3 to 12 of the 12-column grid; the common ones keep their names
+  const WNAME = { 3: 'Quarter', 4: 'One Third', 6: 'Half', 8: 'Two Thirds', 9: 'Three Quarters', 12: 'Full Width' };
+  const WIDTHS = Object.fromEntries([3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => [n, WNAME[n] ? `${WNAME[n]} (${n} of 12)` : `${n} of 12 columns`]));
   const HEIGHTS = { small: ['Small', 200], medium: ['Medium', 280], large: ['Large', 360] };
   // 3:1+ against white, white text 4.5:1+ on each
   const COLOURS = ['#0B4B66', '#C84C0E', '#00703C', '#5B3FC4', '#9E5F00', '#0057BD'];
@@ -496,9 +498,8 @@
   function displayTab(w) {
     const k = TYPES[w.type].kind;
     const cnt = (key, max) => `<div class="fp-meta"><span class="fp-error"></span><span class="fp-count" data-cnt="${key}">${(w[key] || '').length}/${max}<span class="sr-only"> characters</span></span></div>`;
-    let h = box('Title and Description',
-      field('db-ttl', 'Title', `<input class="fp-input" id="db-ttl" type="text" maxlength="${LIMIT.title}" data-k="title" value="${esc(w.title)}" autocomplete="off">${cnt('title', LIMIT.title)}`)
-      + field('db-dsc', 'Description', `<textarea class="fp-textarea db-ta" id="db-dsc" maxlength="${LIMIT.desc}" data-k="desc">${esc(w.desc)}</textarea>${cnt('desc', LIMIT.desc)}`));
+    let h = box('Title',
+      field('db-ttl', 'Title', `<input class="fp-input" id="db-ttl" type="text" maxlength="${LIMIT.title}" data-k="title" value="${esc(w.title)}" autocomplete="off">${cnt('title', LIMIT.title)}`));
     // Size without dragging (WCAG 2.5.7): same options the resize handles snap to
     h += box('Size', field('db-sz-w', 'Width', sel('db-sz-w', 'w', Object.entries(WIDTHS).map(([v, n]) => [v, n]), String(w.w)))
       + (k !== 'kpi' ? field('db-sz-h', 'Height', sel('db-sz-h', 'h', Object.entries(HEIGHTS).map(([v, n]) => [v, n[0]]), w.h)) : ''));
@@ -714,7 +715,7 @@
   kbDlg.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => kbDlg.close()));
   kbDlg.addEventListener('click', e => { if (e.target === kbDlg) kbDlg.close(); });
   kbDlg.addEventListener('close', () => { kbBack && document.contains(kbBack) && kbBack.focus(); });
-  const ORDER = [3, 4, 6, 8, 12];
+  const ORDER = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   // On a visualisation (its title button)
   grid.addEventListener('keydown', e => {
     const b = e.target.closest('.db-sel'); if (!b || menu) return;
@@ -788,20 +789,21 @@
     rs = { w, card, ghost, axis: hd.dataset.axis || 'xy', x: e.clientX, y: e.clientY, width: r.width, height: r.height, col, gap, chartH,
            isChart: !!ch && TYPES[w.type].kind !== 'kpi', span: w.w, h: w.h };
     hd.setPointerCapture(e.pointerId); card.classList.add('is-resizing'); document.body.classList.add('db-resizing-' + rs.axis);
+    grid.style.setProperty('--db-col', col + 'px'); grid.style.setProperty('--db-gap', gap + 'px'); grid.classList.add('db-cols');   // show the 12 columns
     select(w.id, { keepTab: true }); paintGhost();
   });
   function paintGhost() {
     const { ghost, span, h, col, gap, height, isChart, w } = rs;
     ghost.style.width = (span * col + (span - 1) * gap) + 'px';
     ghost.style.height = (isChart ? height + HEIGHTS[h][1] - HEIGHTS[w.h][1] : height) + 'px';   // grows / shrinks from the card's current height
-    ghost.firstChild.textContent = WIDTHS[span] + (isChart ? ' · ' + HEIGHTS[h][0] : '');
+    ghost.firstChild.textContent = WIDTHS[span] + (isChart ? ' · ' + HEIGHTS[h][0] + ' height' : '');
     ghost.classList.toggle('is-same', span === w.w && h === w.h);
   }
   grid.addEventListener('pointermove', e => {
     if (!rs) return;
     if (rs.axis !== 'y') {
       const want = (rs.width + e.clientX - rs.x + rs.gap) / (rs.col + rs.gap);
-      rs.span = [3, 4, 6, 8, 12].reduce((a, b) => (Math.abs(b - want) < Math.abs(a - want) ? b : a));
+      rs.span = Math.max(3, Math.min(12, Math.round(want)));
     }
     if (rs.axis !== 'x' && rs.isChart) {
       const hh = HEIGHTS[rs.w.h][1] + e.clientY - rs.y;
@@ -811,7 +813,7 @@
   });
   const endResize = () => {
     if (!rs) return; const { w, span, h, card, ghost, axis } = rs; rs = null;
-    ghost.remove(); card.classList.remove('is-resizing'); document.body.classList.remove('db-resizing-' + axis);
+    ghost.remove(); card.classList.remove('is-resizing'); document.body.classList.remove('db-resizing-' + axis); grid.classList.remove('db-cols');
     if (span === w.w && h === w.h) return;
     snap(); w.w = span; w.h = h; redraw(`[data-sel="${w.id}"]`);
     S.announce(`${w.title} resized to ${WIDTHS[span].toLowerCase()}${TYPES[w.type].kind !== 'kpi' ? `, ${HEIGHTS[h][0].toLowerCase()} height` : ''}.`);
