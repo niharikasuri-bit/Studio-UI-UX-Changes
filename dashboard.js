@@ -285,6 +285,7 @@
           <p class="db-stats" id="db-stats" aria-live="polite"></p>
         </div>
         <div class="db-head">
+          <h2 class="db-prev-title">Preview Dashboard</h2>
           <p class="db-desc" id="db-desc"></p>
         </div>
         <p class="sr-only" id="db-kb-hint">Arrow keys go to the next or previous visualisation. Control plus arrow keys move it. Control Shift plus arrow keys resize it. Delete removes it. Control plus slash lists all keyboard shortcuts.</p>
