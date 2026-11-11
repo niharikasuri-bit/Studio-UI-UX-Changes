@@ -264,9 +264,19 @@
 .db-bar-btn:disabled { border-color: #D6D5D4; color: #9E9E9E; background: #F5F5F5; cursor: not-allowed; }
 .db-head { padding-top: 8px; }
 
-/* side panels keep the Studio panel corner radius (16px on the inner top corner), like the form and document editors */
-.db-palette, .db-palette .fp-head { border-radius: 0 16px 0 0; }
-.db-panel, .db-panel .fp-head { border-radius: 16px 0 0 0; }
+/* Panels = process flow: both inner corners rounded (16px top and bottom); the dashboard slides 16px under each panel,
+   so the white tools bar runs behind the rounded corners (no grey notch) */
+.db-palette { position: relative; z-index: 2; border-radius: 0 16px 16px 0; overflow: hidden; }
+.db-palette .fp-head { border-radius: 0 16px 0 0; }
+.db-panel { position: relative; z-index: 2; border-radius: 16px 0 0 16px; overflow: hidden; }
+.db-panel .fp-head, .db-panel .fpp-top { border-radius: 16px 0 0 0; }
+.db-main { margin: 0 -32px 0 -16px; padding-left: 48px; padding-right: 48px; }   /* right: the canvas scrollbar sits behind the panel */
+.db-bar { margin: 0 -48px; padding: 0 48px; }
+@media (min-width: 1024px) and (max-width: 1099px) {
+  .db-body .form-main { padding: 0 40px 24px; }
+  .db-bar { margin: 0 -40px; padding: 0 40px; }
+}
+.db-previewing .db-main { margin: 0; padding-left: 32px; padding-right: 32px; }
 
 /* Appearance → Description: shorter box (about 2 lines) */
 #db-dsc { min-height: 64px; height: 64px; }
@@ -320,3 +330,6 @@
 .db-previewing .db-bar { display: none; }
 .db-previewing .db-top-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .db-previewing .db-head { padding-top: 24px; }
+
+/* the canvas (and its sticky bar) stays underneath both panels */
+.db-main { position: relative; z-index: 1; }
