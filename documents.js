@@ -241,7 +241,7 @@
     view.innerHTML = `${subbar}
     <main class="content nt-main">
       <div class="roles-head">
-        <h1 class="page-title" id="dc-title" tabindex="-1">Manage Documents</h1>
+        <h1 class="page-title" id="dc-title" tabindex="-1">Documents</h1>
         <button type="button" class="btn btn-primary roles-new" id="dc-new" aria-haspopup="dialog">${I.plusW} Create New Document</button>
       </div>
       <section class="section nt-filters" aria-label="Filter documents">

@@ -1,7 +1,7 @@
 /* ===== Tokens (DIGIT palette) ===== */
 :root {
   --primary: #c84c0e;
-  --primary-hover: #a63f0b;
+  --primary-hover: #a33e0b;   /* one dark orange for text on tints (same as Studio) */
   --primary-bg: #fbeee8;
   --secondary: #0b4b66;
   --text: #363636;
@@ -207,7 +207,7 @@ button { cursor: pointer; }
   display: flex; align-items: center; gap: 10px;
   height: 36px;
   position: relative;
-  font-size: 13px; color: var(--muted);
+  font-size: 14px; color: var(--muted);
   white-space: nowrap;
 }
 .stat strong { color: var(--text); font-weight: 700; }
@@ -350,7 +350,7 @@ button { cursor: pointer; }
   text-align: center; pointer-events: none;
 }
 .empty > * { pointer-events: auto; }
-.empty h2 { font-size: 18px; }
+.empty h2 { font-size: 20px; }
 .empty p { max-width: 380px; line-height: 1.5; }
 .empty .btn { margin-top: 8px; }
 .empty__art { display: flex; align-items: center; margin-bottom: 12px; opacity: 0.85; }
@@ -961,7 +961,7 @@ button { cursor: pointer; }
   overflow: hidden;
 }
 .empty-guide__head { padding: 20px 24px 14px; border-bottom: 1px solid var(--border); }
-.empty-guide__head h2 { font-size: 18px; color: var(--text); margin-bottom: 4px; }
+.empty-guide__head h2 { font-size: 20px; color: var(--text); margin-bottom: 4px; }
 .empty-guide__head .muted { max-width: none; font-size: 14px; }
 .empty-guide__body { padding: 16px 24px 20px; overflow-y: auto; }
 .empty-guide .help-steps { gap: 12px; }
@@ -1434,3 +1434,8 @@ button { cursor: pointer; }
 
 /* Input field labels are #0B0C0C, same as Studio */
 .field > label, .field__label, .esc-fields .field > label, .digit-label, .digit-field__label, .nf-label { color: #0B0C0C; }
+
+/* Buttons bold like the rest of Studio (DIGIT buttons are bold); small buttons 14px, not 13px */
+.btn { font-weight: 700; }
+.btn--small { font-size: 14px; }
+.stat strong { color: #363636; }

@@ -60,7 +60,7 @@
     </div>
     <main class="content nt-main">
       <div class="roles-head">
-        <h1 class="page-title" id="py-title" tabindex="-1">Manage Payment</h1>
+        <h1 class="page-title" id="py-title" tabindex="-1">Payment</h1>
         <button type="button" class="btn btn-primary roles-new" id="py-new" aria-haspopup="dialog">${I.plusW} Create New Payment</button>
       </div>
       <section class="section nt-filters" aria-label="Filter payments">

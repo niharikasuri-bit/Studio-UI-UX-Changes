@@ -47,7 +47,7 @@
     <main class="content roles-main">
       <div class="roles-head">
         <div class="roles-title-row">
-          <h1 class="page-title" id="roles-title" tabindex="-1">Manage Roles</h1>
+          <h1 class="page-title" id="roles-title" tabindex="-1">Roles</h1>
         </div>
         <button type="button" class="btn btn-primary roles-new" id="new-role-btn" aria-haspopup="dialog">${I.plusW} Create New Role</button>
       </div>

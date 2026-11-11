@@ -22,7 +22,7 @@
 .nt-foot { display: flex; align-items: center; gap: 16px; padding: 12px 24px 16px; border-top: 1px solid var(--divider); }
 .nt-act { height: 32px; min-width: 96px; }
 .nt-del { margin-left: -8px; height: 32px; padding: 0 8px; display: inline-flex; align-items: center; gap: 6px; border: 0; background: none;
-          border-radius: var(--radius-btn); font: inherit; font-size: 16px; font-weight: 500; color: #C84C0E; }
+          border-radius: var(--radius-btn); font: inherit; font-size: 16px; font-weight: 700; color: #C84C0E; }
 .nt-del:hover { background: var(--primary-tint); }
 .nt-del:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 
@@ -42,7 +42,7 @@
 .var-chip { display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 12px 0 8px; border: 1px solid #C5C5C5; border-radius: 15px;
             background: #fff; font: inherit; font-size: 13px; color: #363636; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 .var-chip svg { color: var(--primary); flex: none; }
-.var-chip:hover { border-color: var(--primary); background: var(--primary-tint); color: #A63E0B; }
+.var-chip:hover { border-color: var(--primary); background: var(--primary-tint); color: #A33E0B; }
 .var-chip:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 /* {Variable} tokens in the card message */
 .nt-var { padding: 0 2px; border-radius: 4px; background: #EEEEEE; color: #363636; font-weight: 500; }   /* grey token, 10.6:1 */
@@ -119,7 +119,7 @@
   background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4z' fill='%23505A5F'/%3E%3C/svg%3E") right 14px center / 12px no-repeat; }
 .ntw .error { font-size: 14px; color: #B91900; }
 .ntw-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 24px; border-top: 1px solid #D6D5D4; background: #FAFAFA; border-radius: 0 0 12px 12px; }
-.ntw-foot .btn { min-height: 40px; height: 40px; padding: 0 16px; font-size: 14px; font-weight: 500; min-width: 96px; }
+.ntw-foot .btn { min-height: 40px; height: 40px; padding: 0 16px; font-size: 16px; font-weight: 700; min-width: 96px; }
 .ntw-foot .btn:disabled { opacity: .5; cursor: not-allowed; }
 .nt-subject { font-size: 14px; color: #363636; }
 .nt-subject-k { font-weight: 700; color: #767676; }
@@ -135,7 +135,7 @@
 .pfc-desc { font-size: 16px; line-height: 1.5; color: #767676; overflow-wrap: anywhere; }
 .pfc-desc strong { color: #363636; font-weight: 700; }
 .pfc-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
-.pfc-actions .btn { height: 40px; min-height: 40px; font-size: 20px; font-weight: 500; }
+.pfc-actions .btn { height: 40px; min-height: 40px; font-size: 16px; font-weight: 700; }
 
 /* Rename = process flow (.nf-title-row / .nf-rename / .nf-name) */
 .ntw-name-row { gap: 4px; }
@@ -145,7 +145,7 @@
 
 /* Pencil buttons everywhere: 32px target, orange #C84C0E (4.6:1 on white), tint on hover, double focus ring */
 .ntw-rename, .role-edit, .dl-btn { width: 32px; height: 32px; border-radius: 4px; color: #C84C0E; display: inline-grid; place-items: center; }
-.ntw-rename:hover, .role-edit:hover, .dl-btn:hover { background: #FBEEE8; color: #A63E0B; }
+.ntw-rename:hover, .role-edit:hover, .dl-btn:hover { background: #FBEEE8; color: #A33E0B; }
 .ntw-rename:focus-visible, .role-edit:focus-visible, .dl-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px #fff, 0 0 0 5px #C84C0E; }
 /* Tags = process-flow "Select Notification" style: 24px, 4px radius, 12px/500, no border.
    State: blue #0057BD on #E7F0FB (5.9:1). Type (SMS/Email): amber #9E5F00 on #FFF6E5 (4.9:1) */
@@ -215,7 +215,7 @@
 .nt-filters .nt-clear:hover:not(:disabled) { background: none; color: var(--primary); text-decoration-thickness: 2px; }
 .nt-filters .nt-clear:disabled { color: #767676; text-decoration: none; }
 /* Clear = secondary CTA (white, orange border + text), 40px, right end of the filter row; disabled = DIGIT grey */
-.nt-filters .nt-clear.nt-clear-btn { height: 40px; min-width: 100px; padding: 0 20px; text-decoration: none; font-size: 16px; font-weight: 500;
+.nt-filters .nt-clear.nt-clear-btn { height: 40px; min-width: 100px; padding: 0 20px; text-decoration: none; font-size: 16px; font-weight: 700;
                                     background: #fff; color: var(--primary); border: 1px solid var(--primary); }
 .nt-filters .nt-clear.nt-clear-btn:hover:not(:disabled) { background: #fff; color: var(--primary); text-decoration: none; box-shadow: inset 0 0 0 1px var(--primary); }
 .nt-filters .nt-clear.nt-clear-btn:disabled { background: #F5F5F5; color: #767676; border-color: #D6D5D4; cursor: not-allowed; }

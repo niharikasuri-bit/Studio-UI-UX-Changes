@@ -14,7 +14,7 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C84C0E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
 .clw-req input:focus-visible + .ft-box { box-shadow: var(--focus-ring); }
 .clw-qdel { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 6px; border: 0; background: none; border-radius: 4px;
-            font: inherit; font-size: 14px; font-weight: 500; color: #A63E0B; }
+            font: inherit; font-size: 14px; font-weight: 500; color: #A33E0B; }
 .clw-qdel:hover { background: var(--primary-tint); }
 .clw-qdel:focus-visible, .clw-addo:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .clw-q-main { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 12px; }
@@ -51,7 +51,7 @@
 .cl-opt__delete { width: 32px; height: 32px; flex: none; color: #767676; }
 .cl-link { display: inline-flex; align-items: center; gap: 6px; justify-self: start; min-height: 32px; padding: 2px 0; border: 0; background: none; cursor: pointer;
            font: inherit; font-size: 16px; color: #C84C0E; text-decoration: underline; text-underline-offset: 3px; }
-.cl-link:hover { color: #A63E0B; }
+.cl-link:hover { color: #A33E0B; }
 .cl-link svg { color: #C84C0E; flex: none; }
 .cl-link:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
 .cl-add-q { justify-self: start; align-self: flex-start; gap: 8px; height: 40px; }

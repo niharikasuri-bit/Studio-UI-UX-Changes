@@ -117,7 +117,7 @@
              display: flex; flex-direction: column; }
 .move-menu [role="menuitem"] { height: 32px; padding: 0 12px; border: 0; border-radius: var(--radius-btn); background: none;
              text-align: left; font: inherit; font-size: var(--bodyS); color: var(--text); }
-.move-menu [role="menuitem"]:hover:not([aria-disabled="true"]), .move-menu [role="menuitem"]:focus-visible { background: var(--primary-tint); color: #A63E0B; outline: none; }
+.move-menu [role="menuitem"]:hover:not([aria-disabled="true"]), .move-menu [role="menuitem"]:focus-visible { background: var(--primary-tint); color: #A33E0B; outline: none; }
 .move-menu [role="menuitem"][aria-disabled="true"] { color: #9E9E9E; cursor: not-allowed; }
 .field-info { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .field-name { font-size: 14px; line-height: 1.4; font-weight: 700; color: #363636; overflow-wrap: anywhere; }
@@ -141,7 +141,7 @@
 /* ---------- Footer ---------- */
 .form-foot { flex: none; height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px;
              background: #fff; border-top: 1px solid var(--divider); box-shadow: 0 -2px 6px rgba(0,0,0,.05); position: relative; z-index: 2; }
-.form-foot .btn { height: 40px; min-width: 128px; font-size: var(--buttonL); font-weight: 500; }
+.form-foot .btn { height: 40px; min-width: 128px; font-size: var(--buttonM); font-weight: 700; }
 
 /* ---------- Add Section popup: click a card to add it; one full-width Cancel ---------- */
 .modal.add-section { width: min(600px, calc(100vw - 32px)); }
@@ -203,7 +203,7 @@
 .add-dashed { width: 100%; height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
               border: 1.5px dashed var(--primary); border-radius: var(--radius-card); background: #fff;
               font: inherit; font-size: var(--buttonM); font-weight: 700; color: var(--primary); }
-.add-dashed:hover { background: var(--primary-tint); color: #A63E0B; }
+.add-dashed:hover { background: var(--primary-tint); color: #A33E0B; }
 .add-dashed:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .canvas-add-field { margin-top: 24px; }
 /* Panel Add Field: a normal secondary button */
@@ -252,7 +252,7 @@
 .pf-drop-icon { color: #B1B4B6; display: grid; }
 .pf-drop-text { font-size: var(--bodyS); line-height: var(--lh-body); color: #767676; }   /* 7.4:1 — the reference's light grey would fail */
 .pf-browse { color: var(--primary); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; border-radius: 2px; }
-.pf-browse:hover { color: #A63E0B; }
+.pf-browse:hover { color: #A33E0B; }
 .pf-drop:has(input:focus-visible) .pf-browse { outline: none; box-shadow: var(--focus-ring); }
 
 /* ======================================================
@@ -402,7 +402,7 @@
 .lg-cond-head { display: flex; align-items: center; justify-content: space-between; }
 .lg-if { font-size: 16px; font-weight: 700; color: var(--heading); }
 .lg-del { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 6px; border: 0; background: none; border-radius: var(--radius-btn);
-          font: inherit; font-size: 14px; font-weight: 500; color: #A63E0B; }
+          font: inherit; font-size: 14px; font-weight: 500; color: #A33E0B; }
 .lg-del:hover { background: var(--primary-tint); }
 .lg-del:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .lg-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -485,7 +485,7 @@
 .fpp-fs.fpp-inner legend { font-weight: 700; }
 .fpp-fs.fpp-inner .ft-check { background: #fff; }
 .fpp-fs.fpp-inner .ft-check:has(input:checked) { background: #FFF8F5; }
-.pf-browse { color: #C04A0D; }   /* 4.76:1 on the #FAFAFA drop zone (was 4.47) */
+.pf-browse { color: #A33E0B; }   /* 4.76:1 on the #FAFAFA drop zone (was 4.47) */
 /* File validation: box #FAFAFA (unchanged) → Accepted file types container white → file-type rows #FAFAFA (picked = orange border + #FFF8F5) */
 .fpp-fs.fpp-inner { background: #fff; }
 .fpp-fs.fpp-inner .ft-check { background: #FAFAFA; }
@@ -517,3 +517,7 @@
    "body" raises priority over the page stylesheets that load after this file. */
 body :is(.pf-label, .fp-label, .fp-label label, .fpp-label, .lg-label, .rs-label, .nt-label, .dc-vd-label, .db-range-l, label.label, legend.label) { color: #0B0C0C; }
 body .fpp-box.is-disabled .fpp-label { color: #9E9E9E; }
+
+/* Item card names in every right panel: 16px bold Primary 2 (same as the landing page) */
+body .field-name { font-size: 16px; color: #0B4B66; }
+body .field-card.is-off .field-name { color: #767676; }

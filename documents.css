@@ -113,7 +113,7 @@
 .dc-drop-ico { color: #9E9E9E; display: grid; }
 .dc-drop-text { font-size: 16px; color: #363636; }
 .dc-drop-hint { font-size: 14px; color: #767676; }
-.dc-browse { padding: 0; border: 0; background: none; font: inherit; color: #C04A0D; text-decoration: underline; cursor: pointer; }
+.dc-browse { padding: 0; border: 0; background: none; font: inherit; color: #A33E0B; text-decoration: underline; cursor: pointer; }
 .dc-browse:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 2px; }
 
 /* ---------- Document page (A4, 595 × 842) ---------- */
@@ -251,7 +251,7 @@ button.dp-var:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .dc-ar-ico { display: grid; color: #9E9E9E; }
 .dc-ar-text { font-size: 16px; color: #767676; }
 .dc-ar-hint { font-size: 14px; color: #767676; }
-.dc-ar-drop .dc-browse { color: #C04A0D; }
+.dc-ar-drop .dc-browse { color: #A33E0B; }
 .dc-ar-count { margin: 24px 0 16px; }
 .dc-ar-tools { position: relative; justify-content: flex-end; }
 .dc-ar-more { width: 32px; height: 32px; color: #767676; border-radius: 50%; }
@@ -447,7 +447,7 @@ button.dp-var:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .dc-vd-label { font-size: 16px; color: #363636; }
 .dc-vd-label .req { color: #B91900; }
 .dc-vd-actions { display: flex; justify-content: flex-end; gap: 16px; margin-top: 4px; }
-.dc-vd-actions .btn { height: 40px; min-width: 140px; font-size: 20px; font-weight: 500; }
+.dc-vd-actions .btn { height: 40px; min-width: 140px; font-size: 16px; font-weight: 700; }
 
 /* Variable popup list = activation-state popup checkbox list */
 .dc-vd-list { max-height: 280px; overflow-y: auto; }
