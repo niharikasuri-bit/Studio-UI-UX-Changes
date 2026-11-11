@@ -254,3 +254,5 @@ button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff;
   .lp-main:not(.lp-tall) .lp-stage.is-scroll { flex: 1; min-height: 0; }
 }
 .lp-screen .lp-hero, .lp-screen .lp-sec, .lp-screen .lp-faq, .lp-screen .lp-tile { scroll-margin-top: 60px; scroll-margin-bottom: 12px; }
+/* FAQ row bins: 20px, same as the bins in form field cards and dashboard items */
+.lp-li-btn svg { width: 20px; height: 20px; }
