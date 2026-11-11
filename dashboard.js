@@ -659,7 +659,7 @@
   const conf = $('db-confirm'); let confOk = null, confBack = null;
   function askDelete(id, back) {
     const w = W(id); $('db-pfc-t').textContent = `Proceed to delete "${w.title}"?`; $('db-pfc-ok').textContent = 'Delete';
-    $('db-pfc-d').innerHTML = `Are you sure you want to delete <strong>"${esc(w.title)}"</strong> from this dashboard? You can undo this with Ctrl + Z.`;
+    $('db-pfc-d').innerHTML = `Are you sure you want to delete <strong>"${esc(w.title)}"</strong> from this dashboard?`;
     confOk = () => { snap(); const i = data.widgets.indexOf(w); data.widgets.splice(i, 1); if (selId === id) selId = null; redraw();
       const next = data.widgets[Math.min(i, data.widgets.length - 1)];
       (next ? grid.querySelector(`[data-sel="${next.id}"]`) : document.querySelector('.db-pal-item'))?.focus();
