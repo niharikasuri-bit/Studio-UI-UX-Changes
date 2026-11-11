@@ -129,7 +129,7 @@
 .db-card:hover .db-card-acts, .db-card:focus-within .db-card-acts, .db-card.is-sel .db-card-acts { opacity: 1; }
 .db-card-acts .db-grip { width: 28px; height: 28px; }
 .db-card-acts .db-act { width: 28px; height: 28px; }
-.db-card-acts .move-menu { left: auto; right: 0; }
+.db-card-acts .move-menu { left: 0; right: auto; }   /* opens to the right, inside the canvas (never under the left panel) */
 .db-grid { padding-top: 20px; }
 /* widths follow the space the dashboard has (container query): narrow canvas → quarter / third cards become half, two-thirds full */
 .db-main { container-type: inline-size; }
