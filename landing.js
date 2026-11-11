@@ -136,8 +136,8 @@
     const cs = getComputedStyle(st);
     const h = st.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     const w = st.clientWidth - 32;
-    // fixed height: the phone is always shown at its full size (320 × 592); the centre scrolls if the window is shorter
-    const k = 1;
+    // fixed size (320 × 592) whenever it fits; only when the window is shorter does the whole phone scale down to fit — never larger
+    const k = window.innerWidth >= 1100 ? Math.max(0.3, Math.min(1, h / PH, w / PW)) : 1;
     fit.style.width = PW * k + 'px'; fit.style.height = PH * k + 'px';
     fit.firstElementChild.style.transform = `scale(${k})`;
   }
