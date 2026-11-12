@@ -156,7 +156,7 @@
     $('cl-new').hidden = !list.length;   // nothing created yet → only the empty-state CTA
     if (!shown.length) list.length
       ? S.setEmpty($('cl-empty'), false, 'No results found', 'Nothing matches your search or filter. Check the spelling, or change the filter.')
-      : S.setEmpty($('cl-empty'), true, 'Checklist yet to be created', 'Create checklists to ask applicants questions as they move through the process flow.');
+      : S.setEmpty($('cl-empty'), true, 'Checklist yet to be created', 'Create checklists to ask users questions as they move through the process flow.');
     $('cl-count').textContent = (qq || f.action) ? `${shown.length} checklist${shown.length === 1 ? '' : 's'} found.` : '';
     $('cl-results').hidden = !(qq || f.action);
     $('cl-clear').disabled = !(qq || f.action);
