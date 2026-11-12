@@ -44,11 +44,12 @@
     return [r, g, bl].map(function (v) { return Math.round((v + m) * 255); });
   };
   var P0 = rgb2hsl(hex2rgb(DEF.primary)), P1 = rgb2hsl(hex2rgb(t.primary || DEF.primary));
-  var HEAD = hex2rgb(t.header || DEF.heading), PAGE = hex2rgb(t.background || DEF.page);
+  var PRI = hex2rgb(t.primary || DEF.primary), HEAD = hex2rgb(t.header || DEF.heading), PAGE = hex2rgb(t.background || DEF.page);
   // Studio's orange family (the primary, its darker text shade, hover, tints, borders, illustration oranges):
   // hue ~10–35°, saturated. Each is moved to the theme's hue, keeping how much lighter or darker it was than the primary.
   var orange = function (c) { var h = rgb2hsl(c); return h[0] >= 12 && h[0] <= 30 && h[1] > 0.35 && h[2] > 0.15; /* not error red (~8°) or warning amber (~36°) */ };
   var recolour = function (c) {
+    if (c[0] === 200 && c[1] === 76 && c[2] === 14) return PRI;                         // primary #C84C0E -> exactly the theme's Primary 1
     if (c[0] === 11 && c[1] === 75 && c[2] === 102) return HEAD;                        // heading blue #0B4B66
     if (c[0] === 238 && c[1] === 238 && c[2] === 238) return PAGE;                       // page background #EEEEEE
     if (!orange(c)) return null;
@@ -57,13 +58,16 @@
     var ns = Math.min(1, h[1] * (P1[1] / (P0[1] || 1)));
     return hsl2rgb(P1[0], ns, nl);
   };
-  var cache = {};
+  var cache = {}, made = {};   // made: colours this script produced -- never recoloured a second time
   var swap = function (str) {
     if (!str || str.indexOf('rgb') < 0 && str.indexOf('#') < 0) return str;
     if (cache[str] !== undefined) return cache[str];
     var out = str.replace(/rgba?\((\d+),\s*(\d+),\s*(\d+)(,\s*[\d.]+)?\)|#([0-9a-fA-F]{6})\b/g, function (m, r, g, bl, a, hx) {
-      var c = hx ? hex2rgb(hx) : [+r, +g, +bl], n = recolour(c);
+      var c = hx ? hex2rgb(hx) : [+r, +g, +bl];
+      if (made[c.join(',')]) return m;
+      var n = recolour(c);
       if (!n) return m;
+      made[n.join(',')] = 1;
       return hx ? '#' + n.map(function (v) { return v.toString(16).padStart(2, '0'); }).join('').toUpperCase() : (a ? 'rgba(' + n.join(', ') + a + ')' : 'rgb(' + n.join(', ') + ')');
     });
     cache[str] = out; return out;
@@ -74,11 +78,13 @@
   /* ---------- stylesheets ---------- */
   var COLOUR_PROPS = ['color', 'background-color', 'background-image', 'background', 'border-color', 'border-top-color', 'border-right-color', 'border-bottom-color',
     'border-left-color', 'outline-color', 'box-shadow', 'fill', 'stroke', 'text-decoration-color', 'caret-color', 'accent-color', 'column-rule-color'];
+  var doneRules = new WeakSet();
   var doRules = function (rules) {
     for (var i = 0; i < rules.length; i++) {
       var r = rules[i];
       if (r.cssRules && !r.style) { doRules(r.cssRules); continue; }
-      if (!r.style) continue;
+      if (!r.style || doneRules.has(r)) continue;
+      doneRules.add(r);
       for (var j = 0; j < r.style.length; j++) {
         var p = r.style[j];
         if (p.indexOf('--') === 0 || COLOUR_PROPS.indexOf(p) >= 0 || p.indexOf('color') >= 0 || p.indexOf('shadow') >= 0) {
