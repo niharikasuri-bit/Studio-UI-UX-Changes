@@ -313,7 +313,7 @@
         <h2 class="fpp-title" id="lp-q-title">Item Properties</h2>
       </div>
       <div class="fp-scroll"><div class="fpp-body">
-        <p class="fpp-intro">These are the properties of the element you selected. You can customise them to suit your needs.</p>
+        <p class="fpp-intro">These properties control the content of this item on the landing page.</p>
         <div class="fpp-box"><h3 class="fpp-box-title">FAQ ${i + 1}</h3>
           <div class="fpp-field"><label class="fpp-label" for="lp-q-q">Question</label>
             <input class="fp-input" id="lp-q-q" type="text" maxlength="${FL.q}" value="${esc(x.q)}" data-q="q" autocomplete="off" aria-describedby="lp-q-q-meta">
@@ -392,7 +392,7 @@
         <h2 class="fpp-title" id="lp-q-title">Item Properties</h2>
       </div>
       <div class="fp-scroll"><div class="fpp-body">
-        <p class="fpp-intro">These are the properties of the element you selected. You can customise them to suit your needs.</p>
+        <p class="fpp-intro">These properties control the content of this item on the landing page.</p>
         <div class="fpp-box"><h3 class="fpp-box-title">Hero Banner Text</h3>
           <div class="fpp-field"><span class="fp-label"><label class="fpp-label" for="lp-h-title">Heading</label>${tip('lp-tip-h', 'heading', 'The title at the top of the landing page, pulled from the service name.')}</span>
             <input class="fp-input" id="lp-h-title" type="text" autocomplete="off" maxlength="${HL.title}" data-hero="title" value="${esc(h.title)}" aria-describedby="lp-h-title-meta">
@@ -418,7 +418,7 @@
         <h2 class="fpp-title" id="lp-q-title">Item Properties</h2>
       </div>
       <div class="fp-scroll"><div class="fpp-body">
-        <p class="fpp-intro">These are the properties of the element you selected. You can customise them to suit your needs.</p>
+        <p class="fpp-intro">These properties control the content of this item on the landing page.</p>
         ${data.actions.list.map(x => `<div class="fpp-box"><h3 class="fpp-box-title">${esc(ACTIONS[x][0])}</h3>
           <div class="fpp-field"><label class="fpp-label" for="lp-act-${x}">Card Text</label>
             <input class="fp-input" id="lp-act-${x}" type="text" maxlength="30" value="${esc(actLabel(x))}" data-act-label="${x}" autocomplete="off"></div>

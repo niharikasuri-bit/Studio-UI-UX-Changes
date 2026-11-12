@@ -607,8 +607,8 @@
       </div></div>
       <div class="fp-scroll"><div class="fpp-body" id="db-tabpanel" role="tabpanel" aria-labelledby="db-tab-${tab}">
         <p class="fpp-intro">${tab === 'data'
-          ? 'Data controls the records behind this item and how they are counted.'
-          : 'Appearance controls how this item looks on the dashboard.'}</p>
+          ? 'Data controls the records behind this item on the dashboard.'
+          : 'Appearance controls the style and formatting of this item on the dashboard.'}</p>
         ${tab === 'data' ? dataTab(w) : displayTab(w)}
       </div></div>`;
     v.querySelector('.fp-scroll').scrollTop = y;
