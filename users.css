@@ -125,7 +125,7 @@
 
 
 /* Form sections: heading with a full-width divider under it, bold labels (reference) */
-.um-form .um-sec { padding: 0 0 24px; gap: 20px; overflow: hidden; }
+.um-form .um-sec { padding: 0 0 24px; gap: 20px; overflow: visible; }   /* visible: the open Roles list must not be cut off */
 .um-form .um-sec-t { margin: 0; padding: 20px 24px 16px; border-bottom: 1px solid #D6D5D4; }
 .um-form .um-grid { padding: 0 24px; }
 .um-form .um-f > .label { font-weight: 700; color: #363636; }
@@ -160,3 +160,6 @@
             color: #C84C0E; font: inherit; font-size: 14px; font-weight: 400; text-decoration: none; cursor: pointer; }
 .um-clear:hover { background: #FBEEE8; color: #A33E0B; }
 .um-clear:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+/* "Is this the current assignment?" is a single checkbox, not a list row: no grey hover band */
+.um-form .um-current, .um-form .um-current:hover { background: none; }
+.um-ms-list.is-up { top: auto; bottom: calc(100% + 4px); }

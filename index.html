@@ -90,7 +90,7 @@
         <h2>Branding</h2>
         <p>Set up the logo, colours and theme.</p>
       </div>
-      <a class="btn" href="https://niharikasuri-bit.github.io/Branding-Studio/">Open Branding</a>
+      <a class="btn" id="open-branding" href="https://niharikasuri-bit.github.io/Branding-Studio/">Open Branding</a>
     </li>
     <li class="row">
       <div class="row-text">
@@ -108,5 +108,13 @@
     </li>
   </ul>
 </main>
+<script>
+  /* Branding is its own app: tell it where Back should return to (this Studio Index) */
+  (function () {
+    var a = document.getElementById('open-branding');
+    a.href = a.href.split('?')[0] + '?back=' + encodeURIComponent(location.href.split('#')[0].split('?')[0]);
+  })();
+</script>
+<script src="brand.js?v=1794478192"></script>
 </body>
 </html>

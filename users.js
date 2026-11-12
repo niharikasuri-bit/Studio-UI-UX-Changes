@@ -344,6 +344,11 @@
   function openMs(on) {
     const list = $('um-ms-list'), btn = $('um-ms-btn');
     list.hidden = !on; btn.setAttribute('aria-expanded', on);
+    if (on) {   // not enough room below inside the scroll area (above the footer) -> open upward
+      list.classList.remove('is-up');
+      const area = $('um-body').getBoundingClientRect(), b = btn.getBoundingClientRect(), need = list.offsetHeight + 8;
+      if (area.bottom - b.bottom < need && b.top - area.top > area.bottom - b.bottom) list.classList.add('is-up');
+    }
     if (on) { active = 0; markActive(); list.focus(); } else btn.focus();
   }
   function markActive() {
