@@ -302,7 +302,7 @@
     $('dc-new').hidden = !list.length;
     if (!shown.length) list.length
       ? S.setEmpty($('dc-empty'), false, 'No results found', 'Nothing matches your search or filters. Check the spelling, or change the filters.')
-      : S.setEmpty($('dc-empty'), true, 'Document yet to be created', 'Create documents to give applicants the documents they need as they move through the process.');
+      : S.setEmpty($('dc-empty'), true, 'Document yet to be created', 'Create documents to give applicants the documents they need as they move through the process flow.');
     $('dc-count').textContent = (qq || f.state || f.kind) ? `${shown.length} document${shown.length === 1 ? '' : 's'} found.` : '';
     $('dc-results').hidden = !(qq || f.state || f.kind);
     $('dc-clear').disabled = !(qq || f.state || f.kind);
@@ -1286,7 +1286,6 @@
         : `<div class="fpp-box"><h3 class="fpp-box-title">Personalization Variable</h3><div class="fpp-field"><label class="fpp-label" for="dc-uv-name">Variable</label>
             <input class="fp-input dc-readonly" id="dc-uv-name" type="text" readonly aria-readonly="true" value="{${esc(b.name)}}"></div></div>`)
       : `<p class="fpp-intro">Appearance controls the style and formatting of this item on the document.</p>
-         <div class="fpp-box"><h3 class="fpp-box-title">Position</h3><div class="dc-px-row">${px('dc-ap-x', 'X-Axis', b.x)}${px('dc-ap-y', 'Y-Axis', b.y)}</div></div>
          ${sel.t === 'qr'
            ? `<div class="fpp-box"><h3 class="fpp-box-title">Size</h3><div class="dc-px-row">${px('dc-ap-w', 'Width', b.w)}${px('dc-ap-h', 'Height', b.h)}</div></div>`
            : `<div class="fpp-box"><h3 class="fpp-box-title">Font</h3>

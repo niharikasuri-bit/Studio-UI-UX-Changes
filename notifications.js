@@ -192,7 +192,7 @@
     $('nt-new').hidden = !list.length;   // nothing created yet → only the empty-state CTA
     if (empty) list.length
       ? S.setEmpty($('nt-empty'), false, 'No results found', 'Nothing matches your search or filters. Check the spelling, or change the filters.')
-      : S.setEmpty($('nt-empty'), true, 'Notification yet to be created', 'Create notifications to update applicants via SMS or email as they move through the process.');
+      : S.setEmpty($('nt-empty'), true, 'Notification yet to be created', 'Create notifications to update applicants via SMS or email as they move through the process flow.');
     $('nt-count').textContent = (q || f.state || f.type) ? `${shown.length} notification${shown.length === 1 ? '' : 's'} found.` : '';
     $('nt-results').hidden = !(q || f.state || f.type);
     $('nt-clear').disabled = !(q || f.state || f.type);

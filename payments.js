@@ -151,7 +151,7 @@
     $('py-new').hidden = !list.length;   // nothing created yet → only the empty-state CTA
     if (!shown.length) list.length
       ? S.setEmpty($('py-empty'), false, 'No results found', 'Nothing matches your search or filters. Check the spelling, or change the filters.')
-      : S.setEmpty($('py-empty'), true, 'Payment yet to be created', 'Create payments to collect fees from applicants as they move through the process.');
+      : S.setEmpty($('py-empty'), true, 'Payment yet to be created', 'Create payments to collect fees from applicants as they move through the process flow.');
     $('py-count').textContent = (qq || f.state || f.fee) ? `${shown.length} payment${shown.length === 1 ? '' : 's'} found.` : '';
     $('py-results').hidden = !(qq || f.state || f.fee);
     $('py-clear').disabled = !(qq || f.state || f.fee);

@@ -567,7 +567,7 @@
   function displayTab(w) {
     const k = TYPES[w.type].kind;
     const cnt = (key, max) => `<div class="fp-meta"><span class="fp-error"></span><span class="fp-count" data-cnt="${key}">${(w[key] || '').length}/${max}<span class="sr-only"> characters</span></span></div>`;
-    // Title → Size (all types). Named grid sizes, not px; Height only for charts.
+    // Title → Size (all types). Moving = drag, the ⋮⋮ Move menu or Ctrl+arrows (no Position box). Named grid sizes, not px; Height only for charts.
     const wSel = field('db-sz-w', 'Width', sel('db-sz-w', 'w', Object.entries(WIDTHS), w.w));
     const sizeBox = box('Size', k === 'kpi' ? wSel
       : wSel + field('db-sz-h', 'Height', sel('db-sz-h', 'h', Object.entries(HEIGHTS).map(([v, [t]]) => [v, t]), w.h || 'medium')));
