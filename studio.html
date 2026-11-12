@@ -1105,7 +1105,8 @@
   }
   window.addEventListener('hashchange', route);
   // Inside a module, "Back to Home" returns to the service page
-  $('back-btn').addEventListener('click', () => { if (!viewModule.hidden) location.hash = '#/'; });
+  // Module page -> service page; service page (the first screen of Service Flow) -> the Studio Index. Label stays "Back to Home".
+  $('back-btn').addEventListener('click', () => { if (!viewModule.hidden) location.hash = '#/'; else location.href = 'index.html'; });
 
   /* ---------- Activation states popup ----------
      mode 'edit'  : from "Edit activation state" on a module page
