@@ -8,7 +8,21 @@
    ========================================================== */
 (function () {
   var b = null;
-  try { b = (JSON.parse(localStorage.getItem('digit-console-v4')) || {}).account.branding; } catch (e) {}
+  // 1. Branding's Back button brings the applied branding in the link (?brand=…): keep it, then tidy the address bar.
+  //    This works even when Branding and Studio are on different sites (local ports) or a cached page was open.
+  try {
+    var q = new URLSearchParams(location.search), raw = q.get('brand');
+    if (raw) {
+      b = JSON.parse(decodeURIComponent(escape(atob(raw))));
+      b.saved = true;
+      localStorage.setItem('studio-brand', JSON.stringify(b));
+      q.delete('brand');
+      history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+    }
+  } catch (e) { b = null; }
+  // 2. Same site as Branding (live): read what Branding saved.  3. Otherwise: the copy kept from the last Back.
+  if (!b) { try { b = (JSON.parse(localStorage.getItem('digit-console-v4')) || {}).account.branding; } catch (e) {} }
+  if (!b || !b.saved) { try { b = JSON.parse(localStorage.getItem('studio-brand')); } catch (e) {} }
   // a theme applied in Branding updates Studio pages that are already open
   addEventListener('storage', function (e) { if (e.key === 'digit-console-v4') location.reload(); });
   if (!b || !b.saved || !b.theme) return;
