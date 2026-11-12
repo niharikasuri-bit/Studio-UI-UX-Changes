@@ -132,12 +132,12 @@
               </div></div>
               <div class="ntw-box">
                 <div class="ntw-row">
-                  <label class="ntw-label" for="nt-msg">Message Body <span class="req" aria-hidden="true">*</span></label>
+                  <label class="ntw-label" for="nt-msg">Message body <span class="req" aria-hidden="true">*</span></label>
                   <div class="ntw-control"><textarea class="input nt-msg" id="nt-msg" aria-required="true" aria-describedby="ntw-msg-meta"></textarea>
                     <div class="fp-meta" id="ntw-msg-meta"><span class="fp-error" id="nt-msg-err"></span><span class="fp-count" id="ntw-count"></span></div></div>
                 </div>
                 <div class="ntw-row">
-                  <span class="ntw-label" id="nt-vars-l">Personalization Variables</span>
+                  <span class="ntw-label" id="nt-vars-l">Personalization variables</span>
                   <div class="ntw-control"><div class="var-chips" role="group" aria-labelledby="nt-vars-l">${VARIABLES.map(v => `
                     <button type="button" class="var-chip" data-var="${v}" aria-label="Insert ${v}"><svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>${v}</button>`).join('')}</div></div>
                 </div>

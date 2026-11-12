@@ -394,8 +394,8 @@
         <div class="vd-head"><h2 class="dc-vd-title" id="dc-vd-title"><span class="dc-vd-ico" aria-hidden="true">${I.plusSq}</span><span id="dc-vd-title-t">Add System Variable</span></h2>
         <p class="dc-vd-desc" id="dc-vd-desc"></p></div>
         <div class="dc-vd-field">
-          <p class="dc-vd-label" id="dc-vd-legend">Personalization Variables <span class="req" aria-hidden="true">*</span></p>
-          <fieldset class="check-list dc-vd-list" id="dc-vd-list" aria-labelledby="dc-vd-legend" aria-describedby="dc-vd-err"><legend>Personalization Variables</legend></fieldset>
+          <p class="dc-vd-label" id="dc-vd-legend">Personalization variables <span class="req" aria-hidden="true">*</span></p>
+          <fieldset class="check-list dc-vd-list" id="dc-vd-list" aria-labelledby="dc-vd-legend" aria-describedby="dc-vd-err"><legend>Personalization variables</legend></fieldset>
           <p class="error" id="dc-vd-err" hidden>Select at least one variable.</p>
         </div>
         <div class="dc-vd-actions">
@@ -864,7 +864,7 @@
             : `<input class="fp-input" id="dc-f-${f}" type="text" data-elf="${f}" value="${esc(pv(d, k, f))}" autocomplete="off"${PH[k] ? ` placeholder="${PH[k]}"` : ''}>`}
         </div>
         ${NO_VARS.includes(k) ? '' : `<div class="dc-vars-in">
-          <span class="fpp-label" id="dc-vars-${f}">Personalization Variables</span>
+          <span class="fpp-label" id="dc-vars-${f}">Personalization variables</span>
           <div class="var-chips" role="group" aria-labelledby="dc-vars-${f}">${VARIABLES.map(v => chip(f, v)).join('')}</div>
         </div>`}
       </div>`).join('');
@@ -1289,12 +1289,12 @@
          ${sel.t === 'qr'
            ? `<div class="fpp-box"><h3 class="fpp-box-title">Size</h3><div class="dc-px-row">${px('dc-ap-w', 'Width', b.w)}${px('dc-ap-h', 'Height', b.h)}</div></div>`
            : `<div class="fpp-box"><h3 class="fpp-box-title">Font</h3>
-               <div class="fpp-field"><label class="fpp-label" for="dc-ap-font">Font Style</label>
+               <div class="fpp-field"><label class="fpp-label" for="dc-ap-font">Font style</label>
                  <select class="input" id="dc-ap-font" data-font="font">${opts(Object.keys(FONTS).map(f => [f, f]), b.font || 'Helvetica')}</select></div>
                <div class="dc-px-row">
-                 <div class="fpp-field"><label class="fpp-label" for="dc-ap-weight">Font Weight</label>
+                 <div class="fpp-field"><label class="fpp-label" for="dc-ap-weight">Font weight</label>
                    <select class="input" id="dc-ap-weight" data-font="weight">${opts(WEIGHTS, String(b.weight || 400))}</select></div>
-                 ${px('dc-ap-size', 'Font Size', b.size || 13)}
+                 ${px('dc-ap-size', 'Font size', b.size || 13)}
                </div></div>`}`;
     ev.innerHTML = `
       <div class="fpp-top">

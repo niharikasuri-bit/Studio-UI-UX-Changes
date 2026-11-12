@@ -274,7 +274,7 @@
         { value: 'Email', text: 'Send emails to users on their registered email addresses',
           icon: tileIcon('<rect x="3" y="5" width="18" height="14" rx="2" fill="currentColor"/>', 'M4 7l8 6 8-6') },
       ],
-      bodyLabel: 'Message Body',
+      bodyLabel: 'Message body',
       bodyMax: { SMS: 160, Email: 500 },
       subjectFor: 'Email',
       infoFor: 'SMS',
@@ -1937,7 +1937,7 @@
         'div',
         { class: 'panel-body' },
         todoBox('state', s.id),
-        section(null, {}, field('State Name', nameInputEl, null, { required: true })),
+        section(null, {}, field('State name', nameInputEl, null, { required: true })),
         // A start state only picks its form; the other settings apply to later states.
         ...(s.type === 'start'
           ? [formSection(s)]
@@ -2620,7 +2620,7 @@
         'div',
         { class: 'panel-body' },
         todoBox('action', a.id),
-        section(null, {}, field('Action Name', nameEl, null, { required: true })),
+        section(null, {}, field('Action name', nameEl, null, { required: true })),
         section(
           'Roles',
           { info: 'Roles are the permissions given to users that allow them to take this action. Only users with these roles will see this action.' },

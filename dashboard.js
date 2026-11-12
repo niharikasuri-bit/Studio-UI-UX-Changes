@@ -330,7 +330,7 @@
         </div>
         <p class="sr-only" id="db-kb-hint">Arrow keys go to the next or previous visualisation. Control plus arrow keys move it. Control Shift plus arrow keys resize it. Delete removes it. Control plus slash lists all keyboard shortcuts.</p>
         <div class="db-range" id="db-range" role="group" aria-labelledby="db-range-l" hidden>
-          <div class="db-range-f"><label class="db-range-l" id="db-range-l" for="db-range-sel">Date Range</label>
+          <div class="db-range-f"><label class="db-range-l" id="db-range-l" for="db-range-sel">Date range</label>
             <select class="input" id="db-range-sel">${opts(Object.entries(RANGES).map(([v, [t]]) => [v, t]), range)}</select></div>
           <div class="db-range-f" data-custom hidden><label class="db-range-l" for="db-range-from">From</label><input class="input" id="db-range-from" type="date"></div>
           <div class="db-range-f" data-custom hidden><label class="db-range-l" for="db-range-to">To</label><input class="input" id="db-range-to" type="date"></div>
@@ -361,7 +361,7 @@
         <p class="dc-vd-desc" id="db-src-d">Choose the module this visualisation counts records from, and give it a title to show on the dashboard. You can change both later in Item Properties.</p></div>
         <div class="db-src-row">
         <div class="dc-vd-field">
-          <label class="dc-vd-label" for="db-src-sel">Data Source <span class="req" aria-hidden="true">*</span></label>
+          <label class="dc-vd-label" for="db-src-sel">Data source <span class="req" aria-hidden="true">*</span></label>
           <select class="input" id="db-src-sel">${opts(Object.entries(MODULES), 'all')}</select>
         </div>
         <div class="dc-vd-field">
@@ -539,12 +539,12 @@
   function axesBoxes(w, k) {
     const groups = (title, label) => box(title, field('db-by', label, sel('db-by', 'by', Object.entries(BY).map(([v, [t]]) => [v, t]), w.by)));
     const values = (title, label) => box(title, field('db-measure', label, sel('db-measure', 'measure', Object.entries(MEASURES), w.measure)))
-    if (k === 'kpi') return values('Card Value', 'Value to Show');
+    if (k === 'kpi') return values('Card Value', 'Value to show');
     // a pie has no axes: one "Slices" box holds both choices
-    if (k === 'pie') return box('Slices', field('db-by', 'Data to Show', sel('db-by', 'by', Object.entries(BY).map(([v, [t]]) => [v, t]), w.by))
-      + field('db-measure', 'Value to Show', sel('db-measure', 'measure', Object.entries(MEASURES).filter(([v]) => ADDS_UP.includes(v)), w.measure)));
-    if (w.type === 'hbar') return groups('Vertical Axis (Y)', 'Data to Show') + values('Horizontal Axis (X)', 'Value to Show');
-    return groups('Horizontal Axis (X)', 'Data to Show') + values('Vertical Axis (Y)', 'Value to Show');
+    if (k === 'pie') return box('Slices', field('db-by', 'Data to show', sel('db-by', 'by', Object.entries(BY).map(([v, [t]]) => [v, t]), w.by))
+      + field('db-measure', 'Value to show', sel('db-measure', 'measure', Object.entries(MEASURES).filter(([v]) => ADDS_UP.includes(v)), w.measure)));
+    if (w.type === 'hbar') return groups('Vertical Axis (Y)', 'Data to show') + values('Horizontal Axis (X)', 'Value to show');
+    return groups('Horizontal Axis (X)', 'Data to show') + values('Vertical Axis (Y)', 'Value to show');
   }
   function dataTab(w) {
     const k = TYPES[w.type].kind;
@@ -561,8 +561,8 @@
           <button type="button" class="btn btn-secondary dl-add" id="db-add-filter" aria-haspopup="dialog">${I.plus} Add Filter</button>
         </div>`);
   }
-  const numFields = w => field('db-nf', 'Show Numbers As', sel('db-nf', 'numFmt', [['full', 'Full number (12,45,000)'], ['short', 'Short number (12.5 L)']], w.numFmt || 'full'))
-      + field('db-dp', 'Decimal Places', sel('db-dp', 'dec', [['0', '0'], ['1', '1'], ['2', '2']], String(decOf(w, w.measure))));
+  const numFields = w => field('db-nf', 'Show numbers as', sel('db-nf', 'numFmt', [['full', 'Full number (12,45,000)'], ['short', 'Short number (12.5 L)']], w.numFmt || 'full'))
+      + field('db-dp', 'Decimal places', sel('db-dp', 'dec', [['0', '0'], ['1', '1'], ['2', '2']], String(decOf(w, w.measure))));
   const numBox = w => box('Number Format', numFields(w));
   function displayTab(w) {
     const k = TYPES[w.type].kind;
@@ -574,22 +574,22 @@
     let h = box('Title', field('db-ttl', 'Title', `<input class="fp-input" id="db-ttl" type="text" maxlength="${LIMIT.title}" data-k="title" value="${esc(w.title)}" autocomplete="off">`));
     // (Size is also on the canvas: drag the handles, or Ctrl+Shift+arrows on the card)
     if (k === 'kpi') h += sizeBox + numBox(w) + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Comparison</h3>${sw('compare', w.compare, 'Comparison')}</div>
-      ${w.compare ? field('db-cw', 'Compare With', sel('db-cw', 'cmpWith', [['month', 'Previous month'], ['quarter', 'Previous 3 months'], ['year', 'Same month last year']], w.cmpWith || 'month'))
-        + field('db-ca', 'Show Change As', sel('db-ca', 'cmpAs', [['pct', 'Percentage'], ['num', 'Number']], w.cmpAs || 'pct'))
-        + field('db-cg', 'An Increase Is', sel('db-cg', 'upGood', [['good', 'Good (shown in green)'], ['bad', 'Bad (shown in red)']], w.upGood === false ? 'bad' : 'good')) : ''}</div>`;
+      ${w.compare ? field('db-cw', 'Compare with', sel('db-cw', 'cmpWith', [['month', 'Previous month'], ['quarter', 'Previous 3 months'], ['year', 'Same month last year']], w.cmpWith || 'month'))
+        + field('db-ca', 'Show change as', sel('db-ca', 'cmpAs', [['pct', 'Percentage'], ['num', 'Number']], w.cmpAs || 'pct'))
+        + field('db-cg', 'An increase is', sel('db-cg', 'upGood', [['good', 'Good (shown in green)'], ['bad', 'Bad (shown in red)']], w.upGood === false ? 'bad' : 'good')) : ''}</div>`;
     else {
       // Order = outside in, like Looker / Power BI format panes, and mirrors the Data tab:
       // what it is → its axes (same order as Data) → what is written on it → its key
-      const xT = field('db-xl', 'Horizontal Axis (X) Title', `<input class="fp-input" id="db-xl" type="text" maxlength="30" data-k="xLabel" value="${esc(w.xLabel)}" placeholder="${esc(w.type === 'hbar' ? MEASURES[w.measure] : BY[w.by][0])}" autocomplete="off">`);
-      const yT = field('db-yl', 'Vertical Axis (Y) Title', `<input class="fp-input" id="db-yl" type="text" maxlength="30" data-k="yLabel" value="${esc(w.yLabel)}" placeholder="${esc(w.type === 'hbar' ? BY[w.by][0] : MEASURES[w.measure])}" autocomplete="off">`);
+      const xT = field('db-xl', 'Horizontal axis (X) title', `<input class="fp-input" id="db-xl" type="text" maxlength="30" data-k="xLabel" value="${esc(w.xLabel)}" placeholder="${esc(w.type === 'hbar' ? MEASURES[w.measure] : BY[w.by][0])}" autocomplete="off">`);
+      const yT = field('db-yl', 'Vertical axis (Y) title', `<input class="fp-input" id="db-yl" type="text" maxlength="30" data-k="yLabel" value="${esc(w.yLabel)}" placeholder="${esc(w.type === 'hbar' ? BY[w.by][0] : MEASURES[w.measure])}" autocomplete="off">`);
       h += sizeBox   // (no Chart Style box: the chart type is the one picked from the Visualisations panel)
         + (k !== 'pie' ? box('Axis Titles', w.type === 'hbar' ? yT + xT : xT + yT) : '')
         + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Data Labels</h3>${sw('values', w.values, 'Data Labels')}</div>
-            ${w.values && canPct(w) ? field('db-sla', 'Show Labels As', sel('db-sla', 'sliceAs', [['pct', 'Percentage'], ['value', 'Number']], labelAs(w))) : ''}
-            ${!w.values ? '' : labelAs(w) === 'pct' ? field('db-dp', 'Decimal Places', sel('db-dp', 'dec', [['0', '0'], ['1', '1'], ['2', '2']], String(decOf(w, 'pct')))) : numFields(w)}</div>`   // first Percentage / Number, then its follow-up questions
+            ${w.values && canPct(w) ? field('db-sla', 'Show labels as', sel('db-sla', 'sliceAs', [['pct', 'Percentage'], ['value', 'Number']], labelAs(w))) : ''}
+            ${!w.values ? '' : labelAs(w) === 'pct' ? field('db-dp', 'Decimal places', sel('db-dp', 'dec', [['0', '0'], ['1', '1'], ['2', '2']], String(decOf(w, 'pct')))) : numFields(w)}</div>`   // first Percentage / Number, then its follow-up questions
         + (k === 'line' ? `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title">Data Points</h3>${sw('points', w.points, 'Data Points')}</div></div>` : '')
         + `<div class="fpp-box"><div class="fpp-box-head"><h3 class="fpp-box-title" id="db-lg-t">Legend</h3>${sw('legend', w.legend, 'Legend')}</div>
-            ${w.legend ? field('db-lpos', 'Legend Position', sel('db-lpos', 'legendPos', [['bottom', 'Below the chart'], ['right', 'Right of the chart']], w.legendPos)) : ''}</div>`;
+            ${w.legend ? field('db-lpos', 'Legend position', sel('db-lpos', 'legendPos', [['bottom', 'Below the chart'], ['right', 'Right of the chart']], w.legendPos)) : ''}</div>`;
     }
     return h;
   }

@@ -418,7 +418,7 @@
         <div class="rc-group" role="radiogroup" aria-labelledby="fpp-resp">
           <div class="rc${data ? ' is-on' : ''}">
             <label class="rc-head"><input type="radio" name="fpp-src" value="data" data-act="source"${data ? ' checked' : ''}><span class="rc-dot" aria-hidden="true"></span>Pull from existing data</label>
-            ${data ? `<div class="fpp-field"><span class="fpp-label" id="fpp-ds-l">Data Source</span>${sel('data', 'fpp-ds', 'fpp-ds-l', DATA_SOURCES.map(d => ({ v: d, t: d })), o.data, { placeholder: 'Select' })}</div>` : ''}
+            ${data ? `<div class="fpp-field"><span class="fpp-label" id="fpp-ds-l">Data source</span>${sel('data', 'fpp-ds', 'fpp-ds-l', DATA_SOURCES.map(d => ({ v: d, t: d })), o.data, { placeholder: 'Select' })}</div>` : ''}
           </div>
           <div class="rc${!data ? ' is-on' : ''}">
             <label class="rc-head"><input type="radio" name="fpp-src" value="manual" data-act="source"${!data ? ' checked' : ''}><span class="rc-dot" aria-hidden="true"></span>Enter options manually</label>

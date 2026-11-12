@@ -91,8 +91,8 @@
         <div class="vd-head"><h2 class="dc-vd-title" id="lp-ad-t"><span class="dc-vd-ico" aria-hidden="true">${I.plusSq}</span><span>Add Quick Action</span></h2>
         <p class="dc-vd-desc" id="lp-ad-d">Select the actions applicants can start from the landing page.</p></div>
         <div class="dc-vd-field">
-          <p class="dc-vd-label" id="lp-ad-l">Quick Actions <span class="req" aria-hidden="true">*</span></p>
-          <fieldset class="check-list dc-vd-list" id="lp-ad-list" aria-labelledby="lp-ad-l" aria-describedby="lp-ad-err"><legend>Quick Actions</legend></fieldset>
+          <p class="dc-vd-label" id="lp-ad-l">Quick actions <span class="req" aria-hidden="true">*</span></p>
+          <fieldset class="check-list dc-vd-list" id="lp-ad-list" aria-labelledby="lp-ad-l" aria-describedby="lp-ad-err"><legend>Quick actions</legend></fieldset>
           <p class="error" id="lp-ad-err" hidden>Select at least one action.</p>
         </div>
         <div class="dc-vd-actions">
@@ -420,7 +420,7 @@
       <div class="fp-scroll"><div class="fpp-body">
         <p class="fpp-intro">These properties control the content of this item on the landing page.</p>
         ${data.actions.list.map(x => `<div class="fpp-box"><h3 class="fpp-box-title">${esc(ACTIONS[x][0])}</h3>
-          <div class="fpp-field"><label class="fpp-label" for="lp-act-${x}">Card Text</label>
+          <div class="fpp-field"><label class="fpp-label" for="lp-act-${x}">Card text</label>
             <input class="fp-input" id="lp-act-${x}" type="text" maxlength="30" value="${esc(actLabel(x))}" data-act-label="${x}" autocomplete="off"></div>
         </div>`).join('')}
       </div></div>`;

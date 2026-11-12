@@ -71,12 +71,12 @@
             <p class="rm-desc" id="role-d-desc">Choose what this role can do in the service.</p>
           </div>
           <div class="field">
-            <label class="label" for="role-name">Role Name <span class="req" aria-hidden="true">*</span></label>
+            <label class="label" for="role-name">Role name <span class="req" aria-hidden="true">*</span></label>
             <input class="input" id="role-name" type="text" placeholder="Enter role name" autocomplete="off" aria-required="true" aria-describedby="role-name-err" maxlength="40">
             <p class="error" id="role-name-err" hidden><span></span></p>
           </div>
           <div class="field">
-            <label class="label" for="role-desc">Role Description</label>
+            <label class="label" for="role-desc">Role description</label>
             <input class="input" id="role-desc" type="text" placeholder="Describe what this role does" autocomplete="off" maxlength="80">
           </div>
           <fieldset class="rm-access" aria-describedby="role-access-err">
