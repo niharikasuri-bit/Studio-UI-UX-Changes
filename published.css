@@ -1,0 +1,98 @@
+/* Published Service (#/published) — built from the Studio's own section / card / tab / tag styles */
+#view-published { display: flex; flex-direction: column; gap: 24px; }
+#view-published[hidden] { display: none; }
+.pb-h { display: flex; align-items: center; gap: 8px; margin: 0; font-size: var(--captionS); line-height: var(--lh-heading); font-weight: 700; color: var(--heading); }   /* same size as the card titles (Form, Roles …) */
+.pb-h .card-icon svg { width: 20px; height: 20px; }
+.pb-tab[aria-disabled="true"] { color: #B1B4B6; background: #FAFAFA; cursor: not-allowed; }
+.pb-tab[aria-disabled="true"]:hover { color: #B1B4B6; background: #FAFAFA; }
+
+/* App Created URL */
+.pb-urls { display: grid; gap: 16px; }
+.pb-url-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.pb-url { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #FAFAFA; border: 1px solid var(--border); border-radius: var(--radius-card); min-width: 0; }
+.pb-url-txt { flex: 1; min-width: 0; display: grid; gap: 4px; }
+.pb-url-k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #707070; }
+.pb-url-a { color: var(--primary); font-size: var(--bodyS); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: underline; text-underline-offset: 2px; }
+.pb-url-a:hover { color: #A33E0B; }
+.pb-icon-btn { flex: none; width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: var(--radius-btn); background: none; color: var(--primary); cursor: pointer; }
+.pb-icon-btn:hover { background: #FBEEE8; }
+.pb-open { flex: none; height: 32px !important; min-height: 32px !important; padding: 0 12px !important; gap: 6px; font-size: 14px !important; }
+.pb-url-a:focus-visible, .pb-icon-btn:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
+
+/* Manage User / Manage Translation */
+.pb-tabs-card { padding: 0 !important; overflow: hidden; }
+.pb-tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); background: var(--surface); }
+.pb-tab { height: 56px; padding: 0 40px; border: 0; background: var(--surface); text-align: left; font: 400 var(--bodyL, 18px) Roboto, sans-serif; color: var(--text-muted); cursor: pointer; }
+.pb-tab + .pb-tab { border-left: 1px solid var(--border); }
+.pb-tab:hover { background: #FBEEE8; color: #A33E0B; }
+.pb-tab[aria-selected="true"] { position: relative; z-index: 1; color: var(--primary); font-weight: 500; background: var(--surface); border: 2px solid var(--primary) !important; border-bottom-width: 4px !important; border-radius: 8px 8px 0 0; }   /* reference: outlined selected tab */
+.pb-tab:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.pb-panel { padding: 24px; display: grid; gap: 12px; }
+.pb-panel .card-desc { margin: 0; }
+.pb-note { display: flex; align-items: center; gap: 8px; margin: 4px 0 0; padding: 10px 12px; border-radius: 6px; background: #FFF4F4; color: #B91900; font-size: var(--bodyS); }
+.pb-note.is-ok { background: #F1FFF8; color: #00703C; }
+.pb-foot { display: flex; flex-wrap: wrap; gap: 16px; margin: 4px -24px -24px; padding: 16px 24px; border-top: 1px solid var(--border); }
+.pb-foot .btn { min-width: 240px; height: 32px !important; min-height: 32px !important; padding: 0 16px !important; font-size: 14px !important; gap: 6px; }   /* 32px, same as the View buttons */
+
+/* Service modules: tabs → activation state → configuration cards */
+.pb-sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.pb-count { font-size: var(--bodyS); color: #707070; white-space: nowrap; }
+.pb-modtabs { margin-bottom: 16px; }
+.pb-mod-panel { display: grid; gap: 24px; }
+.pb-activation { box-shadow: none !important; border: 1px solid var(--border); }
+.pb-act { border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--surface); }
+.pb-act-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 16px; }
+.pb-act-t { display: flex; align-items: center; gap: 8px; margin: 0; font-size: var(--captionS, 20px); line-height: 1.25; font-weight: 700; color: var(--heading); }
+.pb-act-head .card-desc { margin-top: 4px; }
+.pb-act-head .acc-btn { flex: none; gap: 6px; }
+.pb-chev { transition: transform .15s; } .pb-chev.is-open { transform: rotate(180deg); }
+.pb-act-panel { display: grid; gap: 12px; padding: 0 16px 16px; }
+.pb-act-panel[hidden] { display: none; }
+.pb-act .state-box-head .btn-link { display: inline-flex; align-items: center; gap: 6px; }
+
+.pb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.pb-cfg { display: flex; flex-direction: column; gap: 12px; padding: 20px !important; min-height: 0 !important; width: auto !important; }
+.pb-cfg .card-desc { margin-top: 4px; }
+.pb-status { display: flex; align-items: center; gap: 6px; margin: auto 0 0; font-size: var(--bodyS); color: #00703C; }
+.pb-edit { width: 100%; justify-content: center; }
+@media (max-width: 760px) { .pb-tabs { grid-template-columns: 1fr; } .pb-tab + .pb-tab { border-left: 0; border-top: 1px solid var(--border); } .pb-foot .btn { min-width: 0; flex: 1; } }
+
+/* users per role: grey chip, count + white role pill */
+.pb-ucount { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+.pb-ucount li { display: inline-flex; align-items: center; gap: 10px; height: 40px; box-sizing: border-box; padding: 4px 4px 4px 12px; border-radius: 6px; background: #EAF2FC; font-size: 14px; color: #363636; }   /* light blue, 40px */
+.pb-ucount b { font-weight: 700; }
+.pb-ucount span { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 4px; background: #fff; }
+
+/* view only: cards have no button row, so they size to their content */
+#view-published .config-grid .card, #view-published .grid-config > .card { min-height: 0; }
+
+/* view-only cards: 32px "View …" button */
+#view-published .card-foot { margin-top: auto; }
+#view-published .pb-view { height: 32px !important; min-height: 32px !important; min-width: 240px; padding: 0 16px !important; font-size: 14px !important; gap: 6px; }
+
+/* no users yet: Add User Manually / Upload User Data are 40px */
+.pb-foot .btn { height: 40px !important; min-height: 40px !important; font-size: 16px !important; }
+/* tabs: no divider or grey fill next to the outlined tab, so its rounded corner reads cleanly */
+.pb-tab + .pb-tab { border-left: 0; }
+.pb-tab[aria-disabled="true"], .pb-tab[aria-disabled="true"]:hover { background: var(--surface); }
+.pb-tab[aria-selected="true"] { border-radius: var(--radius-card) var(--radius-card) 0 0 !important; }
+
+.pb-h .pb-ic-lg svg { width: 24px; height: 24px; }   /* the ID-card icon reads small at 20px */
+
+/* all users, view only: the table scrolls inside its box and the header row stays put (like the standard list pages) */
+.pb-utable { max-height: 420px; overflow: auto !important; margin-top: 4px; }
+.pb-utable .um-table { min-width: 760px; }
+.pb-utable thead th { position: sticky; top: 0; z-index: 1; background: #F5F5F5; box-shadow: inset 0 -1px 0 #D6D5D4; }
+.pb-utable:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.pb-roles { display: flex; flex-wrap: wrap; gap: 6px; }
+.pb-role { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 4px; background: #EEEEEE; border: 1px solid #D6D5D4; font-size: 12px; color: #363636; white-space: nowrap; }
+/* the portal links are tap targets too: at least 24px tall */
+.pb-url-a { display: inline-block; min-height: 24px; line-height: 24px; max-width: 100%; }
+
+/* a link that is still being generated: the address greyed out, then "(ready in 4:59)" */
+.pb-gen { margin: 0; min-height: 24px; line-height: 24px; font-size: var(--bodyS); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pb-gen-u { color: #707070; text-decoration: underline; text-decoration-color: #B1B4B6; text-underline-offset: 2px; }
+.pb-gen-tag { flex: none; display: inline-flex; align-items: center; gap: 4px; height: 32px; margin-left: 0; padding: 0 8px; border-radius: 6px; vertical-align: middle;
+               background: #FBEEE8; border: 1px solid #F2C8B4; color: #A33E0B; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; text-decoration: none; }   /* primary tint; #A33E0B on #FBEEE8 = 5.7:1 */
+.pb-url.is-gen .pb-icon-btn:disabled { color: #B1B4B6; cursor: not-allowed; background: none; }
+.pb-url.is-gen .pb-open:disabled { opacity: 1; background: #D6D5D4 !important; border-color: #D6D5D4 !important; color: #707070 !important; cursor: not-allowed; }

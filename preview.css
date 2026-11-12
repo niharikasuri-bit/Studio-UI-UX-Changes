@@ -1,0 +1,71 @@
+/* Service Preview: two left panels (Modules, Roles with access) + device preview — laid out like Branding and Theming */
+#view-preview { display: flex; flex-direction: column; height: calc(100vh - 64px); min-height: 0; }
+#view-preview[hidden] { display: none; }
+.pv-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 220px 260px minmax(0, 1fr); }
+.pv-nav { min-height: 0; overflow-y: auto; padding: 20px 12px; background: #fff; border-right: 1px solid #D6D5D4; }
+.pv-nav-2 { background: #FAFAFA; }
+.pv-nav-t { margin: 0 8px 12px; font-size: 20px; line-height: 1.2; font-weight: 700; color: #0B4B66; }
+.pv-nav-d { margin: -6px 8px 12px; font-size: 14px; line-height: 1.4; color: #363636; }
+.pv-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.pv-item { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 44px; padding: 8px 12px; border: 0; border-radius: 8px;
+           background: none; font: inherit; text-align: left; cursor: pointer; }
+.pv-item:hover { background: #F5F5F5; }
+.pv-item:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.pv-item.is-on { background: var(--primary-tint, #FBEEE8); box-shadow: inset 3px 0 0 var(--primary, #C84C0E); }
+.pv-mod { font-size: 16px; font-weight: 700; color: #0B4B66; justify-content: center; }   /* module names in blue */
+.pv-role-n { font-size: 16px; font-weight: 700; color: #363636; }
+.pv-role-d { font-size: 13px; color: #363636; }
+
+.pv-main { min-width: 0; min-height: 0; overflow: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.pv-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; }
+.pv-sub { margin-top: 6px; font-size: 16px; color: #363636; }
+.pv-tools { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.pv-step-f { width: 240px; }
+.pv-dev { display: inline-flex; border: 1px solid #505A5F; border-radius: 4px; overflow: hidden; height: 40px; }
+.pv-dev-b { min-width: 84px; padding: 0 14px; border: 0; background: #fff; font: inherit; font-size: 14px; color: #363636; cursor: pointer; }
+.pv-dev-b + .pv-dev-b { border-left: 1px solid #505A5F; }
+.pv-dev-b[aria-checked="true"] { background: #0B4B66; color: #fff; font-weight: 700; }
+.pv-dev-b:focus-visible { outline: none; box-shadow: inset 0 0 0 3px #F4B41A; }
+
+/* device frames */
+.pv-stage { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 8px 0 24px; }
+.pv-frame { background: #1E2329; padding: 12px; border-radius: 28px; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+.pv-frame.is-mobile { width: 360px; height: 680px; }
+.pv-frame.is-tablet { width: 620px; height: 780px; border-radius: 24px; }
+.pv-frame.is-laptop { width: min(100%, 1000px); height: 600px; border-radius: 14px 14px 4px 4px; padding: 14px 14px 18px; }
+.pv-screen { width: 100%; height: 100%; overflow-y: auto; border-radius: 18px; background: #F0F0F0; }
+.pv-frame.is-laptop .pv-screen { border-radius: 4px; }
+
+/* the app inside the frame */
+.pv-app { min-height: 100%; font-size: 14px; color: #363636; }
+.pv-bar { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 14px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.pv-burger { width: 16px; height: 2px; background: #363636; box-shadow: 0 -5px 0 #363636, 0 5px 0 #363636; }
+.pv-brand { font-weight: 700; color: #0B4B66; }
+.pv-bell { margin-left: auto; position: relative; display: grid; }
+.pv-bell b { position: absolute; top: -6px; right: -8px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: #B91900; color: #fff; font-size: 11px; line-height: 18px; text-align: center; }
+.pv-pad { padding: 16px; display: grid; gap: 12px; max-width: 760px; margin: 0 auto; }
+.pv-h { font-size: 16px; font-weight: 700; color: #0B4B66; margin: 4px 0 0; }
+.pv-card { background: #fff; border-radius: 10px; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.12); display: grid; gap: 10px; }
+.pv-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.pv-app-no { font-weight: 700; }
+.pv-app-m, .pv-muted { color: #505A5F; font-size: 13px; }
+.pv-tag { flex: none; padding: 2px 8px; border-radius: 4px; background: #EAF2FC; border: 1px solid #A9C6EC; color: #0057BD; font-size: 12px; font-weight: 700; }
+.pv-tag.is-end { background: #F1FFF8; border-color: #9FD8BB; color: #00703C; }
+.pv-tl { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.pv-tl li { display: flex; align-items: center; gap: 10px; color: #505A5F; }
+.pv-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #B1B4B6; flex: none; }
+.pv-tl li.is-done { color: #363636; } .pv-tl li.is-done .pv-dot { background: #00703C; border-color: #00703C; }
+.pv-tl li.is-now { color: #363636; font-weight: 700; } .pv-tl li.is-now .pv-dot { border-color: #0057BD; box-shadow: inset 0 0 0 2px #fff; background: #0057BD; }
+.pv-next { background: #EAF2FC; border-left: 4px solid #0057BD; border-radius: 6px; padding: 12px; display: grid; gap: 4px; }
+.pv-next-t { font-weight: 700; color: #0B4B66; }
+.pv-notes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.pv-notes li { display: flex; gap: 10px; align-items: flex-start; background: #fff; border-radius: 8px; padding: 10px 12px; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+.pv-ch { flex: none; padding: 1px 6px; border-radius: 4px; background: #FFF6E5; border: 1px solid #F3D9A6; color: #9E5F00; font-size: 11px; font-weight: 700; }
+.pv-alert { background: #FFF9F0; border-left: 4px solid #9E5F00; border-radius: 6px; padding: 10px 12px; }
+.pv-sla { font-size: 13px; color: #9E5F00; }
+.pv-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.pv-btn { display: inline-flex; align-items: center; height: 36px; padding: 0 16px; border-radius: 4px; background: #C84C0E; color: #fff; font-weight: 700; }
+.pv-btn.is-2 { background: #fff; color: #C84C0E; border: 1px solid #C84C0E; }
+.pv-empty { background: #fff; border-radius: 10px; padding: 16px; display: grid; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+
+@media (max-width: 1100px) { .pv-body { grid-template-columns: 1fr; } .pv-nav { border-right: 0; border-bottom: 1px solid #D6D5D4; } #view-preview { height: auto; } }

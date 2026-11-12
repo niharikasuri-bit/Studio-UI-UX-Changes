@@ -152,14 +152,15 @@
   /* ---------- User Management list ---------- */
   let page = 0, pageSize = 10;
   // Search and filters apply as you type or pick; Clear (secondary button) resets them
-  const f = { q: '', status: '', role: '' };
+  const f = { q: '', dept: '', role: '', status: '' };
   const filtered = () => users.filter(u => {
     const q = f.q.trim().toLowerCase();
     return (!q || u.name.toLowerCase().includes(q) || u.userId.toLowerCase().includes(q))
       && (!f.status || (f.status === 'active') === u.active)
-      && (!f.role || u.roles.includes(f.role));
+      && (!f.role || u.roles.includes(f.role))
+      && (!f.dept || u.dept === f.dept);
   });
-  const anyFilter = () => !!(f.q.trim() || f.status || f.role);
+  const anyFilter = () => !!(f.q.trim() || f.status || f.role || f.dept);
   const opt = (v, label, cur) => `<option value="${esc(v)}"${v === cur ? ' selected' : ''}>${esc(label)}</option>`;
   // Roles: one info tag ("2 Roles"); hovering it lists the roles, screen readers read them out
   const roleTag = u => u.roles.length
@@ -173,7 +174,7 @@
       <div class="um-head">
         <div>
           <h1 class="page-title" id="um-title" tabindex="-1">User Management</h1>
-          <p class="um-desc">Add the people who use your system, keep their details and roles up to date, and activate or deactivate their access.</p>
+          <p class="um-desc">All the users you've added to your services are here. Find a user to see their department and roles, add new users, or edit, activate, and deactivate users.</p>
         </div>
         ${users.length ? `<a class="btn btn-primary um-add" href="#/users/new">${I.plus} Add User</a>` : ''}
       </div>
@@ -188,12 +189,16 @@
           <div class="nt-search"><input class="input" id="um-q" type="search" autocomplete="off" aria-describedby="um-count" value="${esc(f.q)}"><span class="rs-ico" aria-hidden="true"><svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span></div>
         </div>
         <div class="nt-filter">
-          <label class="nt-label" for="um-fs">Status</label>
-          <select class="input pf-select nt-select" id="um-fs">${opt('', 'All statuses', f.status)}${opt('active', 'Active', f.status)}${opt('inactive', 'Inactive', f.status)}</select>
+          <label class="nt-label" for="um-fd">Department</label>
+          <select class="input pf-select nt-select" id="um-fd">${opt('', 'All departments', f.dept)}${DEPARTMENTS.map(d => opt(d, d, f.dept)).join('')}</select>
         </div>
         <div class="nt-filter">
           <label class="nt-label" for="um-fr">Role</label>
           <select class="input pf-select nt-select" id="um-fr">${opt('', 'All roles', f.role)}${ROLES.map(r => opt(r, r, f.role)).join('')}</select>
+        </div>
+        <div class="nt-filter">
+          <label class="nt-label" for="um-fs">Status</label>
+          <select class="input pf-select nt-select" id="um-fs">${opt('', 'All statuses', f.status)}${opt('active', 'Active', f.status)}${opt('inactive', 'Inactive', f.status)}</select>
         </div>
         <button type="button" class="btn btn-secondary nt-clear nt-clear-btn" id="um-fclear" disabled>Clear Search</button>
       </section>
@@ -219,13 +224,13 @@
     $('um-tbl').innerHTML = `
         <div class="um-scroll">
           <table class="um-table">
-            <thead><tr><th scope="col">User</th><th scope="col">User ID</th><th scope="col">Roles</th><th scope="col">Added on</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
+            <thead><tr><th scope="col">User</th><th scope="col">User ID</th><th scope="col">Department</th><th scope="col">Roles</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
             <tbody>${rows.length ? rows.map(u => `
               <tr${u.active ? '' : ' class="is-off"'}>
                 <td class="um-name">${esc(u.name)}</td>
                 <td class="um-id">${esc(u.userId)}</td>
+                <td>${u.dept ? esc(u.dept) : '<span class="um-none">Not added</span>'}</td>
                 <td>${roleTag(u)}</td>
-                <td class="um-date">${fmtDate(u.added)}</td>
                 <td><span class="um-status">
                   <button type="button" class="switch" role="switch" data-um-sw="${u.id}" aria-checked="${u.active}" aria-label="${esc(u.name)} active"><span class="switch-knob" aria-hidden="true"></span></button>
                   <span class="um-status-t${u.active ? ' is-on' : ''}" aria-hidden="true">${u.active ? 'Active' : 'Inactive'}</span></span></td>
@@ -249,10 +254,10 @@
   }
   // filters apply straight away; screen readers hear the result count once typing pauses
   $('um-body').addEventListener('input', e => {
-    const k = { 'um-q': 'q', 'um-fs': 'status', 'um-fr': 'role' }[e.target.id]; if (!k) return;
+    const k = { 'um-q': 'q', 'um-fs': 'status', 'um-fr': 'role', 'um-fd': 'dept' }[e.target.id]; if (!k) return;
     f[k] = e.target.value; page = 0; drawTable();
   });
-  const clearFilters = () => { Object.assign(f, { q: '', status: '', role: '' }); page = 0; drawList('um-q'); S.announce('Search and filters cleared.'); };
+  const clearFilters = () => { Object.assign(f, { q: '', status: '', role: '', dept: '' }); page = 0; drawList('um-q'); S.announce('Search and filters cleared.'); };
   $('um-body').addEventListener('change', e => { if (e.target.id === 'um-size') { pageSize = +e.target.value; page = 0; drawTable(); $('um-size').focus(); } });
   $('um-body').addEventListener('click', e => {
     if (e.target.closest('#um-fclear')) return clearFilters();
@@ -359,7 +364,7 @@
             ${fld('um-dept', 'Department', sel('um-dept', DEPARTMENTS, v.dept, 'aria-required="true"'), true)}
             ${fld('um-desig', 'Designation', sel('um-desig', DESIGNATIONS, v.desig, 'aria-required="true"'), true)}
             ${fld('um-start', 'Start Date', inp('um-start', v.start, 'type="date" aria-required="true"'), true)}
-            <label class="check-row um-current"><input type="checkbox" id="um-current" aria-controls="um-end-wrap"${v.current ? ' checked' : ''}> Is this the current assignment?</label>
+            <label class="check-row um-current"><input type="checkbox" id="um-current" aria-controls="um-end-wrap"${v.current ? ' checked' : ''}> Is current assignment</label>
             <div id="um-end-wrap"${v.current ? ' hidden' : ''}>${fld('um-end', 'End Date', inp('um-end', v.end, 'type="date" aria-required="true"'), true)}</div>
           </div>
         </section>
@@ -461,6 +466,7 @@
   });
 
   window.StudioUsers = {
+    list: () => users,   // read by the Published Service page
     render(sub, focus) {
       if (!sub) drawList();
       else if (sub === 'new') drawForm(null);

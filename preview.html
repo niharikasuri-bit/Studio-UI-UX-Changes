@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="en" style="--c-font: 'Roboto', sans-serif;">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/png" href="shell/digit-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&family=Roboto:wght@400;500;700&family=DM+Sans:wght@400;500;700&family=Public+Sans:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+<title>Service Preview</title>
+<!-- Branding and Theming's own stylesheet, unchanged -->
+<link rel="stylesheet" href="shell/branding.css" />
+<style>
+  /* Only what Branding does not have: the step dropdown (same look as Branding's text inputs), devices, and the service shown in the window */
+  :root { --primary: #C84C0E; --heading: #0B4B66; --text: #363636; --muted: #505A5F; }
+  .pv-select { width: 100%; height: 44px; padding: 0 40px 0 12px !important; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; border: 1px solid #787878; border-radius: 6px; background: #fff; font: 16px Roboto, sans-serif; color: #363636;
+               appearance: none !important; -webkit-appearance: none !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z' fill='%23505A5F'/%3E%3C/svg%3E") !important;
+               background-repeat: no-repeat !important; background-position: right 8px center !important; background-size: 24px !important; }
+  .pv-screen { background: #F0F0F0; min-height: 487px; }
+  .br-preview-col { position: relative; background: #4A4A4A !important; }   /* dark canvas behind the device window */
+  .br-preview-col .br-preview { background: #4A4A4A !important; }
+  .br-grid > .br-panel { border-right: 0 !important; }   /* no light edge line between the Roles panel and the dark canvas */
+  /* the dark canvas slides 16px under the Roles panel, so its rounded corners sit on dark (Modules panel untouched) */
+  .br-grid { isolation: isolate; }
+  .br-grid > .br-preview-col { margin-left: -16px; padding-left: 16px; z-index: -1; }   /* tucked under the panels: nothing above it changes */
+  #pv-dev { position: sticky; }
+  .pv-fill { position: absolute; left: 28px; top: 50%; transform: translateY(-50%); margin-top: 2px; display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px;
+             border: 1px dashed #0B4B66; border-radius: 6px; background: #fff; color: #0B4B66; font: 500 14px Roboto, sans-serif; cursor: pointer; }
+  .pv-fill[hidden] { display: none; }
+  .pv-fill:hover { background: #EAF2FC; }
+  .pv-fill:focus-visible { outline: none; box-shadow: 0 0 0 3px #F4B41A; }
+  /* "Next step" card: bottom-right of the preview, above the bottom bar; stays until acted on or closed */
+  /* Next step guide: always on, bottom-right of the preview; panel opens above it */
+  .pv-bw { position: fixed; right: 28px; bottom: 77px; z-index: 30; }
+  .pv-bb { position: relative; width: 56px; height: 56px; display: grid; place-items: center; border: 1px solid #F2C8B4; border-radius: 50%; background: #FBEEE8; color: #C84C0E; cursor: pointer;
+           box-shadow: 0 8px 20px rgba(200,76,14,.18), 0 2px 4px rgba(16,24,40,.06); transition: transform .15s, box-shadow .15s, background .15s; }
+  .pv-bb:hover { transform: translateY(-2px); background: #F8E1D6; box-shadow: 0 12px 26px rgba(200,76,14,.24), 0 2px 4px rgba(16,24,40,.06); }
+  .pv-bb[aria-expanded="true"] { background: #F8E1D6; border-color: #C84C0E; }
+  .pv-bb:focus-visible { outline: none; box-shadow: 0 0 0 3px #fff, 0 0 0 6px #F4B41A; }
+  .pv-bb-n { position: absolute; top: -7px; right: -7px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; border: 2px solid #fff; background: #B91900; color: #fff;
+             font: 700 12px/18px Roboto, sans-serif; text-align: center; }
+  .pv-bb-n[hidden] { display: none; }
+  .pv-bb.is-ring svg { animation: pv-ring .8s ease-in-out; }
+  @keyframes pv-ring { 0%, 100% { transform: none; } 25% { transform: translateX(4px); } 50% { transform: translateX(-2px); } 75% { transform: translateX(3px); } }
+  @media (prefers-reduced-motion: reduce) { .pv-bb.is-ring svg, .pv-pop { animation: none; } }
+  .pv-pop { position: absolute; right: -4px; bottom: calc(100% + 16px); width: 380px; max-height: min(540px, calc(100vh - 340px));   /* stays below the blue title bar on short screens */ overflow-y: auto; background: #fff; border: 1px solid #E6E6E6;
+            border-radius: 12px; box-shadow: 0 24px 56px rgba(16,24,40,.16), 0 4px 12px rgba(16,24,40,.06); animation: pv-note-in .2s ease-out; font-family: Roboto, sans-serif; color: #363636; }
+  .pv-pop[hidden] { display: none; }
+  .pv-pop p { margin: 0; }
+  .pv-pop-top { position: sticky; top: 0; z-index: 1; background: #FAFAFA; border-bottom: 1px solid #E3E3E3; }   /* heading + line stay on top; full-width divider */
+  .pv-pop-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 14px 6px 20px; background: transparent; }
+  .pv-pop-t { margin: 0; font-size: 20px; font-weight: 700; color: #0B4B66; }
+  .pv-pop-t:focus { outline: none; }
+  .pv-pop-sub { margin: -2px 0 0 !important; padding: 0 20px 14px; font-size: 14px; line-height: 1.45; color: #707070; }
+  .pv-pop-x { flex: none; width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 6px; background: none; cursor: pointer; }
+  .pv-pop-x:hover { background: none; }   /* no hover on the close cross */
+  .pv-pop-empty { display: grid; justify-items: center; gap: 6px; padding: 16px 28px 28px; text-align: center; }
+  .pv-pop-art { width: 64px; height: 64px; display: grid; place-items: center; margin-bottom: 6px; border-radius: 50%; background: #FBEEE8; color: #C84C0E; }
+  .pv-pop-art svg { width: 30px; height: 30px; }
+  .pv-pop-et { font-size: 16px; font-weight: 700; color: #363636; }
+  .pv-pop-ed { font-size: 14px; line-height: 1.45; color: #707070; }
+  .pv-up { padding: 16px 20px 20px; display: grid; gap: 12px; }
+  .pv-up-row { display: grid; grid-template-columns: minmax(0, 1fr) 10px; align-items: start; gap: 12px; }
+  .pv-up-line { display: grid; gap: 2px; }
+  .pv-opts { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .pv-opt { display: grid; justify-items: start; gap: 6px; padding: 12px 14px; border: 1px solid #D6D5D4; border-radius: 8px; background: #fff; }
+  .pv-opt .pv-up-s { font-size: 14px; }
+  .pv-up .pv-up-what { line-height: 1.5; }   /* no tags on this line, so normal line spacing */
+  .pv-opt-go { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 10px; border: 1px solid #C84C0E; border-radius: 4px; background: #fff;
+                font: 700 12px Roboto, sans-serif; color: #C84C0E; cursor: pointer; }   /* secondary button */
+  .pv-opt-go:hover { background: #FBEEE8; }
+  .pv-opt-go:focus-visible { outline: none; border-radius: 4px; box-shadow: 0 0 0 3px #F4B41A; }
+  .pv-nexts { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .pv-nx { display: grid; gap: 8px; }
+  .pv-nx + .pv-nx { padding-top: 12px; border-top: 1px dashed #E3E3E3; }
+  .pv-up-k { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #707070; }
+  .pv-up-ic { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: #FBEEE8; color: #C84C0E; }
+  .pv-up-ic svg { width: 20px; height: 20px; }
+  .pv-up-main { min-width: 0; display: grid; gap: 4px; padding-top: 4px; }
+  .pv-up-s { font-size: 15px; line-height: 2; color: #363636; }
+  .pv-up-s b { font-weight: 700; }
+  .pv-tag-mod { display: inline-flex; align-items: center; border-radius: 4px; font-size: 12px; font-weight: 700; line-height: 1.3; background: #EEF1F4; border: 1px solid #D6D5D4; color: #363636; border-radius: 6px !important; }   /* Studio tag-neutral: a module the application moves into */
+  .pv-up-s .pv-tag-mod, .pv-up-s .pv-tag-role, .pv-up-s .pv-tag-act, .pv-up-s .pv-tag-state,
+  .pv-up-gd .pv-tag-mod, .pv-up-gd .pv-tag-role, .pv-up-gd .pv-tag-act, .pv-up-gd .pv-tag-state { min-height: 22px; padding: 0 7px; vertical-align: 1px; }
+  .pv-tag-act { display: inline-flex; align-items: center; border-radius: 4px; font-size: 12px; font-weight: 700; line-height: 1.3; background: #F4F6DF; border: 1px solid #D3D99A; color: #566000; border-radius: 6px !important; }   /* olive, only used here (not an access tag, not a theme colour): the action */
+  .pv-up-sep { margin: 0 20px; border: 0; border-top: 1px solid #EEEEEE; }
+  .pv-up-dl { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px 14px; border-radius: 8px; background: #F7F7F8; }
+  .pv-up-dl div { display: grid; gap: 6px; justify-items: start; min-width: 0; }
+  .pv-up-dl dt { font-size: 12px; font-weight: 500; color: #707070; }
+  .pv-up-dl dd { margin: 0; max-width: 100%; }
+  .pv-tag-role, .pv-tag-state { display: inline-flex; align-items: center; min-height: 24px; max-width: 100%; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; line-height: 1.3; }
+  .pv-tag-role { background: #F3EFFC; border: 1px solid #CDBDF2; color: #5B2DB3; border-radius: 6px !important; }   /* purple, only used here: the role (left panel access tags are blue / peach / cyan) */
+  .pv-tag-state { background: #EAF2FC; border: 1px solid #A9C6EC; color: #0057BD; }   /* info blue */
+  .pv-tag-state.is-done { margin-top: 4px; background: #F5F5F5; border-color: #D6D5D4; color: #505A5F; }
+  .pv-up-go { justify-self: stretch; display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-top: 2px; height: 40px; padding: 0 16px; border: 0; border-radius: 4px;
+              background: #C84C0E; color: #fff; font: 700 16px Roboto, sans-serif; cursor: pointer; }
+  .pv-up-go:hover { background: #A33E0B; }
+  .pv-up-gd { font-size: 14px; line-height: 2; color: #505A5F; }
+  .pv-pop-sec { padding: 6px 18px 4px; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #707070; }
+  .pv-past { list-style: none; margin: 0; padding: 4px 12px 14px; display: grid; gap: 4px; }
+  .pv-past li { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; padding: 8px 6px; }
+  .pv-past li > span:last-child { display: grid; justify-items: start; }
+  .pv-past-ic { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: #E7F4EC; color: #00703C; font-size: 13px; font-weight: 700; }
+  .pv-past-t { font-size: 14px; color: #363636; }
+  .pv-pop-x:focus-visible, .pv-up-go:focus-visible { outline: none; box-shadow: 0 0 0 3px #F4B41A; }
+  /* Exit Preview popup: same as the Studio red alert popup (Deactivate user) */
+  .pv-exit { position: fixed; inset: 0; margin: auto; width: min(550px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 20px 24px; border: 0; border-radius: 12px;
+             background: #fff; color: #363636; text-align: center; font-family: Roboto, sans-serif; box-shadow: 0 12px 40px rgba(0,0,0,.18); }
+  .pv-exit[open] { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .pv-exit::backdrop { background: rgba(20,20,20,.45); }
+  .pv-exit-ic { display: grid; place-items: center; margin-top: 4px; }
+  .pv-exit-t { margin: 0; padding: 0 16px; font-size: 24px; line-height: 1.3; font-weight: 700; color: #0B4B66; }
+  .pv-exit-d { margin: 0; font-size: 16px; line-height: 1.5; color: #707070; }
+  .pv-exit-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .pv-exit-btn { height: 40px; border: 1px solid #C84C0E; border-radius: 4px; background: #C84C0E; color: #fff; font: 700 16px Roboto, sans-serif; cursor: pointer; }
+  .pv-exit-btn:hover { background: #A33E0B; border-color: #A33E0B; }
+  .pv-exit-btn.is-sec { background: #fff; color: #C84C0E; }
+  .pv-exit-btn.is-sec:hover { background: #FBEEE8; border-color: #C84C0E; }
+  .pv-exit-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px #F4B41A; }
+  @keyframes pv-note-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .pv-note { animation: none; } }
+  #pv-dev[hidden] { display: none; }
+  .br-preview { padding-top: 28px; }
+  .br-dash.is-mobile, .br-dash.is-tablet { margin: 0 auto; }
+  .br-dash.is-mobile { max-width: 390px; } .br-dash.is-tablet { max-width: 768px; }
+  .br-dash.is-mobile .pv-screen, .br-dash.is-tablet .pv-screen { height: 600px; overflow-y: auto; }
+  #pv-dev.br-preview-bar { justify-content: center; position: sticky; top: 0; z-index: 3; padding-top: 16px !important; padding-bottom: 12px !important; height: auto !important; flex-shrink: 0; background: #4A4A4A; }   /* stays in view while the preview scrolls */
+  /* device choice: the DIGIT Toggle used on the module dashboard (square, equal-width segments, grey border, selected = orange) */
+  .pv-seg { display: inline-flex; border: 1px solid #D6D5D4; border-radius: 4px; background: #fff; overflow: hidden; }
+  .pv-seg-b { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 115px; height: 38px; padding: 0 16px; border: 0; background: #fff;
+              white-space: nowrap; font: 400 14px/1 Roboto, sans-serif; color: #505A5F; cursor: pointer; }
+  .pv-seg-b + .pv-seg-b { border-left: 1px solid #D6D5D4; }
+  .pv-seg-b:hover { background: #FBEEE8; color: #A33E0B; }
+  .pv-seg-b.is-on, .pv-seg-b.is-on:hover { background: #C84C0E; color: #fff; font-weight: 700; }
+  .pv-seg-b:focus-visible { outline: none; position: relative; z-index: 1; box-shadow: 0 0 0 3px #F4B41A; }
+  /* role card tags: small */
+  .pv-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  /* Branding's two panels (Modules, Roles with access); a long module name wraps instead of being cut off */
+  .br-nav button { height: auto !important; min-height: 44px; padding-top: 10px !important; padding-bottom: 10px !important; align-items: flex-start !important; text-align: left; }
+  .pv-mod-n { min-width: 0; overflow-wrap: anywhere; }
+  /* Roles panel only as wide as a card needs for its tags (Create, Edit, View on one line); card sizes unchanged */
+  .br-grid { grid-template-columns: 200px 256px minmax(0, 1fr) !important; }
+  .pv-tags { flex-wrap: nowrap; }
+  /* role cards: Branding's selectable card, one per row; Roles page tint + person icon */
+  .pv-roles { display: grid; gap: 8px; }
+  .br-font.pv-role { flex-direction: row; align-items: center; gap: 12px; }
+  .br-font.pv-role:has(input:focus-visible) { outline: 3px solid #F4B41A; outline-offset: 2px; }
+  .pv-rpic { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 8px; color: #B1B4B6; }
+  .pv-role-txt { min-width: 0; display: grid; gap: 6px; }
+  .pv-role-n { font-size: 14px; font-weight: 700; color: #363636; overflow-wrap: anywhere; }
+  /* tags like the Access tags on the Roles page (Create / Edit / View colours), a size smaller */
+  .pv-tg { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; line-height: 1.3; }
+  .pv-tg-create { background: #EAF2FC; color: #0B4B66; } .pv-tg-edit { background: #FDF0E9; color: #A33E0B; } .pv-tg-view { background: #E6F6FA; color: #0B4B66; }   /* same as the Roles page */
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* the app's own screens */
+  .pv-back { display: grid; place-items: center; width: 32px; height: 32px; margin-left: -6px; border: 0; border-radius: 6px; background: none; color: #363636; cursor: pointer; }
+  .pv-hero { background: #0B4B66; color: #fff; padding: 18px 18px 20px; }
+  .pv-hero-t { font-size: 22px; font-weight: 700; } .pv-hero-d { margin-top: 6px; font-size: 13px; line-height: 1.45; }
+  .pv-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+  .pv-tile { min-height: 64px; border: 0; border-radius: 10px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.12); color: #C84C0E; font: 700 14px Roboto, sans-serif; cursor: pointer; }
+  .pv-faqs { display: grid; gap: 8px; } .pv-faq { background: #fff; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+  .pv-faq-q { width: 100%; display: flex; justify-content: space-between; gap: 8px; padding: 12px; border: 0; background: none; font: 500 14px Roboto, sans-serif; text-align: left; color: #363636; cursor: pointer; }
+  .pv-faq-a { padding: 0 12px 12px; color: #505A5F; font-size: 13px; }
+  .pv-steps { font-size: 13px; color: #505A5F; }
+  .pv-f { display: grid; gap: 4px; }
+  .pv-lab { font-size: 14px; color: #363636; } .pv-req { color: #B91900; }
+  .pv-in { width: 100%; height: 40px; padding: 0 10px; border: 1px solid #505A5F; border-radius: 4px; background: #fff; font: 14px Roboto, sans-serif; color: #363636; }
+  textarea.pv-in { height: auto; padding: 8px 10px; }
+  select.pv-in { appearance: none; -webkit-appearance: none; padding-right: 40px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z' fill='%23505A5F'/%3E%3C/svg%3E") no-repeat right 8px center / 24px; }
+  .pv-in[aria-invalid="true"] { border-color: #B91900; }
+  .pv-pre { display: flex; } .pv-pre span { display: grid; place-items: center; padding: 0 10px; border: 1px solid #505A5F; border-right: 0; border-radius: 4px 0 0 4px; background: #F5F5F5; }
+  .pv-pre .pv-in { border-radius: 0 4px 4px 0; }
+  .pv-err { font-size: 12px; font-weight: 500; color: #B91900; } .pv-err[hidden] { display: none; }
+  .pv-upload { height: 40px; border: 1px dashed #C9C9C9; border-radius: 8px; background: #fff; color: #A33E0B; font: 500 14px Roboto, sans-serif; cursor: pointer; }
+  .pv-file { font-size: 14px; } .pv-link { border: 0; background: none; padding: 2px 4px; color: #A33E0B; font: 500 13px Roboto, sans-serif; text-decoration: underline; cursor: pointer; }
+  .pv-nav-b { display: flex; justify-content: space-between; gap: 10px; }
+  button.pv-btn { border: 0; cursor: pointer; font-family: Roboto, sans-serif; } button.pv-btn.is-2 { border: 1px solid #C84C0E; }
+  .pv-dl { margin: 0; display: grid; gap: 6px; } .pv-dl div { display: grid; grid-template-columns: 40% 1fr; gap: 8px; font-size: 13px; } .pv-dl dt { color: #505A5F; } .pv-dl dd { margin: 0; }
+  .pv-done { text-align: center; justify-items: center; } .pv-tick { width: 44px; height: 44px; border-radius: 50%; background: #00703C; color: #fff; display: grid; place-items: center; font-size: 22px; }
+  .pv-ok { background: #F1FFF8; border-left: 4px solid #00703C; border-radius: 6px; padding: 10px 12px; }
+  .pv-app button:focus-visible, .pv-in:focus-visible { outline: none; box-shadow: 0 0 0 3px #F4B41A; }
+  .pv-app p { margin: 0; }
+  /* the service inside the window: the citizen app / the employee inbox */
+  .pv-app { font-size: 14px; color: var(--text); }
+  .pv-app p, .br-fld p, .br-preview-note { margin: 0; }
+  .pv-top { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 18px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+  .pv-brand { font-weight: 700; color: var(--heading); }
+  .pv-bell { margin-left: auto; position: relative; display: grid; }
+  .pv-bell b { position: absolute; top: -6px; right: -8px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: #B91900; color: #fff; font-size: 11px; line-height: 18px; text-align: center; }
+  .pv-pad { padding: 18px; display: grid; gap: 12px; max-width: 760px; margin: 0 auto; }
+  .pv-h { margin: 4px 0 0; font-size: 16px; font-weight: 700; color: var(--heading); }
+  .pv-card { background: #fff; border: 1px solid #E8E8E8; border-radius: 10px; padding: 14px; display: grid; gap: 10px; }
+  .pv-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .pv-no { font-weight: 700; }
+  .pv-muted { color: var(--muted); font-size: 13px; }
+  .pv-tag { flex: none; padding: 2px 8px; border-radius: 4px; background: #EAF2FC; border: 1px solid #A9C6EC; color: #0057BD; font-size: 12px; font-weight: 700; }
+  .pv-tag.is-end { background: #F1FFF8; border-color: #9FD8BB; color: #00703C; }
+  .pv-tl { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .pv-tl li { display: flex; align-items: center; gap: 10px; color: var(--muted); }
+  .pv-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #B1B4B6; flex: none; }
+  .pv-tl li.is-done { color: var(--text); } .pv-tl li.is-done .pv-dot { background: #00703C; border-color: #00703C; }
+  .pv-tl li.is-now { color: var(--text); font-weight: 700; } .pv-tl li.is-now .pv-dot { border-color: #0057BD; background: #0057BD; box-shadow: inset 0 0 0 2px #fff; }
+  .pv-next { background: #EAF2FC; border-left: 4px solid #0057BD; border-radius: 6px; padding: 12px; display: grid; gap: 4px; }
+  .pv-next-t { font-weight: 700; color: var(--heading); }
+  .pv-notes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .pv-notes li { display: flex; gap: 10px; align-items: flex-start; background: #fff; border: 1px solid #E8E8E8; border-radius: 8px; padding: 10px 12px; }
+  .pv-ch { flex: none; padding: 1px 6px; border-radius: 4px; background: #FFF6E5; border: 1px solid #F3D9A6; color: #9E5F00; font-size: 11px; font-weight: 700; }
+  .pv-alert { background: #FFF9F0; border-left: 4px solid #9E5F00; border-radius: 6px; padding: 10px 12px; }
+  .pv-sla { font-size: 13px; color: #9E5F00; }
+  .pv-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pv-btn { display: inline-flex; align-items: center; height: 36px; padding: 0 16px; border-radius: 6px; background: var(--primary); color: #fff; font-weight: 700; font-size: 13px; }
+  .pv-btn.is-2 { background: #fff; color: var(--primary); border: 1px solid var(--primary); }
+  .pv-empty { background: #fff; border: 1px solid #E8E8E8; border-radius: 10px; padding: 16px; display: grid; gap: 6px; }
+</style>
+</head>
+<body>
+<div id="root"><div class="sh"><a class="sh-skip" href="#main">Skip to main content</a><header class="sh-top"><div class="sh-org"><span class="sh-org-mark" aria-hidden="true">D</span><span class="sh-org-name">Demo Account</span></div><div class="sh-top-end"><img class="sh-digit" alt="DIGIT" width="528" height="124" src="shell/digit-logo.png"></div></header><div class="sh-body"><nav class="sh-nav is-mini" aria-label="Account"><div class="sh-search"><input placeholder="Search" aria-label="Search the menu" type="search"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2.2"></circle><path d="M15 15l5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg></div><ul><li><button type="button" class="sh-nav-item" data-label="Home"><span class="ux-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_105_496)"><path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z" fill="currentColor"></path></g><defs><clipPath id="clip0_105_496"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg></span><span class="sh-nav-label">Home</span></button></li><li><button type="button" class="sh-nav-item" data-label="Geographies"><span class="ux-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_176_860)"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 19.93C7.05 19.44 4 16.08 4 12C4 11.38 4.08 10.79 4.21 10.21L9 15V16C9 17.1 9.9 18 11 18V19.93ZM17.9 17.39C17.64 16.58 16.9 16 16 16H15V13C15 12.45 14.55 12 14 12H8V10H10C10.55 10 11 9.55 11 9V7H13C14.1 7 15 6.1 15 5V4.59C17.93 5.78 20 8.65 20 12C20 14.08 19.2 15.97 17.9 17.39Z" fill="currentColor"></path></g><defs><clipPath id="clip0_176_860"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg></span><span class="sh-nav-label">Geographies</span></button></li><li><button type="button" class="sh-nav-item" data-label="Notification Channels"><span class="ux-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_105_2073)"><path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="currentColor"></path></g><defs><clipPath id="clip0_105_2073"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg></span><span class="sh-nav-label">Notification Channels</span></button></li><li><button type="button" class="sh-nav-item" data-label="Team"><span class="ux-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_176_711)"><path d="M16 11C17.66 11 18.99 9.66 18.99 8C18.99 6.34 17.66 5 16 5C14.34 5 13 6.34 13 8C13 9.66 14.34 11 16 11ZM8 11C9.66 11 10.99 9.66 10.99 8C10.99 6.34 9.66 5 8 5C6.34 5 5 6.34 5 8C5 9.66 6.34 11 8 11ZM8 13C5.67 13 1 14.17 1 16.5V19H15V16.5C15 14.17 10.33 13 8 13ZM16 13C15.71 13 15.38 13.02 15.03 13.05C16.19 13.89 17 15.02 17 16.5V19H23V16.5C23 14.17 18.33 13 16 13Z" fill="currentColor"></path></g><defs><clipPath id="clip0_176_711"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg></span><span class="sh-nav-label">Team</span></button></li><li><button type="button" class="sh-nav-item" data-label="Branding and Theming"><span class="ux-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_105_544)"><path d="M17.66 7.93002L12 2.27002L6.34 7.93002C3.22 11.05 3.22 16.12 6.34 19.24C7.9 20.8 9.95 21.58 12 21.58C14.05 21.58 16.1 20.8 17.66 19.24C20.78 16.12 20.78 11.05 17.66 7.93002V7.93002ZM12 19.59C10.4 19.59 8.89 18.97 7.76 17.83C6.62 16.69 6 15.19 6 13.59C6 11.99 6.62 10.48 7.76 9.35002L12 5.10002V19.59Z" fill="currentColor"></path></g><defs><clipPath id="clip0_105_544"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg></span><span class="sh-nav-label">Branding and Theming</span></button></li><li><button type="button" class="sh-nav-item" data-label="Language"><span class="ux-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_105_1122)"><path d="M12.87 15.07L10.33 12.56L10.36 12.53C12.1 10.59 13.34 8.36 14.07 6H17V4H10V2H8V4H1V5.99H12.17C11.5 7.92 10.44 9.75 9 11.35C8.07 10.32 7.3 9.19 6.69 8H4.69C5.42 9.63 6.42 11.17 7.67 12.56L2.58 17.58L4 19L9 14L12.11 17.11L12.87 15.07ZM18.5 10H16.5L12 22H14L15.12 19H19.87L21 22H23L18.5 10ZM15.88 17L17.5 12.67L19.12 17H15.88V17Z" fill="currentColor"></path></g><defs><clipPath id="clip0_105_1122"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg></span><span class="sh-nav-label">Language</span></button></li><li><button type="button" class="sh-nav-item" data-label="Integrations"><span class="ux-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_105_369)"><path d="M20.5 11H19V7C19 5.9 18.1 5 17 5H13V3.5C13 2.12 11.88 1 10.5 1C9.12 1 8 2.12 8 3.5V5H4C2.9 5 2.01 5.9 2.01 7V10.8H3.5C4.99 10.8 6.2 12.01 6.2 13.5C6.2 14.99 4.99 16.2 3.5 16.2H2V20C2 21.1 2.9 22 4 22H7.8V20.5C7.8 19.01 9.01 17.8 10.5 17.8C11.99 17.8 13.2 19.01 13.2 20.5V22H17C18.1 22 19 21.1 19 20V16H20.5C21.88 16 23 14.88 23 13.5C23 12.12 21.88 11 20.5 11Z" fill="currentColor"></path></g><defs><clipPath id="clip0_105_369"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg></span><span class="sh-nav-label">Integrations</span></button></li><li><button type="button" class="sh-nav-item" data-label="Product Health"><span class="ux-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_105_76)"><path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM9 17H7V12H9V17ZM13 17H11V14H13V17ZM13 12H11V10H13V12ZM17 17H15V7H17V17Z" fill="currentColor"></path></g><defs><clipPath id="clip0_105_76"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg></span><span class="sh-nav-label">Product Health</span></button></li></ul><div class="sh-nav-foot"><button type="button" class="sh-restart" data-label="Restart"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="sh-nav-label">Restart</span></button><p class="sh-powered">Powered by <img alt="DIGIT" width="528" height="124" src="shell/digit-logo.png"></p></div></nav><div class="sh-content"><div class="sh-sub has-back"><button type="button" class="sh-back-home" id="pv-back"><span class="ux-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_105_1455)"><path d="M20 11H7.83L13.42 5.41L12 4L4 12L12 20L13.41 18.59L7.83 13H20V11Z" fill="currentColor"></path></g><defs><clipPath id="clip0_105_1455"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg></span>Exit Preview</button><h1 class="sh-sub-title" id="pv-title" tabindex="-1">Service Preview</h1><span class="ux-help-btn"><button id="root-standalone-btn-2" class="digit-button-secondary medium  " type="button" title="" aria-label="Help" data-screen="root" data-composer-type="standalone" data-button-type="button"><div class="icon-label-container secondary medium"><svg width="1.25rem" height="1.25rem" class="digit-button-customIcon medium secondary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_105_480)"><path d="M11 18H13V16H11V18ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM12 6C9.79 6 8 7.79 8 10H10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 12 11 11.75 11 15H13C13 12.75 16 12.5 16 10C16 7.79 14.21 6 12 6Z" fill="#C84C0E"></path></g><defs><clipPath id="clip0_105_480"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg><h2 class="digit-button-label">Help</h2></div></button></span></div><main id="main" class="sh-main" tabindex="-1"><div class="br"><div class="cg-toast" role="status" aria-live="polite"></div><p class="sr-only" role="status" aria-live="polite" id="pv-live"></p><div class="br-grid"><nav class="br-nav" aria-label="Modules"><ul id="pv-mods"></ul></nav><section class="br-panel" aria-labelledby="_r_0_-sec"><div class="br-panel-head"><h2 id="_r_0_-sec">Roles</h2></div><div class="br-panel-scroll"><div class="br-panel-card">
+  <fieldset class="br-fs is-bare"><legend class="ux-visually-hidden">Roles</legend><div class="pv-roles" id="pv-roles"></div></fieldset>
+</div></div></section><div class="br-preview-col"><div class="br-preview-bar" id="pv-dev"><button type="button" class="pv-fill" id="pv-fill" hidden><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/></svg>Fill with sample data</button><div id="pv-seghost" role="radiogroup" aria-label="Device"></div>
+      <div class="pv-bw" id="pv-bw">
+        <div class="pv-pop" id="pv-pop" role="dialog" aria-labelledby="pv-pop-t" hidden></div>
+        <button type="button" class="pv-bb" id="pv-bb" aria-haspopup="dialog" aria-expanded="false" aria-controls="pv-pop" aria-label="What happens now?"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M21.71 11.29l-9-9a1 1 0 0 0-1.42 0l-9 9a1 1 0 0 0 0 1.42l9 9a1 1 0 0 0 1.42 0l9-9a1 1 0 0 0 0-1.42zM14 14.5V12h-4v3H8v-4a1 1 0 0 1 1-1h5V7.5l3.5 3.5-3.5 3.5z"/></svg><span class="pv-bb-n" id="pv-bb-n" hidden></span></button>
+        <p class="sr-only" role="status" aria-live="polite" id="pv-bb-live"></p>
+      </div>
+      </div><figure class="br-preview is-dash" aria-label="Service preview"><div class="br-dash" id="pv-dash" style="--br-p: #C84C0E; --br-h: #0B4B66; --br-bg: #F5F7F8; --br-r: 10px; --br-rb: 6px; font-family: Roboto, system-ui, sans-serif;"><div class="br-dash-chrome" aria-hidden="true"><span></span><span></span><span></span></div><div class="pv-screen" id="pv-screen"></div></div></figure></div></div><footer class="cg-bar br-bar"><button id="root-standalone-btn-10" class="digit-button-primary large  " type="button" title="" aria-label="Publish Service" data-screen="root" data-composer-type="standalone" data-button-type="button"><div class="icon-label-container primary "><h2 class="digit-button-label">Publish Service</h2></div></button></footer></div></main></div></div></div></div>
+<dialog class="pv-exit" id="pv-exit" aria-labelledby="pv-exit-t" aria-describedby="pv-exit-d">
+  <div class="pv-exit-ic" aria-hidden="true"><svg viewBox="0 0 48 44" width="48" height="48"><path d="M24 2L46 42H2z" fill="#B91900"/><rect x="21.5" y="15" width="5" height="15" rx="1.5" fill="#fff"/><circle cx="24" cy="35.5" r="2.8" fill="#fff"/></svg></div>
+  <h2 class="pv-exit-t" id="pv-exit-t">Are you sure you want to exit preview?</h2>
+  <p class="pv-exit-d" id="pv-exit-d">The progress made here cannot be saved. Any applications, actions and updates from this preview will be cleared.</p>
+  <div class="pv-exit-actions">
+    <button type="button" class="pv-exit-btn is-sec" id="pv-exit-cancel">Cancel</button>
+    <button type="button" class="pv-exit-btn" id="pv-exit-ok">Exit Preview</button>
+  </div>
+</dialog>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const MODULES = (() => { try { const m = JSON.parse(localStorage.getItem('studio-prototype.modules.v1') || localStorage.getItem('studio-prototype.modules')); if (Array.isArray(m) && m.length) return m; } catch (e) {}
+    return [{ id: 'application', name: 'Application', primary: true }, { id: 'renewal', name: 'Renewal', primaryStates: ['Manual Expired', 'Auto Expired', 'Due for Renewal'], secondaryStates: [] },
+      { id: 'amendment', name: 'Amendment', primaryStates: ['Approved'], secondaryStates: [] }]; })();
+  const SAMPLE = () => ({
+    states: [
+      { id: 's1', type: 'start', name: 'Applied', description: 'A citizen has filed an application.', slaHours: 24, notify: { enabled: true, items: [{ name: 'Application received', channel: 'SMS' }] } },
+      { id: 's2', type: 'intermediate', name: 'Pending verification', description: 'A verifier checks the application details.', slaHours: 48, notify: { enabled: true, items: [{ name: 'Application under verification', channel: 'SMS' }] } },
+      { id: 's3', type: 'intermediate', name: 'Pending approval', description: 'An approver reviews the verified application.', slaHours: 72, notify: { enabled: false, items: [] } },
+      { id: 's4', type: 'end', name: 'Approved', description: 'The application is approved.', slaHours: 0, notify: { enabled: true, items: [{ name: 'Application approved', channel: 'Email' }] } },
+      { id: 's5', type: 'end', name: 'Rejected', description: 'The application is rejected.', slaHours: 0, notify: { enabled: true, items: [{ name: 'Application rejected', channel: 'SMS' }] } },
+    ],
+    actions: [
+      { name: 'Submit', from: 's1', to: 's2', roles: ['CITIZEN'] }, { name: 'Verify', from: 's2', to: 's3', roles: ['VERIFIER'] }, { name: 'Send back', from: 's2', to: 's1', roles: ['VERIFIER'] },
+      { name: 'Approve', from: 's3', to: 's4', roles: ['APPROVER'] }, { name: 'Reject', from: 's3', to: 's5', roles: ['APPROVER'] },
+    ],
+  });
+  const flowOf = m => { try { const f = JSON.parse(localStorage.getItem('studio-process-flow.' + m.id)); if (f && f.states && f.states.length) return f; } catch (e) {} return SAMPLE(); };
+  const roleName = r => r.charAt(0) + r.slice(1).toLowerCase().replace(/_/g, ' ');
+  const hrs = h => (h >= 24 && h % 24 === 0 ? `${h / 24} ${h / 24 === 1 ? 'day' : 'days'}` : `${h} ${h === 1 ? 'hour' : 'hours'}`);
+  const notesOf = s => (s.notify && s.notify.enabled ? s.notify.items || [] : []);
+  function ordered(f) {
+    const seen = new Set(), out = [], q = f.states.filter(s => s.type === 'start').map(s => s.id);
+    while (q.length) { const id = q.shift(); if (seen.has(id)) continue; seen.add(id); const s = f.states.find(x => x.id === id); if (!s) continue; out.push(s); f.actions.filter(a => a.from === id).forEach(a => { if (!seen.has(a.to)) q.push(a.to); }); }
+    f.states.forEach(s => { if (!seen.has(s.id)) out.push(s); });
+    return [...out.filter(s => s.type !== 'end'), ...out.filter(s => s.type === 'end')];
+  }
+  function pathTo(f, target) {
+    const start = f.states.find(s => s.type === 'start'); if (!start) return [target];
+    const prev = { [start.id]: null }, q = [start.id];
+    while (q.length) { const id = q.shift(); if (id === target.id) break; f.actions.filter(a => a.from === id).forEach(a => { if (!(a.to in prev)) { prev[a.to] = id; q.push(a.to); } }); }
+    if (!(target.id in prev)) return [start, target];
+    const p = []; let cur = target.id; while (cur) { p.unshift(f.states.find(s => s.id === cur)); cur = prev[cur]; } return p;
+  }
+
+  const PLACEHOLDER = true;   // for now the window is empty (Mobile / Tablet / Laptop still switch its size); set to false to bring the app back
+  let mod = MODULES[0], role = 'CITIZEN', stepId = null, device = 'mobile';
+  const BELL = n => `<span class="pv-bell" aria-label="${n} new notification${n === 1 ? '' : 's'}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" fill="#363636"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0" stroke="#363636" stroke-width="2" fill="none" stroke-linecap="round"/></svg>${n ? `<b>${n}</b>` : ''}</span>`;
+  (() => { let t = null; try { t = JSON.parse(localStorage.getItem('studio-brand')).theme; } catch (e) {} if (!t) { try { t = JSON.parse(localStorage.getItem('digit-console-v4')).account.branding.theme; } catch (e) {} }
+    const r = { sharp: '2px', rounded: '6px', soft: '10px', pill: '999px' }[t && t.radius]; if (r) document.documentElement.style.setProperty('--pv-rb', r); })();
+  const DEVICES = [
+    ['mobile', 'Mobile', '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2" stroke-linecap="round"/></svg>'],
+    ['tablet', 'Tablet', '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M11 18h2" stroke-linecap="round"/></svg>'],
+    ['laptop', 'Laptop', '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="16" height="11" rx="1.5"/><path d="M2 19h20" stroke-linecap="round"/></svg>'],
+  ];
+  const CHECK = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const ACCESS = { CREATOR: ['Create', 'pv-tg-create'], EDITOR: ['Edit', 'pv-tg-edit'], VIEWER: ['View', 'pv-tg-view'] };
+  const ROLES_PAGE = (() => { try { const r = JSON.parse(localStorage.getItem('studio-prototype.roles.v1')); return Array.isArray(r) ? r : []; } catch (e) { return []; } })();
+  const nameOf = c => (ROLES_PAGE.find(x => x.code === c) || {}).name || roleName(c);   // the name as written on the Roles page
+  // same as the role tiles on the Roles page: soft tint + person icon
+  const ROLE_TINTS = ['#FAF5F0', '#EEF5F7', '#F3F4FC', '#EFF7F0'];
+  const USER_ICON = '<svg aria-hidden="true" focusable="false" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>';
+  const MOD_ICON = '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>';
+
+  function drawPanels() {
+    $('pv-mods').innerHTML = MODULES.map(m => `<li><button type="button" data-mod="${esc(m.id)}"${m.id === mod.id ? ' aria-current="true"' : ''}><span class="ux-icon" aria-hidden="true">${MOD_ICON}</span><span class="pv-mod-n">${esc(m.name)}</span></button></li>`).join('');
+    const f = flowOf(mod), roles = ['CITIZEN', ...new Set([...ROLES_PAGE.map(x => x.code), ...f.actions.flatMap(a => a.roles || [])].filter(r => r && r !== 'CITIZEN'))];
+    if (!roles.includes(role)) role = 'CITIZEN';
+    $('pv-roles').innerHTML = roles.map((r, ri) => {
+      const can = [...new Set(f.actions.filter(a => (a.roles || []).includes(r)).map(a => a.name))];
+      // the three access types from the Roles page (Create / Edit / View); a role set up there keeps its own access
+      const saved = ROLES_PAGE.find(x => x.code === r);
+      const access = saved && saved.access && saved.access.length ? saved.access : r === 'CITIZEN' ? ['CREATOR', 'VIEWER'] : can.length ? ['EDITOR', 'VIEWER'] : ['VIEWER'];
+      const tags = ['CREATOR', 'EDITOR', 'VIEWER'].filter(v => access.includes(v));
+      return `<label class="br-font pv-role${r === role ? ' is-on' : ''}"><input class="ux-visually-hidden" type="radio" name="pv-role" value="${esc(r)}" data-role="${esc(r)}"${r === role ? ' checked' : ''}>
+        <span class="pv-rpic" style="background:${ROLE_TINTS[ri % ROLE_TINTS.length]}" aria-hidden="true">${USER_ICON}</span>
+        <span class="pv-role-txt"><span class="pv-role-n">${esc(nameOf(r))}</span><span class="pv-tags" aria-label="Access">${tags.map(v => `<span class="pv-tg ${ACCESS[v][1]}">${ACCESS[v][0]}</span>`).join('')}</span></span></label>`;
+    }).join('');
+    const st = ordered(f);
+    if (!stepId || !st.find(s => s.id === stepId)) stepId = st[0].id;   // the journey starts before anything is submitted
+  }
+  /* ---------- the service as an app the person uses ---------- */
+  const LANDING = (() => { try { const d = JSON.parse(localStorage.getItem('studio-prototype.landing.v1')); if (d && d.hero) return d; } catch (e) {}
+    return { hero: { on: true, title: 'Business License', desc: 'Learn more about Business License, submit an application, and track the progress of your applications.' },
+      actions: { on: true, list: ['apply', 'renew', 'track'] },
+      faq: { on: true, list: [{ q: 'Who can apply?', a: 'Any business owner trading within the city limits can apply for a business license.' }, { q: 'What documents do I need?', a: 'Identity proof, proof of address of the business, and the property tax receipt.' }] } }; })();
+  const ACT_LABEL = { apply: 'Apply', renew: 'Renew', track: 'Track', pay: 'Pay Fees', download: 'Download Certificate', amend: 'Amend' };
+  const ACT_MODULE = { apply: 'application', renew: 'renewal', amend: 'amendment' };
+  const FIELD = (label, type, required) => ({ id: label.toLowerCase().replace(/\W+/g, '-'), label, type, required: !!required });
+  const formOf = m => {
+    const secs = m.form && Array.isArray(m.form.sections) ? m.form.sections.filter(x => (x.fields || []).length) : null;
+    if (secs && secs.length) return secs;
+    return [
+      { heading: 'Applicant Details', description: 'Please provide your personal information', fields: [FIELD('Name', 'text', 1), FIELD('Mobile Number', 'mobile', 1), FIELD('Email', 'email'), FIELD('Gender', 'dropdown')] },
+      { heading: 'Address Details', description: 'Please provide your address', fields: [FIELD('House Number', 'text'), FIELD('Street', 'text'), FIELD('Locality', 'text', 1), FIELD('City', 'text', 1), FIELD('Pin Code', 'number', 1)] },
+      { heading: 'Document Details', description: 'Please upload required documents', fields: [FIELD('Identity Proof', 'docUpload', 1)] },
+    ];
+  };
+  // realistic sample answers for a demo, matched on the field's label / type
+  function sampleFor(f) {
+    const l = (f.label || '').toLowerCase(), t = f.type || '';
+    if (/doc/i.test(t)) return (f.label || 'document').toLowerCase().replace(/\W+/g, '-') + '.pdf';
+    if (t === 'dropdown' || t === 'radio') return /gender/.test(l) ? 'Female' : optsOf(f)[0];
+    if (t === 'mobile' || /mobile|phone/.test(l)) return '9876543210';
+    if (t === 'email' || /email/.test(l)) return 'pam.beesly@example.com';
+    if (t === 'date' || /date|birth|dob/.test(l)) return '1994-03-25';
+    if (/name/.test(l) && /business|shop|trade|firm/.test(l)) return 'Dunder Mifflin Paper Co.';
+    if (/name/.test(l)) return 'Pam Beesly';
+    if (/house|door|flat|building/.test(l)) return '12';
+    if (/street|road|lane/.test(l)) return 'MG Road';
+    if (/locality|area|ward/.test(l)) return 'Indiranagar';
+    if (/city|town|district/.test(l)) return 'Bengaluru';
+    if (/pin|postal|zip/.test(l)) return '560038';
+    if (/address/.test(l)) return '12, MG Road, Indiranagar, Bengaluru';
+    if (t === 'number' || /amount|fee|count|number|no\b/.test(l)) return '100';
+    if (t === 'textarea' || t === 'paragraph') return 'Running a paper supply office at this address since 2015.';
+    return 'Sample ' + (f.label || 'answer').toLowerCase();
+  }
+  const optsOf = f => { const it = f.options && f.options.items ? f.options.items.filter(x => String(x).trim()) : []; return it.length ? it : /gender/i.test(f.label) ? ['Female', 'Male', 'Transgender'] : ['Option 1', 'Option 2']; };
+
+  // what the citizen is doing in the app, and what they entered (kept while the page is open)
+  let screen = 'landing', page = 0, values = {}, errs = {}, openFaq = 0, appNo = 'APP-2026-000123', submitted = false;
+  let empView = 'inbox', empNote = '';
+
+  const bar = (title, back, bell) => `<div class="pv-top">${back ? `<button type="button" class="pv-back" data-go="${back}" aria-label="Back"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"><path d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z" fill="currentColor"/></svg></button>` : ''}<span class="pv-brand">${esc(title)}</span></div>`;
+  const notesSoFar = (f, cur) => pathTo(f, cur).flatMap(s => notesOf(s).map(n => ({ ...n, at: s.name })));
+
+  function landing(f, cur) {
+    const h = LANDING.hero, acts = LANDING.actions && LANDING.actions.on !== false ? LANDING.actions.list : [], fq = LANDING.faq && LANDING.faq.on !== false ? LANDING.faq.list : [];
+    return `<div class="pv-app">${bar('DIGIT', '', submitted ? notesSoFar(f, cur).length : 0)}
+      <div class="pv-hero"><p class="pv-hero-t">${esc(h.title)}</p>${h.desc ? `<p class="pv-hero-d">${esc(h.desc)}</p>` : ''}</div>
+      <div class="pv-pad">
+        ${acts.length ? `<p class="pv-h">Quick <b>Actions</b></p><div class="pv-tiles">${acts.map(k => `<button type="button" class="pv-tile" data-qa="${esc(k)}">${esc((LANDING.actions.labels || {})[k] || ACT_LABEL[k] || k)}</button>`).join('')}</div>` : ''}
+        ${fq.length ? `<p class="pv-h">Frequently Asked <b>Questions</b></p><div class="pv-faqs">${fq.map((x, i) => `<div class="pv-faq"><button type="button" class="pv-faq-q" data-faq="${i}" aria-expanded="${openFaq === i}">${esc(x.q)}<span aria-hidden="true">${openFaq === i ? '–' : '+'}</span></button>${openFaq === i ? `<p class="pv-faq-a">${esc(x.a)}</p>` : ''}</div>`).join('')}</div>` : ''}
+      </div></div>`;
+  }
+  function control(f, i) {
+    const id = 'pvf-' + i, v = values[f.id] || '', err = errs[f.id], inv = err ? ' aria-invalid="true"' : '', d = ` aria-describedby="${id}-e"`;
+    const lab = `<label class="pv-lab" for="${id}">${esc(f.label)}${f.required ? ' <span class="pv-req" aria-hidden="true">*</span>' : ''}</label>`;
+    let c;
+    if (f.type === 'dropdown' || f.type === 'radio') c = `<select class="pv-in" id="${id}" data-fid="${esc(f.id)}"${inv}${d}><option value="">Select</option>${optsOf(f).map(o => `<option${o === v ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
+    else if (/doc/i.test(f.type)) return `<div class="pv-f"><span class="pv-lab" id="${id}">${esc(f.label)}${f.required ? ' <span class="pv-req" aria-hidden="true">*</span>' : ''}</span>
+        ${v ? `<p class="pv-file">${esc(v)} <button type="button" class="pv-link" data-unfile="${esc(f.id)}">Remove</button></p>` : `<button type="button" class="pv-upload" data-file="${esc(f.id)}" aria-describedby="${id} ${id}-e">Upload file</button>`}
+        <p class="pv-err" id="${id}-e"${err ? '' : ' hidden'}>${esc(err || '')}</p></div>`;
+    else if (f.type === 'mobile') c = `<div class="pv-pre"><span aria-hidden="true">+91</span><input class="pv-in" id="${id}" data-fid="${esc(f.id)}" inputmode="numeric" maxlength="10" value="${esc(v)}"${inv}${d}></div>`;
+    else if (f.type === 'date') c = `<input class="pv-in" id="${id}" type="date" data-fid="${esc(f.id)}" value="${esc(v)}"${inv}${d}>`;
+    else if (f.type === 'textarea' || f.type === 'paragraph') c = `<textarea class="pv-in" id="${id}" rows="3" data-fid="${esc(f.id)}"${inv}${d}>${esc(v)}</textarea>`;
+    else c = `<input class="pv-in" id="${id}" ${f.type === 'email' ? 'type="email"' : f.type === 'number' ? 'inputmode="numeric"' : 'type="text"'} data-fid="${esc(f.id)}" value="${esc(v)}"${inv}${d}>`;
+    return `<div class="pv-f">${lab}${c}<p class="pv-err" id="${id}-e"${err ? '' : ' hidden'}>${esc(err || '')}</p></div>`;
+  }
+  function formScreen() {
+    const secs = formOf(mod), sec = secs[page];
+    return `<div class="pv-app">${bar('Apply for ' + mod.name, page ? 'prev' : 'landing')}
+      <div class="pv-pad"><p class="pv-steps">Step ${page + 1} of ${secs.length + 1}</p>
+        <div class="pv-card"><p class="pv-h">${esc(sec.heading || 'Section ' + (page + 1))}</p>${sec.description ? `<p class="pv-muted">${esc(sec.description)}</p>` : ''}
+          ${sec.fields.map((f, i) => control(f, page + '-' + i)).join('')}</div>
+        <div class="pv-nav-b">${page ? '<button type="button" class="pv-btn is-2" data-go="prev">Back</button>' : '<span></span>'}<button type="button" class="pv-btn" data-go="next">Next</button></div>
+      </div></div>`;
+  }
+  function reviewScreen() {
+    const secs = formOf(mod);
+    return `<div class="pv-app">${bar('Review your application', 'prev')}
+      <div class="pv-pad"><p class="pv-steps">Step ${secs.length + 1} of ${secs.length + 1}</p>
+        ${secs.map((sec, si) => `<div class="pv-card"><div class="pv-card-top"><p class="pv-h">${esc(sec.heading || '')}</p><button type="button" class="pv-link" data-edit="${si}">Edit</button></div>
+          <dl class="pv-dl">${sec.fields.map(f => `<div><dt>${esc(f.label)}</dt><dd>${esc(values[f.id] || '—')}</dd></div>`).join('')}</dl></div>`).join('')}
+        <div class="pv-nav-b"><button type="button" class="pv-btn is-2" data-go="prev">Back</button><button type="button" class="pv-btn" data-go="submit">Submit</button></div>
+      </div></div>`;
+  }
+  function doneScreen(f) {
+    const to = f.states.find(s => s.id === stepId);
+    return `<div class="pv-app">${bar(mod.name, '', notesSoFar(f, to).length)}
+      <div class="pv-pad"><div class="pv-card pv-done"><span class="pv-tick" aria-hidden="true">✓</span><p class="pv-h">Application submitted</p>
+        <p>Your application number is <b>${appNo}</b>.</p><p class="pv-muted">We have sent you an SMS. You can track your application at any time.</p></div>
+        <div class="pv-nav-b"><button type="button" class="pv-btn is-2" data-go="landing">Go to home</button><button type="button" class="pv-btn" data-go="track">Track application</button></div>
+      </div></div>`;
+  }
+  function trackScreen(f, cur) {
+    const path = pathTo(f, cur), got = notesSoFar(f, cur);
+    const who = f.actions.filter(a => a.from === cur.id).flatMap(a => a.roles || []).map(roleName)[0] || 'An officer';
+    const next = cur.type === 'end' ? `Your application is ${esc(cur.name.toLowerCase())}. No further steps.`
+      : cur.type === 'start' ? 'Submit your application to send it for verification.'
+      : `${esc(who)} is working on your application${cur.slaHours ? `, usually within <b>${hrs(cur.slaHours)}</b>` : ''}. We will send you a message when it moves to the next step.`;
+    return `<div class="pv-app">${bar('My Applications', 'landing', got.length)}<div class="pv-pad">
+      <div class="pv-card"><div class="pv-card-top"><div><p class="pv-no">${appNo}</p><p class="pv-muted">${esc(mod.name)}</p></div><span class="pv-tag${cur.type === 'end' ? ' is-end' : ''}">${esc(cur.name)}</span></div>
+        <ol class="pv-tl" aria-label="Application progress">${ordered(f).filter(s => s.type !== 'end' || s.id === cur.id).map(s => { const done = path.slice(0, -1).some(p => p.id === s.id), now = s.id === cur.id;
+          return `<li class="${done ? 'is-done' : now ? 'is-now' : ''}"><span class="pv-dot" aria-hidden="true"></span>${esc(s.name)}${now ? '<span class="sr-only"> (current step)</span>' : done ? '<span class="sr-only"> (done)</span>' : ''}</li>`; }).join('')}</ol></div>
+    </div></div>`;
+  }
+  function citizen(f, cur) {
+    if (screen === 'form') return formScreen();
+    if (screen === 'review') return reviewScreen();
+    if (screen === 'done') return doneScreen(f);
+    if (screen === 'track') return trackScreen(f, cur);
+    return landing(f, cur);
+  }
+  function employee(f, cur) {
+    const mine = f.actions.filter(a => a.from === cur.id && (a.roles || []).includes(role));
+    const at = [...new Set(f.actions.filter(a => (a.roles || []).includes(role)).map(a => a.from))].map(id => f.states.find(s => s.id === id)).filter(Boolean);
+    const applicant = Object.entries(values).find(([k]) => /name/i.test(k))?.[1] || 'Pam Beesly';
+    if (empView === 'detail' && mine.length) {
+      const secs = formOf(mod);
+      return `<div class="pv-app">${bar(appNo, 'inbox', 1)}<div class="pv-pad">
+        <div class="pv-card"><div class="pv-card-top"><div><p class="pv-no">${appNo}</p><p class="pv-muted">${esc(mod.name)} · Applicant: ${esc(applicant)}</p></div><span class="pv-tag">${esc(cur.name)}</span></div>
+          ${cur.slaHours ? `<p class="pv-sla">Act within <b>${hrs(cur.slaHours)}</b></p>` : ''}</div>
+        ${secs.map(sec => `<div class="pv-card"><p class="pv-h">${esc(sec.heading || '')}</p><dl class="pv-dl">${sec.fields.map(fl => `<div><dt>${esc(fl.label)}</dt><dd>${esc(values[fl.id] || (fl.required ? 'Sample value' : '—'))}</dd></div>`).join('')}</dl></div>`).join('')}
+        <div class="pv-acts">${mine.map((a, i) => `<button type="button" class="pv-btn${i ? ' is-2' : ''}" data-take="${esc(a.name)}">${esc(a.name)}</button>`).join('')}</div>
+      </div></div>`;
+    }
+    return `<div class="pv-app">${bar(nameOf(role) + ' Inbox', '', mine.length ? 1 : 0)}<div class="pv-pad">
+      ${mine.length ? `<div class="pv-alert" role="note"><b>New task:</b> ${appNo} is waiting for you at <b>${esc(cur.name)}</b>.</div>
+        <p class="pv-h">Waiting for you (1)</p>
+        <div class="pv-card"><div class="pv-card-top"><div><p class="pv-no">${appNo}</p><p class="pv-muted">${esc(mod.name)} · Applicant: ${esc(applicant)}</p></div><span class="pv-tag">${esc(cur.name)}</span></div>
+          ${cur.slaHours ? `<p class="pv-sla">Act within <b>${hrs(cur.slaHours)}</b></p>` : ''}${cur.description ? `<p class="pv-muted">${esc(cur.description)}</p>` : ''}
+          <div class="pv-acts"><button type="button" class="pv-btn" data-go="detail">Open</button></div></div>`
+      : `<p class="pv-h">Waiting for you (0)</p><div class="pv-empty"><p><b>Nothing waiting for you at this step.</b></p>
+          <p class="pv-muted">${at.length ? `You will get a notification and a task in this inbox when an application reaches ${at.map(s => `<b>${esc(s.name)}</b>`).join(' or ')}.` : 'This role has no actions in this process flow.'}</p></div>`}
+    </div></div>`;
+  }
+  function drawPreview() {
+    const f = flowOf(mod), cur = f.states.find(s => s.id === stepId) || f.states[0];
+    $('pv-seghost').innerHTML = `<div class="pv-seg">${DEVICES.map(([k, l, ic]) => { const on = k === device;
+      return `<button type="button" class="pv-seg-b${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-dev="${k}" tabindex="${on ? 0 : -1}">${ic}<span>${l}</span></button>`; }).join('')}</div>`;
+    $('pv-dash').className = 'br-dash' + (device === 'laptop' ? '' : ' is-' + device);
+    $('pv-fill').hidden = !(role === 'CITIZEN' && (screen === 'form' || screen === 'review'));   // presenter tool: only while the form is open
+    if (PLACEHOLDER) { $('pv-screen').innerHTML = ''; return; }   // empty window for now, at the chosen device's size
+    $('pv-screen').innerHTML = role === 'CITIZEN' ? citizen(f, cur) : employee(f, cur);
+  }
+  // inside the app: go between screens, fill the form, submit, take actions
+  $('pv-fill').addEventListener('click', () => {
+    formOf(mod).forEach(sec => sec.fields.forEach(fl => { values[fl.id] = sampleFor(fl); }));
+    errs = {}; drawPreview(); $('pv-fill').focus(); say('Sample data filled in on every page of the form.');
+  });
+  const say = m => { const l = $('pv-live'); if (l) { l.textContent = ''; setTimeout(() => { l.textContent = m; }, 30); } };
+  const focusTop = () => requestAnimationFrame(() => { const s = $('pv-screen'); s.scrollTop = 0; (s.querySelector('.pv-err:not([hidden])')?.previousElementSibling || s.querySelector('.pv-top button, .pv-top .pv-brand'))?.focus?.(); });
+  function checkPage() {
+    const sec = formOf(mod)[page]; errs = {};
+    sec.fields.forEach(fl => { const v = String(values[fl.id] || '').trim();
+      if (fl.required && !v) errs[fl.id] = /doc/i.test(fl.type) ? `Upload the ${fl.label.toLowerCase()}.` : `Enter the ${fl.label.toLowerCase()}.`;
+      else if (v && fl.type === 'mobile' && !/^[6-9]\d{9}$/.test(v)) errs[fl.id] = 'Enter a 10-digit mobile number.'; });
+    return !Object.keys(errs).length;
+  }
+  $('pv-screen').addEventListener('input', e => { const id = e.target.dataset.fid; if (id) { values[id] = e.target.value; if (errs[id]) { delete errs[id]; e.target.removeAttribute('aria-invalid'); const er = $(e.target.id + '-e'); if (er) er.hidden = true; } } });
+  $('pv-screen').addEventListener('click', e => {
+    const f = flowOf(mod), t = e.target;
+    const faq = t.closest('[data-faq]'); if (faq) { const i = +faq.dataset.faq; openFaq = openFaq === i ? -1 : i; drawPreview(); $('pv-screen').querySelector(`[data-faq="${i}"]`)?.focus(); return; }
+    const qa = t.closest('[data-qa]');
+    if (qa) { const k = qa.dataset.qa;
+      if (k === 'track') { screen = 'track'; } else { const target = MODULES.find(m => m.id === ACT_MODULE[k]); if (target && target.id !== mod.id) { mod = target; stepId = null; drawPanels(); } screen = 'form'; page = 0; errs = {}; }
+      drawPreview(); focusTop(); return; }
+    const fileB = t.closest('[data-file]'); if (fileB) { values[fileB.dataset.file] = 'document.pdf'; delete errs[fileB.dataset.file]; drawPreview(); say('document.pdf uploaded.'); return; }
+    const unf = t.closest('[data-unfile]'); if (unf) { delete values[unf.dataset.unfile]; drawPreview(); return; }
+    const ed = t.closest('[data-edit]'); if (ed) { screen = 'form'; page = +ed.dataset.edit; drawPreview(); focusTop(); return; }
+    const take = t.closest('[data-take]');
+    if (take) { const a = f.actions.find(x => x.from === stepId && x.name === take.dataset.take); if (!a) return; const to = f.states.find(s => s.id === a.to);
+      stepId = a.to; empView = 'inbox'; empNote = `<b>${esc(a.name)}</b> done. ${appNo} moved to <b>${esc(to.name)}</b>.`;
+      drawPanels(); drawPreview(); notify(stepEvent(f, a.to, role, a.name)); say(`${a.name} done. The application moved to ${to.name}.`); return; }
+    const go = t.closest('[data-go]'); if (!go) return;
+    const g = go.dataset.go, secs = formOf(mod);
+    if (g === 'next') { if (!checkPage()) { drawPreview(); focusTop(); say('Fix the errors on this page.'); return; } if (page < secs.length - 1) page++; else screen = 'review'; }
+    else if (g === 'prev') { if (screen === 'review') { screen = 'form'; page = secs.length - 1; } else if (page > 0) page--; else screen = 'landing'; errs = {}; }
+    else if (g === 'submit') { const start = f.states.find(s => s.type === 'start'), sub = start && f.actions.find(a => a.from === start.id); stepId = sub ? sub.to : stepId; submitted = true; screen = 'done'; drawPanels(); notify(stepEvent(f, stepId, 'CITIZEN', sub?.name || 'Apply')); say('Application submitted.'); }
+    else if (g === 'landing') screen = 'landing';
+    else if (g === 'track') screen = 'track';
+    else if (g === 'detail') empView = 'detail';
+    else if (g === 'inbox') empView = 'inbox';
+    drawPreview(); focusTop();
+  });
+  /* "What's next" card (lavender, beside the Roles panel): one at a time, stays until acted on or closed */
+  // "Verify" -> "verified", "Send back" -> "sent back", "Approve" -> "approved"
+  const IRREG = { send: 'sent', forward: 'forwarded', submit: 'submitted', pay: 'paid', hold: 'held' };
+  const pastOf = name => { const w = name.trim().toLowerCase().split(/\s+/), v = w[0];
+    w[0] = IRREG[v] || (/[^aeiou]y$/.test(v) ? v.slice(0, -1) + 'ied' : /e$/.test(v) ? v + 'd' : v + 'ed'); return w.join(' '); };
+  function nextStep(f, toId, verb, actor = 'CITIZEN', action = 'Apply') {
+    const by = { actor, did: pastOf(action), module: mod.name, modId: mod.id, toId };
+    const to = f.states.find(x => x.id === toId); if (!to) return null;
+    const all = ordered(f), n = all.filter(x => x.type !== 'end').length + 1, at = Math.min(n, pathTo(f, to).length);
+    if (to.type === 'end') return { ...by, title: `Application for ${mod.name} ${to.name.toLowerCase()}`, role: 'CITIZEN', next: 'see the result', text: 'Next: <b>Citizen</b> sees the result', state: to.name };
+    const outs = f.actions.filter(a => a.from === to.id);
+    const r = outs.flatMap(a => a.roles || [])[0]
+      || f.actions.flatMap(a => a.roles || []).find(x => x !== 'CITIZEN') || ROLES_PAGE[0]?.code || 'VERIFIER';
+    const nextAct = (outs.find(a => (a.roles || []).includes(r)) || outs[0])?.name;   // what that role does next
+    return { ...by, next: nextAct ? nextAct.trim().toLowerCase() : 'act on it', title: `Application for ${mod.name} ${verb}`, role: r, text: `Next: <b>${esc(nameOf(r))}</b>`, state: to.name };
+  }
+  let notes = [];
+  const FLAG_ICON = '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>';
+  const BELL_ICON = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  let popOpen = false, unread = 0, pick = 0;   // pick = the chosen option in the card
+  const ARROW = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  const whereOf = r => r === 'CITIZEN' ? 'the citizen’s application tracker on Mobile' : `the ${nameOf(r)}’s inbox on Laptop`;
+  // One event per move. nexts = this module's next actions + every module this state activates
+  // (activation states are set on each module in the Studio). Actions are grouped by the role who does them.
+  const fallbackRole = g => g.actions.flatMap(a => a.roles || []).find(x => x !== 'CITIZEN') || ROLES_PAGE[0]?.code || 'VERIFIER';
+  function groupsOf(g, stId) {
+    const by = new Map();
+    g.actions.filter(a => a.from === stId).forEach(a => (a.roles && a.roles.length ? a.roles : [fallbackRole(g)]).forEach(r => {
+      if (!by.has(r)) by.set(r, []); by.get(r).push(a.name.trim().toLowerCase()); }));
+    return [...by].map(([role, acts]) => ({ role, acts }));
+  }
+  function stepEvent(f, toId, actor, action) {
+    const to = f.states.find(x => x.id === toId); if (!to) return null;
+    const nexts = [];
+    if (to.type === 'end') nexts.push({ modId: mod.id, toId, end: true, groups: [{ role: 'CITIZEN', acts: ['see the result'] }] });
+    else { const gs = groupsOf(f, to.id); if (gs.length) nexts.push({ modId: mod.id, toId, groups: gs }); }
+    const same = x => String(x).trim().toLowerCase() === to.name.trim().toLowerCase();
+    MODULES.filter(m => m.id !== mod.id && [...(m.primaryStates || []), ...(m.secondaryStates || [])].some(same)).forEach(m => {
+      const g = flowOf(m), st = g.states.find(x => x.type === 'start') || g.states[0], gs = groupsOf(g, st.id);
+      nexts.push({ modId: m.id, toId: st.id, fresh: true, groups: gs.length ? gs : [{ role: 'CITIZEN', acts: ['apply'] }] });
+    });
+    return { actor, did: pastOf(action), modId: mod.id, module: mod.name, state: to.name, title: `${actor} ${pastOf(action)}`, nexts, current: true, at: Date.now() };
+  }
+  function notify(n) {
+    if (!n || !n.nexts.length) return;
+        notes.unshift({ ...n, current: true, at: Date.now() }); drawNote();
+    const b = $('pv-bb'); b.classList.remove('is-ring'); void b.offsetWidth; b.classList.add('is-ring');
+    $('pv-bb-live').textContent = ''; setTimeout(() => { $('pv-bb-live').textContent = `What happens now? The application is now in ${n.state}.`; }, 40);
+  }
+  function drawNote() {
+    const pop = $('pv-pop'), btn = $('pv-bb'), c = $('pv-bb-n');
+    const top = notes.find(x => x.current);   // the card shown: one line here + one in another module
+    unread = top ? (top.nexts.some(x => x.modId === top.modId) ? 3 : 0) + (top.nexts.some(x => x.modId !== top.modId) ? 1 : 0) : 0;
+    c.hidden = !unread; c.textContent = unread;
+    btn.classList.toggle('has-new', !!unread);
+    btn.setAttribute('aria-expanded', String(popOpen));
+    btn.setAttribute('aria-label', unread ? `What happens now? ${unread} new` : 'What happens now?');
+    pop.hidden = !popOpen; if (!popOpen) return;
+    const cur = notes.find(x => x.current);   // newest update not acted on
+    pop.innerHTML = `<div class="pv-pop-top"><div class="pv-pop-head"><h2 class="pv-pop-t" id="pv-pop-t" tabindex="-1">What happens now?</h2>
+        <button type="button" class="pv-pop-x" data-note="close" aria-label="Close"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#363636" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <p class="pv-pop-sub">Based on the process flow you set up for this service.</p></div>
+      ${!cur ? `<div class="pv-pop-empty">
+          <span class="pv-pop-art" aria-hidden="true">${$('pv-bb').querySelector('svg').outerHTML}</span>
+          <p class="pv-pop-et">No role to switch to yet</p>
+          <p class="pv-pop-ed">When an application moves to the next step, you’ll see who has to act on it and where to go.</p></div>`
+      : notes.filter(x => x.current).slice(0, 1).map(n => {   // one card for now: the newest
+          // placeholder names, numbered in the order they appear: Role 1 / Action 1 = what was done
+          const T = (c, t) => `<span class="pv-tag-${c}">${t}</span>`;
+          const ids = { role: new Map([[n.actor, 1]]), mod: new Map([[n.modId, 1]]) }; let act = 1;
+          const R = r => T('role', `Role ${ids.role.get(r) || (ids.role.set(r, ids.role.size + 1), ids.role.size)}`);
+          const Mo = m => T('mod', `Module ${ids.mod.get(m) || (ids.mod.set(m, ids.mod.size + 1), ids.mod.size)}`);
+          const A = () => T('act', `Action ${++act}`);
+          const or = xs => xs.length < 3 ? xs.join(' or ') : xs.slice(0, -1).join(', ') + ' or ' + xs[xs.length - 1];
+          // two for now: this module + another module this state starts; fixed license wording, each button names where it goes
+          const sameK = n.nexts.findIndex(x => x.modId === n.modId), otherK = n.nexts.findIndex(x => x.modId !== n.modId);
+          const items = [];
+          // one card per action (action names are unique in a state); each says which state it moves the application to
+          // only roles and states are tags; actions and modules are bold text. Each card's button names the role it switches to.
+          const B = t => t;   // plain text: only the tags stand out
+          // one card per role + action: one plain sentence each (no bullet points), with the state it moves the application to
+          const S = (r, act, to) => `${T('role', r)} can ${T('act', act)} to move the application to <b>${to}</b> in <b>New License</b>`;   // state and module bold in the choices
+          if (sameK > -1) {   // any one of these finishes this state
+            const g2 = n.nexts[sameK].groups.length > 1 ? 1 : 0;
+            items.push({ k: sameK, g: 0, to: 'License Verifier', text: S('License Verifier', 'Verify', 'Pending approval') });
+            items.push({ k: sameK, g: 0, to: 'License Verifier', text: S('License Verifier', 'Send back', 'Citizen correction') });
+            items.push({ k: sameK, g: g2, to: 'License Inspector', text: S('License Inspector', 'Send back', 'Citizen correction') });
+          }
+          if (otherK > -1) items.push({ k: otherK, g: 0, to: 'Citizen in Renewal',   // another module: the module is a (neutral) tag
+            text: `${T('role', 'Citizen')} can ${T('act', 'Apply')} to start ${T('mod', 'Renewal')}` });
+          const opts = items.map(it => `<li class="pv-opt">
+              <p class="pv-up-s">${it.text}</p>
+              <button type="button" class="pv-opt-go" data-note="go" data-i="${notes.indexOf(n)}" data-k="${it.k}" data-g="${it.g}">Switch to ${it.to}${ARROW}</button></li>`).join('');
+          return `<div class="pv-up">
+          <p class="pv-up-s pv-up-what">Citizen completed Apply in New License. The application is now in Pending verification.</p>
+          <ul class="pv-opts" aria-label="Where to go">${opts}</ul>
+        </div>`; }).join('<hr class="pv-up-sep">')}`;
+  }
+  const setPop = (on, focusPanel) => { popOpen = on; drawNote(); if (on && focusPanel) ($('pv-pop').querySelector('.pv-opt-go') || $('pv-pop-t')).focus(); };
+  $('pv-bb').addEventListener('click', () => setPop(!popOpen, true));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && popOpen && !$('pv-exit').open) { setPop(false); $('pv-bb').focus(); } });
+  document.addEventListener('pointerdown', e => { if (popOpen && !e.target.closest('.pv-bw')) setPop(false); });
+  $('pv-pop').addEventListener('click', e => {
+    const b = e.target.closest('[data-note]'); if (!b) return; const n = notes[+b.dataset.i], x = n && n.nexts[+b.dataset.k];
+    if (b.dataset.note === 'go' && x) {
+      if (x.modId !== mod.id) { mod = MODULES.find(m => m.id === x.modId) || mod; stepId = x.toId; submitted = !x.fresh; page = 0; errs = {}; if (x.fresh) values = {}; }
+      const g = x.groups[+b.dataset.g] || x.groups[0];
+      pick = 0; x.groups = []; n.nexts = n.nexts.filter(y => y.groups.length); if (!n.nexts.length) notes = notes.filter(y => y !== n);
+      role = g.role; device = role === 'CITIZEN' ? 'mobile' : 'laptop'; empView = 'inbox'; empNote = '';
+      if (role === 'CITIZEN') screen = x.fresh ? 'landing' : 'track';
+      popOpen = false; draw(); document.querySelector(`[data-role="${role}"]`)?.focus();
+    } else { setPop(false); $('pv-bb').focus(); }
+  });
+  const draw = () => { drawPanels(); drawPreview(); drawNote(); };
+  $('pv-exit-cancel').addEventListener('click', () => $('pv-exit').close());
+  $('pv-exit-ok').addEventListener('click', () => { location.href = 'index.html'; });
+  $('pv-exit').addEventListener('click', e => { if (e.target === $('pv-exit')) $('pv-exit').close(); });
+  $('pv-exit').addEventListener('close', () => $('pv-back').focus());
+  document.addEventListener('click', e => {
+    const d = e.target.closest('[data-dev]'); if (d) { device = d.dataset.dev; drawPreview(); document.querySelector(`[data-dev="${device}"]`).focus(); return; }
+    if (e.target.closest('#pv-back')) { $('pv-exit').showModal(); $('pv-exit-cancel').focus(); }
+  });
+  // radio groups: arrow keys move the choice
+  document.addEventListener('keydown', e => {
+    const k = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key]; if (!k) return;
+    const g = e.target.closest('.pv-seg'); if (!g) return; e.preventDefault();
+    const items = [...g.querySelectorAll('[role=radio]')], i = items.indexOf(e.target); const n = items[(i + k + items.length) % items.length]; n.click();
+  });
+  $('pv-mods').addEventListener('click', e => { const b = e.target.closest('[data-mod]'); if (!b) return; mod = MODULES.find(x => x.id === b.dataset.mod); stepId = null; notes.forEach(n => { n.nexts = n.nexts.filter(x => x.modId !== mod.id); }); notes = notes.filter(n => n.nexts.length); unread = 0; screen = 'landing'; page = 0; errs = {}; values = {}; empView = 'inbox'; empNote = ''; role = 'CITIZEN'; device = 'mobile'; landApplied(); draw(); document.querySelector(`[data-mod="${b.dataset.mod}"]`).focus(); });
+  $('pv-roles').addEventListener('change', e => { const r = e.target.dataset.role; if (!r) return; role = r; notes.forEach(n => { n.nexts.forEach(x => { if (x.modId === mod.id) x.groups = x.groups.filter(g => g.role !== r); }); n.nexts = n.nexts.filter(x => x.groups.length); }); notes = notes.filter(n => n.nexts.length);   // went there: that update is done
+    device = role === 'CITIZEN' ? 'mobile' : 'laptop'; empView = 'inbox'; empNote = ''; draw(); document.querySelector(`[data-role="${r}"]`).focus(); });
+  // Landing: assume the citizen has already applied, so the first thing you see is the update
+  function landApplied() {
+    const f = flowOf(mod), start = f.states.find(x => x.type === 'start') || f.states[0];
+    const to = f.actions.find(a => a.from === start.id)?.to || f.states.find(x => x.id !== start.id && x.type !== 'end')?.id || start.id;
+    formOf(mod).forEach(sec => sec.fields.forEach(fl => { values[fl.id] = sampleFor(fl); }));
+    stepId = to; submitted = true; screen = 'landing';
+    const ev = stepEvent(f, stepId, 'CITIZEN', f.actions.find(a => a.from === start.id)?.name || 'Apply');
+    const here = ev && ev.nexts.find(x => x.modId === mod.id);
+    if (here && here.groups.length < 2) {   // showcase: one action, several roles
+      const used = new Set(here.groups.map(g => g.role));
+      const more = [...new Set([...ROLES_PAGE.map(x => x.code), ...f.actions.flatMap(a => a.roles || [])])].find(r => r && r !== 'CITIZEN' && !used.has(r)) || 'INSPECTOR';
+      here.groups.push({ role: more, acts: [here.groups[0].acts[0]] });
+    }
+    if (ev && !ev.nexts.some(x => x.modId !== mod.id)) {   // showcase: this state also starts another module
+      const m = MODULES.find(x => /renew/i.test(x.name) && x.id !== mod.id) || MODULES.find(x => x.id !== mod.id);
+      if (m) { const g = flowOf(m), st = g.states.find(x => x.type === 'start') || g.states[0], gs = groupsOf(g, st.id);
+        ev.nexts.push({ modId: m.id, toId: st.id, fresh: true, groups: gs.length ? gs : [{ role: 'CITIZEN', acts: ['apply'] }] }); }
+    }
+    notify(ev); popOpen = true;
+  }
+  landApplied();
+  draw();
+})();
+</script>
+<script src="brand.js?v=2"></script>
+</body>
+</html>

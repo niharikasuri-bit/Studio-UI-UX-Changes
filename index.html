@@ -106,6 +106,20 @@
       </div>
       <a class="btn" href="studio.html#/users">Open User Management</a>
     </li>
+    <li class="row">
+      <div class="row-text">
+        <h2>Service Preview</h2>
+        <p>See the service the way citizens and employees will use it, before it is published.</p>
+      </div>
+      <a class="btn" href="preview.html">Open Service Preview</a>
+    </li>
+    <li class="row">
+      <div class="row-text">
+        <h2>Published Service</h2>
+        <p>See the service as it runs after it is published.</p>
+      </div>
+      <a class="btn" href="studio.html#/published">Open Published Service</a>
+    </li>
   </ul>
 </main>
 <script>
@@ -115,6 +129,7 @@
     a.href = a.href.split('?')[0] + '?back=' + encodeURIComponent(location.href.split('#')[0].split('?')[0]);
   })();
 </script>
+<script>try { sessionStorage.removeItem('studio-draft'); } catch (e) {}   /* the draft tag only shows inside an edit-published flow */</script>
 <script src="brand.js?v=1794479726"></script>
 </body>
 </html>

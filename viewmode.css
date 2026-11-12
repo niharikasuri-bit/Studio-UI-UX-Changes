@@ -1,0 +1,25 @@
+/* View mode: a tool opened from Published Service. Everything can be looked at, nothing can be changed. */
+.view-banner { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+               max-width: calc(100vw - 32px); padding: 10px 12px 10px 14px; border-radius: 10px; background: #fff; border: 1px solid #D6D5D4;
+               box-shadow: 0 10px 30px rgba(16,24,40,.18); font-size: 14px; color: #363636; }
+.view-banner[hidden] { display: none; }
+.vb-tag { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 6px; background: #EAF2FC; border: 1px solid #A9C6EC; color: #0057BD; font-weight: 700; font-size: 12px; }
+.view-banner .vb-back { height: 32px !important; min-height: 32px !important; padding: 0 14px !important; font-size: 14px !important; }
+
+/* hide what changes the configuration */
+body.view-mode :is(#view-form, #view-roles, #view-notifications, #view-checklists, #view-payments, #view-documents, #view-landing, #view-dashboard)
+  :is(.btn-primary, .form-foot .btn:not(:first-child), .nt-foot, .rt-foot, .fp-foot, .lg-foot, [data-edit], [data-dup], [data-del], [data-delete], [data-remove],
+      .add-card, .nt-add, .es-cta, .switch, [draggable="true"]:not(.db-card), .db-card-acts, .db-rz, .field-actions, .pf-file-actions) { display: none !important; }
+/* fields can be read, not typed into (search and filters still work) */
+body.view-mode :is(#view-form, #view-roles, #view-notifications, #view-checklists, #view-payments, #view-documents, #view-landing, #view-dashboard)
+  :is(input, select, textarea, [contenteditable="true"]):not([type="search"]):not(.nt-filters *) { pointer-events: none !important; background-color: #FAFAFA !important; }
+body.view-mode .actionbar { display: none !important; }
+/* the floating banner sits over the bottom bar: give the page room */
+body.view-mode :is(#view-form, #view-roles, #view-notifications, #view-checklists, #view-payments, #view-documents, #view-landing, #view-dashboard) { padding-bottom: 72px; }
+
+/* Published Service footer: one primary "Preview Service" */
+.actionbar.is-published > :not(#ab-preview) { display: none !important; }
+
+.vm-hide { display: none !important; }
+.view-banner { flex-wrap: nowrap; white-space: nowrap; }
+@media (max-width: 760px) { .view-banner { flex-wrap: wrap; white-space: normal; } }

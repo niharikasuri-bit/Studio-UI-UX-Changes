@@ -7,7 +7,7 @@
 
 /* Header: title + description, Add User on the right */
 .um-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
-.um-desc { margin-top: 8px; max-width: 900px; font-size: 16px; line-height: 1.37; color: #363636; }
+.um-desc { margin-top: 8px; max-width: none; font-size: 16px; line-height: 1.37; color: #363636; }
 .um-add { flex: none; height: 40px; font-weight: 700; }
 
 /* Table: same look as the attendance Manage Registers table */
@@ -43,6 +43,11 @@
 .um-phone { display: flex; }
 .um-cc { display: grid; place-items: center; padding: 0 12px; border: 1px solid #505A5F; border-right: 0; border-radius: 4px 0 0 4px; background: #F5F5F5; color: #363636; font-size: 16px; }
 .um-phone .input { border-radius: 0 4px 4px 0; }
+/* +91 and the number are one field: the focus ring goes round both, not just the number */
+.um-phone { border-radius: 4px; }
+.um-phone .input:focus-visible { box-shadow: none; }
+.um-phone:focus-within { box-shadow: var(--focus-ring); }
+.um-phone:focus-within .um-cc { border-color: var(--primary); }
 .um-current { grid-column: 1 / -1; padding: 0; gap: 12px; font-size: 16px; }
 .um-current input { width: 20px; height: 20px; accent-color: #C84C0E; }
 
@@ -176,3 +181,13 @@
 .um-table tbody tr.is-off .um-rtag { background: #F5F5F5; border-color: #D6D5D4; color: #707070; }
 /* Inactive user: Edit is disabled (DIGIT disabled button) until the user is activated */
 .um-edit:disabled { border-color: #D6D5D4; color: #9E9E9E; background: #fff; cursor: not-allowed; }
+/* four filters + Clear Search on one row: the boxes share the width (min 180px) instead of a fixed 300px */
+#view-users .nt-filters { flex-wrap: nowrap; align-items: flex-end; }
+#view-users .nt-filters .nt-filter { flex: 1 1 0; width: auto; min-width: 180px; }
+#view-users .nt-filters .nt-clear-btn { flex: none; }
+@media (max-width: 1100px) { #view-users .nt-filters { flex-wrap: wrap; } #view-users .nt-filters .nt-filter { flex-basis: calc(50% - 12px); } }
+.um-table tbody tr.is-off td:nth-child(3) { color: #707070; }   /* inactive: department greys out with the name and user ID */
+/* search keeps its usual width; Department, Role and Status are a bit narrower; Clear Search sits at the right */
+#view-users .nt-filters .nt-clear-btn { margin-left: auto; }
+#view-users .nt-filters .nt-filter:first-child { flex: 0 1 300px; }   /* search: its usual 300px, not stretched */
+#view-users .nt-filters .nt-filter:not(:first-child) { flex: 0 1 220px; min-width: 160px; }

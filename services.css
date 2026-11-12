@@ -1,0 +1,52 @@
+/* Studio landing (your services) + "Choose how you want to continue editing" */
+#view-services[hidden] { display: none; }
+.sv-body { padding: 24px 24px 48px; display: flex; flex-direction: column; gap: 8px; }
+.sv-desc { margin: 0 0 16px; font-size: 16px; line-height: 1.37; color: #363636; }
+.sv-box { padding: 0 !important; overflow: hidden; }
+.sv-tabs { display: flex; gap: 0; padding: 16px 24px 0; border-bottom: 1px solid var(--border); }
+.sv-tab { height: 44px; min-width: 120px; padding: 0 20px; border: 1px solid transparent; border-bottom: 0; border-radius: 8px 8px 0 0; background: none; font: 400 16px Roboto, sans-serif; color: var(--text-muted); cursor: pointer; margin-bottom: -1px; }
+.sv-tab:hover { color: #A33E0B; background: #FBEEE8; }
+.sv-tab[aria-selected="true"] { border-color: var(--border); background: var(--surface); color: var(--primary); font-weight: 700; box-shadow: inset 0 3px 0 var(--primary); }
+.sv-tab:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.sv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; padding: 24px; }
+.sv-new { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-height: 300px; border: 2px dashed var(--primary); border-radius: var(--radius-card);
+          background: #FBEEE8; color: #A33E0B; font-size: 18px; font-weight: 700; text-decoration: none; }
+.sv-new:hover { background: #F8E1D6; }
+.sv-new:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.sv-card { gap: 8px !important; }
+.sv-card .card-desc { margin: 0; }
+.sv-meta { margin-top: 4px !important; }
+.sv-meta .tag { display: inline-flex; align-items: center; gap: 4px; }
+.sv-img { height: 120px; border-radius: 6px; display: grid; place-items: center; color: #9E9E9E; margin-top: 4px; }
+.sv-acts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+.sv-acts .btn { height: 32px; min-height: 32px; padding: 0 12px; font-size: 14px; gap: 6px; }
+.sv-none { margin: 0; color: #707070; }
+
+/* Choose how you want to continue editing */
+.sv-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 360px)); gap: 24px; }
+.sv-choice { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--surface);
+             text-align: left; font: inherit; color: inherit; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.08); }
+.sv-choice:hover { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary), 0 2px 8px rgba(0,0,0,.08); }
+.sv-choice:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.sv-choice-top { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+.sv-choice-ic { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 8px; background: #FBEEE8; color: var(--primary); }
+.sv-choice-t { font-size: 20px; font-weight: 700; line-height: 1.25; color: var(--heading); }
+.sv-choice-d { font-size: 14px; line-height: 1.45; color: var(--text-muted); }
+.sv-choice-tag { margin-top: 4px; }
+.tag.tag-success { background: #F1FFF8; color: #00703C; border: 1px solid #9FD8BB; font-weight: 700; border-radius: 6px; }
+@media (max-width: 760px) { .sv-choices { grid-template-columns: 1fr; } }
+
+/* popups: title + close, info / warning box, Back + Proceed */
+.sv-dlg .modal-body { gap: 16px; }
+.sv-dlg-t { font-size: 24px !important; }
+.sv-note { display: flex; gap: 10px; padding: 12px 14px; border-radius: 6px; border-left: 4px solid; font-size: 14px; line-height: 1.45; color: #363636; }
+.sv-note p { margin: 0; } .sv-note-t { font-weight: 700; }
+.sv-note svg { flex: none; margin-top: 1px; }
+.sv-note.is-info { background: #EAF2FC; border-color: #0057BD; } .sv-note.is-info svg { color: #0057BD; }
+.sv-note.is-warn { background: #FFF6E5; border-color: #9E5F00; } .sv-note.is-warn svg { color: #9E5F00; }
+.sv-dlg-acts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+.sv-dlg-acts .btn { height: 40px; font-size: 16px; font-weight: 700; }
+
+/* draft version tag next to the service name (service and module pages) */
+.draft-tag { display: inline-flex; align-items: center; gap: 4px; vertical-align: middle; margin-left: 12px; height: 28px; padding: 0 10px; border-radius: 6px;
+             background: #FFF6E5; border: 1px solid #F3D9A6; color: #9E5F00; font-size: 14px; font-weight: 700; }
