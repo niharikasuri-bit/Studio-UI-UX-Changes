@@ -443,3 +443,5 @@ circle.db-mark.is-hot { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .db-mark, .db-pt { transition: none; } }
 /* Preview Dashboard while the dashboard is empty: off (same disabled look as other Studio footer buttons) */
 #db-view:disabled { border-color: #D6D5D4; color: #9E9E9E; background: #fff; cursor: not-allowed; }   /* outline + text greyed only, background stays white */
+/* Preview has no card toolbar above the cards: no reserved space above the first row */
+.db-previewing .db-grid:not(.is-empty) { padding-top: 4px; }   /* 16px below the Date Range box, same as between card rows */
