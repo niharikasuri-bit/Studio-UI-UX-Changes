@@ -344,11 +344,9 @@
   function openMs(on) {
     const list = $('um-ms-list'), btn = $('um-ms-btn');
     list.hidden = !on; btn.setAttribute('aria-expanded', on);
-    if (on) {   // not enough room below inside the scroll area (above the footer) -> open upward
-      list.classList.remove('is-up');
-      const area = $('um-body').getBoundingClientRect(), b = btn.getBoundingClientRect(), need = list.offsetHeight + 8;
-      if (area.bottom - b.bottom < need && b.top - area.top > area.bottom - b.bottom) list.classList.add('is-up');
-    }
+    // Always opens downward (never covers the fields above). Near the bottom of the form, add room under it and scroll the list into view.
+    $('um-body').classList.toggle('ms-open', on);
+    if (on) list.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     if (on) { active = 0; markActive(); list.focus(); } else btn.focus();
   }
   function markActive() {
@@ -379,7 +377,7 @@
     else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleRole(ROLES[active]); }
     else if (e.key === 'Escape' || e.key === 'Tab') { if (e.key === 'Escape') e.preventDefault(); openMs(false); }
   });
-  document.addEventListener('pointerdown', e => { if (view.hidden || !$('um-ms') || !msOpen()) return; if (!e.target.closest('#um-ms')) { $('um-ms-list').hidden = true; $('um-ms-btn').setAttribute('aria-expanded', 'false'); } });
+  document.addEventListener('pointerdown', e => { if (view.hidden || !$('um-ms') || !msOpen()) return; if (!e.target.closest('#um-ms')) { $('um-ms-list').hidden = true; $('um-body').classList.remove('ms-open'); $('um-ms-btn').setAttribute('aria-expanded', 'false'); } });
 
   // Not the current assignment -> it has ended, so ask for its End Date (like LinkedIn's "I currently work here")
   $('um-body').addEventListener('change', e => {

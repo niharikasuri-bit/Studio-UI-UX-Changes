@@ -23,7 +23,7 @@
 .nt-act { height: 32px; min-width: 96px; }
 .nt-del { margin-left: -8px; height: 32px; padding: 0 8px; display: inline-flex; align-items: center; gap: 6px; border: 0; background: none;
           border-radius: var(--radius-btn); font: inherit; font-size: 16px; font-weight: 700; color: #C84C0E; }
-.nt-del:hover { background: var(--primary-tint); }
+.nt-del:hover { background: var(--primary-tint); color: #A33E0B; }   /* darker orange on the tint: 5.69:1 (#C84C0E there is 4.11:1) */
 .nt-del:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 
 /* popup bits */

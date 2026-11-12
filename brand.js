@@ -44,12 +44,17 @@
     return [r, g, bl].map(function (v) { return Math.round((v + m) * 255); });
   };
   var P0 = rgb2hsl(hex2rgb(DEF.primary)), P1 = rgb2hsl(hex2rgb(t.primary || DEF.primary));
+  // Primary bg from each theme spec (hover backgrounds, selected rows, tag tints): exact, not calculated
+  var PRIMARY_BG = { '#047575': '#E8F0F0', '#0B5FD7': '#E2EAF6', '#B94C1C': '#FBF4F1' };   // Lagoon, Horizon, Ember only; DIGIT Classic is left as it is
+  var PBG = PRIMARY_BG[String(t.primary || DEF.primary).toUpperCase()];
+  PBG = PBG ? hex2rgb(PBG) : null;
   var PRI = hex2rgb(t.primary || DEF.primary), HEAD = hex2rgb(t.header || DEF.heading), PAGE = hex2rgb(t.background || DEF.page);
   // Studio's orange family (the primary, its darker text shade, hover, tints, borders, illustration oranges):
   // hue ~10–35°, saturated. Each is moved to the theme's hue, keeping how much lighter or darker it was than the primary.
   var orange = function (c) { var h = rgb2hsl(c); return h[0] >= 12 && h[0] <= 30 && h[1] > 0.35 && h[2] > 0.15; /* not error red (~8°) or warning amber (~36°) */ };
   var recolour = function (c) {
-    if (c[0] === 200 && c[1] === 76 && c[2] === 14) return PRI;                         // primary #C84C0E -> exactly the theme's Primary 1
+    if (c[0] === 200 && c[1] === 76 && c[2] === 14) return PRI;
+    if (PBG && c[0] === 251 && c[1] === 238 && c[2] === 232) return PBG;                // Primary bg #FBEEE8 -> the theme's Primary bg                         // primary #C84C0E -> exactly the theme's Primary 1
     if (c[0] === 11 && c[1] === 75 && c[2] === 102) return HEAD;                        // heading blue #0B4B66
     if (c[0] === 238 && c[1] === 238 && c[2] === 238) return PAGE;                       // page background #EEEEEE
     if (!orange(c)) return null;
@@ -97,8 +102,10 @@
   var doSheets = function () { for (var i = 0; i < document.styleSheets.length; i++) { try { doRules(document.styleSheets[i].cssRules); } catch (e) { /* cross-origin (fonts) */ } } };
 
   /* ---------- markup made by the scripts (inline styles, SVG fill / stroke) ---------- */
+  // Illustrations (empty-state box, no-results box) keep their own colours in every theme: only interface colours follow the theme
+  var ART = '.es-art, .es-art-new, .es-art-search';
   var doEl = function (el) {
-    if (el.nodeType !== 1) return;
+    if (el.nodeType !== 1 || (el.closest && el.closest(ART))) return;
     ['fill', 'stroke', 'stop-color', 'color'].forEach(function (a) { var v = el.getAttribute(a); if (v) { var nv = swap(v); if (nv !== v) el.setAttribute(a, nv); } });
     var st = el.getAttribute('style'); if (st) { var ns = swapUri(swap(st)); if (ns !== st) el.setAttribute('style', ns); }
   };

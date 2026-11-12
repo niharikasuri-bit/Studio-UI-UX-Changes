@@ -162,4 +162,6 @@
 .um-clear:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 /* "Is this the current assignment?" is a single checkbox, not a list row: no grey hover band */
 .um-form .um-current, .um-form .um-current:hover { background: none; }
-.um-ms-list.is-up { top: auto; bottom: calc(100% + 4px); }
+/* Roles list open: room under the form so the list (264px) can show in full below its field */
+.um-body.ms-open { padding-bottom: 300px; }
+.um-ms-list { scroll-margin-bottom: 16px; }
