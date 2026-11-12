@@ -447,3 +447,8 @@ circle.db-mark.is-hot { opacity: 1; }
 .db-previewing .db-grid:not(.is-empty) { padding-top: 4px; }   /* 16px below the Date Range box, same as between card rows */
 /* when a card is moved the view scrolls to it, keeping its toolbar (above the card) in view too */
 .db-card { scroll-margin-top: 48px; scroll-margin-bottom: 16px; }
+/* The card toolbar sits on the card's top edge and reaches 26px above it: while editing, rows are 32px apart so the
+   toolbar always fits in the space between cards and never covers the card above (its axis title, legend…).
+   Preview has no toolbars, so it keeps 16px between rows. */
+.db-grid { row-gap: 32px; }
+.db-previewing .db-grid { row-gap: 16px; }
