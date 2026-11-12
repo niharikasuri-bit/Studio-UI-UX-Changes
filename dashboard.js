@@ -105,7 +105,7 @@
   if (data.widgets.some(w => w.x == null || w.y == null)) flowLayout(data.widgets);
   // pin = the card that was just placed / moved / widened: it stays put and the others make room below it
   function settle(list, pin) {
-    list.forEach(w => { w.w = w.w || 6; w.x = Math.max(0, Math.min(COLS - w.w, Math.round(w.x || 0))); w.y = Math.max(0, Math.round(w.y || 0)); });
+    list.forEach(w => { w.w = w.w || 6; w.x = Math.max(0, Math.min(COLS - w.w, Math.round(w.x || 0))); w.y = Number.isFinite(+w.y) ? +w.y : 0; });   // half rows (a card's own new row) are kept; rows are renumbered below
     const P = pin && list.find(w => w.id === pin), placed = P ? [P] : [];
     // a card in the way goes into a NEW row right below (other rows stay as they are)
     list.filter(w => w !== P).sort((a, b) => (a.y - b.y) || (a.x - b.x)).forEach(w => { while (placed.some(o => hit(w, o))) w.y = Number.isInteger(w.y) ? w.y + 0.5 : w.y + 0.01; placed.push(w); });
@@ -740,27 +740,50 @@
     data.widgets.push(c); pinId = c.id; selId = c.id; redraw(`[data-sel="${c.id}"]`); S.announce(`${c.title} added.`);
   }
   const where = w => `row ${w.y + 1}, column ${w.x + 1}`;
-  // Move left / right: swap with the card next to it in the row, or shift one column into free space
+  /* Move left / right / up / down — predictable: only the card being moved (and, for left / right, the one card it swaps with) changes place.
+     Left / Right: one step at a time (the card's own width): into free space first, then a swap with the card right next to it;
+                   at the edge of the row it stops.
+     Up / Down:    the card goes to the next row, in the same columns if there is room there, otherwise the nearest gap that fits;
+                   if that row is full, the card gets a row of its own just past it. Other cards never move. */
+  const rowOf = (w, y) => data.widgets.filter(o => o !== w && o.y === y);
+  const fitsAt = (w, x, y) => !rowOf(w, y).some(o => x < o.x + o.w && o.x < x + w.w);
+  // one step at a time: a step is the card's own width; free space first, then a swap with the card right next to it
   function moveH(w, dir) {
-    const row = data.widgets.filter(o => o !== w && o.y === w.y);
-    const n = dir < 0 ? row.find(o => o.x + o.w === w.x) : row.find(o => o.x === w.x + w.w);
-    if (n) { if (dir < 0) { w.x = n.x; n.x = w.x + w.w; } else { n.x = w.x; w.x = n.x + n.w; } }
-    else if (dir < 0 ? w.x > 0 : w.x + w.w < COLS) w.x += dir;
-    else return false;
+    const row = rowOf(w, w.y);
+    if (dir < 0) {
+      const n = row.filter(o => o.x + o.w <= w.x).sort((a, b) => b.x - a.x)[0];
+      const gap = w.x - (n ? n.x + n.w : 0);
+      if (gap > 0) w.x -= Math.min(w.w, gap);                              // free space on the left: one step into it
+      else if (n) { const nx = n.x; n.x = w.x + w.w - n.w; w.x = nx; }     // right next to a card: swap with it
+    } else {
+      const n = row.filter(o => o.x >= w.x + w.w).sort((a, b) => a.x - b.x)[0];
+      const gap = (n ? n.x : COLS) - (w.x + w.w);
+      if (gap > 0) w.x += Math.min(w.w, gap);
+      else if (n) { const nx = w.x; w.x = n.x + n.w - w.w; n.x = nx; }
+    }
     return true;
   }
-  const canMove = (w, d) => d === 'up' ? w.y > 0 : d === 'down' ? data.widgets.some(o => o.y > w.y) || data.widgets.some(o => o !== w && o.y === w.y)
-    : d === 'left' ? w.x > 0 : w.x + w.w < COLS;
+  function moveV(w, dir) {
+    const lastRow = data.widgets.reduce((m, o) => Math.max(m, o.y), 0), ty = w.y + dir;
+    if (ty < 0) { w.y = -0.5; return; }                       // top row -> a new row above everything
+    if (ty > lastRow) { w.y = lastRow + 0.5; return; }        // bottom row -> a new row below everything
+    const xs = [...Array(COLS - w.w + 1).keys()].sort((a, b) => Math.abs(a - w.x) - Math.abs(b - w.x));
+    const x = xs.find(x => fitsAt(w, x, ty));
+    if (x != null) { w.y = ty; w.x = x; }                    // room in the next row
+    else w.y = ty + dir * 0.5;                                // that row is full -> its own row just past it
+  }
+  const canMove = (w, d) => {
+    const alone = !rowOf(w, w.y).length, lastRow = data.widgets.reduce((m, o) => Math.max(m, o.y), 0);
+    return d === 'up' ? (w.y > 0 || !alone) : d === 'down' ? (w.y < lastRow || !alone) : d === 'left' ? w.x > 0 : w.x + w.w < COLS;
+  };
   function moveDir(id, d, focus = 'grip') {
     const w = W(id); if (!w) return;
     if (!canMove(w, d)) return S.announce(d === 'up' ? 'Already in the top row.' : d === 'down' ? 'Already in the bottom row.' : d === 'left' ? 'Already at the left edge.' : 'Already at the right edge.');
     snap();
-    if (d === 'left' || d === 'right') moveH(w, d === 'left' ? -1 : 1);
-    else if (d === 'up') { const below = data.widgets.filter(o => o !== w && o.y === w.y - 1 && o.x < w.x + w.w && w.x < o.x + o.w);   // cards it passes drop into its old row
-      w.y -= 1; below.forEach(o => { o.y = w.y + 1; }); }
-    else { const below = data.widgets.filter(o => o !== w && o.y === w.y + 1 && o.x < w.x + w.w && w.x < o.x + o.w);   // swap rows with the cards it passes
-      below.forEach(o => { o.y = w.y; }); w.y += 1; }
+    if (d === 'left' || d === 'right') moveH(w, d === 'left' ? -1 : 1); else moveV(w, d === 'up' ? -1 : 1);
     pinId = w.id; redraw(focus === 'grip' ? `[data-grip="${w.id}"]` : `[data-sel="${w.id}"]`);
+    // the view follows the card (up or down), including its toolbar above it
+    grid.querySelector(`.db-card[data-w="${w.id}"]`)?.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     S.announce(`${w.title} moved to ${where(w)}.`);
   }
   // drop on the grid: the card goes exactly there; cards in the way move down
@@ -994,6 +1017,31 @@
     dropAt(d.id, d.at.x, d.at.y);
   });
   view.addEventListener('dragend', () => { grid.querySelectorAll('.is-dragging').forEach(c => c.classList.remove('is-dragging')); if (!drag) return; drag = null; ph.remove(); grid.classList.remove('is-over'); drawGrid(); });
+
+  /* Auto-scroll while dragging: hold a card near the top of the dashboard (or over the header / tool bar above it) and the
+     dashboard scrolls up; near the bottom it scrolls down. The closer to the edge, the faster. The drop spot follows. */
+  let dragY = null, dragX = null, scrollRaf = 0;
+  const EDGE = 80, MAX = 18;
+  document.addEventListener('dragover', e => { if (drag) { dragX = e.clientX; dragY = e.clientY; } });
+  function autoScroll() {
+    scrollRaf = 0;
+    if (!drag) return;                                                              // drag over: stop
+    if (dragY == null) { scrollRaf = requestAnimationFrame(autoScroll); return; }   // no pointer position yet: keep waiting
+    const a = dzone.getBoundingClientRect();
+    let v = 0;
+    if (dragY < a.top + EDGE) v = -MAX * Math.min(1, (a.top + EDGE - dragY) / EDGE);           // above the area too (header) = full speed up
+    else if (dragY > a.bottom - EDGE) v = MAX * Math.min(1, (dragY - (a.bottom - EDGE)) / EDGE);
+    if (v) {
+      const before = dzone.scrollTop; dzone.scrollTop += v;
+      if (dzone.scrollTop !== before && dragY > a.top && dragY < a.bottom) {   // the drop spot follows the scrolled content
+        const at = cellAt(dragX, dragY); if (!drag.at || drag.at.x !== at.x || drag.at.y !== at.y) { drag.at = at; preview_(at); }
+      }
+    }
+    scrollRaf = requestAnimationFrame(autoScroll);
+  }
+  view.addEventListener('dragstart', () => { dragY = dragX = null; if (!scrollRaf) scrollRaf = requestAnimationFrame(autoScroll); });
+  const stopAuto = () => { cancelAnimationFrame(scrollRaf); scrollRaf = 0; dragY = dragX = null; };
+  view.addEventListener('dragend', stopAuto); dzone.addEventListener('drop', stopAuto);
 
   // Palette click = add at the end
   // Clicking the empty grey canvas (not a visualisation, menu or control) deselects

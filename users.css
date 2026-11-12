@@ -165,3 +165,14 @@
 /* Roles list open: room under the form so the list (264px) can show in full below its field */
 .um-body.ms-open { padding-bottom: 300px; }
 .um-ms-list { scroll-margin-bottom: 16px; }
+/* Role chips: a cross to remove one role (24px target) */
+.um-chip { gap: 4px; padding: 0 4px 0 12px; }
+.um-chip-x { width: 24px; height: 24px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 4px; background: none; color: #363636; cursor: pointer; }
+.um-chip-x:hover { background: #D6D5D4; }
+.um-chip-x:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+/* Table header text like the DIGIT table header: 16px bold, heading blue */
+.um-table thead th { font-size: 16px; font-weight: 700; color: #0B4B66; }
+/* Inactive user: role tag looks disabled (grey, like the inactive name and ID) */
+.um-table tbody tr.is-off .um-rtag { background: #F5F5F5; border-color: #D6D5D4; color: #707070; }
+/* Inactive user: Edit is disabled (DIGIT disabled button) until the user is activated */
+.um-edit:disabled { border-color: #D6D5D4; color: #9E9E9E; background: #fff; cursor: not-allowed; }

@@ -445,3 +445,5 @@ circle.db-mark.is-hot { opacity: 1; }
 #db-view:disabled { border-color: #D6D5D4; color: #9E9E9E; background: #fff; cursor: not-allowed; }   /* outline + text greyed only, background stays white */
 /* Preview has no card toolbar above the cards: no reserved space above the first row */
 .db-previewing .db-grid:not(.is-empty) { padding-top: 4px; }   /* 16px below the Date Range box, same as between card rows */
+/* when a card is moved the view scrolls to it, keeping its toolbar (above the card) in view too */
+.db-card { scroll-margin-top: 48px; scroll-margin-bottom: 16px; }

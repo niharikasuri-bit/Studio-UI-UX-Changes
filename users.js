@@ -119,6 +119,34 @@
         <button type="button" class="btn btn-secondary" id="um-c-cancel">Cancel</button>
         <button type="button" class="btn btn-primary" id="um-c-ok">Deactivate User</button>
       </div>
+    </dialog>
+
+    <dialog class="modal um-alert" id="um-activate" aria-labelledby="um-a-title" aria-describedby="um-a-desc">
+      <h2 class="um-alert-title" id="um-a-title"></h2>
+      <p class="um-alert-desc" id="um-a-desc"></p>
+      <div class="field um-alert-f">
+        <label class="label" for="um-a-date">Date of activation</label>
+        <input class="input um-dis" id="um-a-date" type="date" disabled>
+      </div>
+      <div class="field um-alert-f">
+        <label class="label" for="um-a-reason">Reason for activating the user<span class="req" aria-hidden="true"> *</span></label>
+        <select class="input" id="um-a-reason" aria-required="true" aria-describedby="um-a-reason-err">
+          <option value="">Select</option>
+          <option>Orders from higher authority</option>
+          <option>Returned from leave</option>
+          <option>Suspension ended</option>
+          <option>Rejoined the department</option>
+          <option>Transferred back to this office</option>
+          <option>Contract renewed</option>
+          <option>Deactivated by mistake</option>
+          <option>Other</option>
+        </select>
+        <p class="error" id="um-a-reason-err" hidden>Select the reason for activating the user.</p>
+      </div>
+      <div class="um-alert-actions">
+        <button type="button" class="btn btn-secondary" id="um-a-cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="um-a-ok">Activate User</button>
+      </div>
     </dialog>`;
 
   /* ---------- User Management list ---------- */
@@ -201,7 +229,9 @@
                 <td><span class="um-status">
                   <button type="button" class="switch" role="switch" data-um-sw="${u.id}" aria-checked="${u.active}" aria-label="${esc(u.name)} active"><span class="switch-knob" aria-hidden="true"></span></button>
                   <span class="um-status-t${u.active ? ' is-on' : ''}" aria-hidden="true">${u.active ? 'Active' : 'Inactive'}</span></span></td>
-                <td><a class="btn btn-secondary um-edit" href="#/users/${encodeURIComponent(u.id)}" aria-label="Edit ${esc(u.name)}">${I.pencil} Edit</a></td>
+                <td>${u.active
+                  ? `<a class="btn btn-secondary um-edit" href="#/users/${encodeURIComponent(u.id)}" aria-label="Edit ${esc(u.name)}">${I.pencil} Edit</a>`
+                  : `<button type="button" class="btn btn-secondary um-edit" disabled aria-label="Edit ${esc(u.name)}, not available while the user is inactive" title="Activate the user to edit their details">${I.pencil} Edit</button>`}</td>
               </tr>`).join('') : ''}</tbody>
           </table>
         </div>
@@ -231,10 +261,31 @@
     const sw = e.target.closest('[data-um-sw]'); if (!sw) return;
     const u = users.find(x => x.id === sw.dataset.umSw);
     if (u.active) return askDeactivate(u, sw);
-    u.active = true; save(); drawList(); refocusSwitch(u.id);
-    S.toast(`${u.name} activated`); S.announce(`${u.name} activated.`);
+    askActivate(u);
   });
   const refocusSwitch = id => $('um-body').querySelector(`[data-um-sw="${id}"]`)?.focus();
+
+  /* Activate: same popup as Deactivate without the alert icon; asks for the reason */
+  const act = $('um-activate'); let actTarget = null;
+  function askActivate(u) {
+    actTarget = u;
+    $('um-a-title').textContent = `Activate ${u.name}?`;
+    $('um-a-desc').innerHTML = `<strong>${esc(u.name)}</strong> will be able to sign in and use the system again with their current roles.`;
+    $('um-a-date').value = today();   // today's date, can't be changed (same as Date of deactivation)
+    $('um-a-reason').value = ''; $('um-a-reason').removeAttribute('aria-invalid'); $('um-a-reason-err').hidden = true;
+    act.showModal(); $('um-a-cancel').focus();
+  }
+  $('um-a-cancel').addEventListener('click', () => act.close());
+  act.addEventListener('click', e => { if (e.target === act) act.close(); });
+  $('um-a-reason').addEventListener('change', () => { if ($('um-a-reason').value) { $('um-a-reason').removeAttribute('aria-invalid'); $('um-a-reason-err').hidden = true; } });
+  $('um-a-ok').addEventListener('click', () => {
+    if (!$('um-a-reason').value) { $('um-a-reason-err').hidden = false; $('um-a-reason').setAttribute('aria-invalid', 'true'); $('um-a-reason').focus(); return; }
+    const u = actTarget; actTarget = null; act.close();
+    u.active = true; u.activatedOn = today(); u.activateReason = $('um-a-reason').value;
+    save(); drawList(); refocusSwitch(u.id);
+    S.toast(`${u.name} activated`); S.announce(`${u.name} activated.`);
+  });
+  act.addEventListener('close', () => { if (actTarget) { const id = actTarget.id; actTarget = null; refocusSwitch(id); } });
 
   /* Deactivate: red alert popup (no ✕), Cancel + Deactivate User */
   const conf = $('um-confirm'); let target = null;
@@ -336,7 +387,7 @@
     $('um-ms-list').innerHTML = ROLES.map((r, i) => `<li role="option" id="um-opt-${i}" class="um-opt${keepActive === i ? ' is-active' : ''}" data-role="${esc(r)}" aria-selected="${picked.includes(r)}">
       <span class="um-cb" aria-hidden="true"></span>${esc(r)}</li>`).join('');
     // DIGIT: picked options as plain grey tags under the field, then an outlined Clear All button (untick in the list to remove one)
-    $('um-chips').innerHTML = picked.length ? `<ul class="um-chip-list" aria-label="Selected roles">${picked.map(r => `<li class="um-chip">${esc(r)}</li>`).join('')}</ul>` +
+    $('um-chips').innerHTML = picked.length ? `<ul class="um-chip-list" aria-label="Selected roles">${picked.map(r => `<li class="um-chip">${esc(r)}<button type="button" class="um-chip-x" data-unpick="${esc(r)}" aria-label="Remove ${esc(r)}">${I.x}</button></li>`).join('')}</ul>` +
       '<button type="button" class="um-clear" id="um-clear">Clear All</button>' : '';
   }
   let active = 0;
