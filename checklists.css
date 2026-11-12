@@ -24,7 +24,7 @@
 .clw-opt { display: flex; align-items: center; gap: 8px; }
 .clw-opt .input { flex: 1; min-width: 0; }
 .clw-odot { width: 18px; height: 18px; flex: none; border-radius: 50%; border: 2px solid #C5C5C5; }
-.clw-odel { width: 32px; height: 32px; color: #767676; }
+.clw-odel { width: 32px; height: 32px; color: #707070; }
 .clw-addo { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 4px; border: 0; background: none;
             border-radius: 4px; font: inherit; font-size: 14px; font-weight: 700; color: #C84C0E; text-decoration: underline; text-underline-offset: 3px; }
 .clw-addq { align-self: flex-start; height: 40px; }
@@ -41,14 +41,14 @@
 .cl-q__row { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 16px; }
 .cl-opts { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid #D6D5D4; }
 .cl-opt { display: flex; align-items: center; gap: 12px; min-height: 44px; }
-.cl-opt__mark { flex: none; width: 22px; height: 22px; border: 1.5px solid #767676; }
+.cl-opt__mark { flex: none; width: 22px; height: 22px; border: 1.5px solid #707070; }
 .cl-opt__mark--radio { border-radius: 50%; }
 .cl-opt__input { flex: 1; min-width: 0; height: 36px; padding: 0 8px; border: 1px solid transparent; border-radius: 4px; background: none; font: inherit; font-size: 16px; color: #363636; }
-.cl-opt__input::placeholder { color: #767676; }
+.cl-opt__input::placeholder { color: #707070; }
 .cl-opt__input:hover { border-color: #D6D5D4; }
 .cl-opt__input:focus-visible { border-color: #C84C0E; outline: none; box-shadow: var(--focus-ring); }
 .cl-nested { display: inline-flex; align-items: center; gap: 2px; flex: none; }
-.cl-opt__delete { width: 32px; height: 32px; flex: none; color: #767676; }
+.cl-opt__delete { width: 32px; height: 32px; flex: none; color: #707070; }
 .cl-link { display: inline-flex; align-items: center; gap: 6px; justify-self: start; min-height: 32px; padding: 2px 0; border: 0; background: none; cursor: pointer;
            font: inherit; font-size: 16px; color: #C84C0E; text-decoration: underline; text-underline-offset: 3px; }
 .cl-link:hover { color: #A33E0B; }

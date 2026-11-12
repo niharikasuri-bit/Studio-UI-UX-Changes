@@ -21,7 +21,7 @@
 .db-ico-line { background: #E6F4EC; color: #00703C; }
 .db-pal-text { display: grid; gap: 2px; }
 .db-pal-name { font-size: 16px; font-weight: 500; color: #363636; }
-.db-pal-sub { font-size: 14px; line-height: 1.37; color: #767676; }
+.db-pal-sub { font-size: 14px; line-height: 1.37; color: #707070; }
 .db-palette .fp-scroll { padding-bottom: 24px; }
 
 /* Centre: name + grid */
@@ -44,7 +44,7 @@
 .db-card-title { margin: 0; font-size: 16px; line-height: 1.37; font-weight: 700; color: #363636; }
 .db-sel { padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; overflow-wrap: anywhere; }
 .db-sel:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 2px; }
-.db-card-desc { margin: 2px 0 0; font-size: 14px; line-height: 1.37; color: #767676; }
+.db-card-desc { margin: 2px 0 0; font-size: 14px; line-height: 1.37; color: #707070; }
 .db-card-acts { flex: none; display: flex; gap: 2px; }
 .db-act { width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 4px; background: none; color: #C84C0E; cursor: pointer; }
 .db-act:hover { background: #FBEEE8; color: #A33E0B; }
@@ -59,7 +59,7 @@
 .db-kpi-c { margin: 0; font-size: 14px; font-weight: 500; }
 .db-kpi-c.is-up { color: #00703C; }     /* 6.4:1 */
 .db-kpi-c.is-down { color: #B91900; }   /* 6.6:1 */
-.db-kpi-cl { color: #767676; font-weight: 400; }
+.db-kpi-cl { color: #707070; font-weight: 400; }
 
 /* Charts */
 .db-chart-wrap { display: flex; flex-direction: column; gap: 12px; }
@@ -77,7 +77,7 @@
 .db-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: #363636; }
 .db-chart-wrap.is-right .db-legend { flex-direction: column; flex: none; max-width: 45%; }
 .db-legend li { display: flex; align-items: center; gap: 6px; }
-.db-legend b { font-weight: 500; color: #767676; }
+.db-legend b { font-weight: 500; color: #707070; }
 .db-sw { width: 12px; height: 12px; border-radius: 3px; flex: none; }
 
 /* Empty dashboard: plain empty canvas, no right panel until something is added */
@@ -85,7 +85,7 @@
   gap: 8px; padding: 32px 16px; text-align: center; border: 2px dashed #C9C9C9; border-radius: 12px; background: rgba(255, 255, 255, .5); }
 .db-empty-art { margin-bottom: 12px; }
 .db-empty-t { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.3; color: #0B4B66; }
-.db-empty-d { margin: 0; max-width: 440px; font-size: 16px; line-height: 1.4; color: #767676; }
+.db-empty-d { margin: 0; max-width: 440px; font-size: 16px; line-height: 1.4; color: #707070; }
 
 /* Right panel */
 .db-item .lp-fc-open { align-items: flex-start; }
@@ -93,7 +93,7 @@
 /* type tag = the form's blue info tag (.type-tag in form.css) */
 .db-type-tag { display: inline-flex; align-items: center; }
 .db-item.is-selected { border-color: #C84C0E; box-shadow: 0 0 0 1px #C84C0E; }
-.db-items-none, .db-none { margin: 0; font-size: 14px; line-height: 1.37; color: #767676; }
+.db-items-none, .db-none { margin: 0; font-size: 14px; line-height: 1.37; color: #707070; }
 .db-sw-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; }
 .db-sw-row .fp-label { color: #363636; }
 #db-item-view .fpp-field > .fp-label { margin: 0; }
@@ -147,7 +147,7 @@
 .db-kb-body { max-height: min(60vh, 520px); overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
 .db-kb-h { margin: 8px 0 0; font-size: 16px; font-weight: 700; color: #0B4B66; }
 .db-kb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.db-kb-table th { text-align: left; font-weight: 500; color: #767676; padding: 6px 8px; border-bottom: 1px solid #D6D5D4; }
+.db-kb-table th { text-align: left; font-weight: 500; color: #707070; padding: 6px 8px; border-bottom: 1px solid #D6D5D4; }
 .db-kb-table td { padding: 8px; border-bottom: 1px solid #EEEEEE; color: #363636; vertical-align: top; }
 .db-kb-table td:first-child { width: 44%; }
 .db-kb-table kbd { display: inline-block; padding: 2px 6px; border: 1px solid #B1B4B6; border-bottom-width: 2px; border-radius: 4px; background: #FAFAFA;
@@ -162,7 +162,7 @@
 .db-pal-item { align-items: center; padding: 10px 12px; }
 .db-pal-ico { width: 32px; height: 32px; background: none; border-radius: 0; }
 .db-pal-name { font-size: 16px; font-weight: 500; color: #363636; }
-.db-desc { margin: 4px 0 0; font-size: 16px; line-height: 1.37; color: #767676; }
+.db-desc { margin: 4px 0 0; font-size: 16px; line-height: 1.37; color: #707070; }
 .db-desc[hidden] { display: none; }
 .form-view:not(.db-previewing) .db-head:not(:has(.db-desc:not([hidden]))) { display: none; }   /* no description → no empty gap above the first row */
 #db-ddesc { min-height: 88px; }
@@ -228,7 +228,7 @@
 .db-card[data-span="3"] .db-kpi-c { font-size: 12px; }
 @container (max-width: 520px) { .db-card[data-span="3"] { grid-column: span 6 !important; } }
 /* data freshness under the dashboard title */
-.db-fresh { display: flex; align-items: center; gap: 6px; margin: 6px 0 0; font-size: 14px; color: #767676; }
+.db-fresh { display: flex; align-items: center; gap: 6px; margin: 6px 0 0; font-size: 14px; color: #707070; }
 
 /* checkbox groups = the bordered DIGIT check list used in the Add Variable / Add Quick Action popups */
 .db-chk-list { max-height: none; }
@@ -238,8 +238,8 @@
 .db-chk-list .check-row.has-hint { align-items: flex-start; padding-top: 10px; padding-bottom: 10px; }
 .db-chk-list .check-row.has-hint input { margin-top: 2px; }
 .db-chk-t { display: flex; flex-direction: column; gap: 2px; }
-.db-chk-t small { font-size: 14px; line-height: 1.37; color: #767676; }
-.db-box-desc { margin: -4px 0 0; font-size: 14px; line-height: 1.37; color: #767676; }
+.db-chk-t small { font-size: 14px; line-height: 1.37; color: #707070; }
+.db-box-desc { margin: -4px 0 0; font-size: 14px; line-height: 1.37; color: #707070; }
 
 /* Legend on the right only when the card is wide enough; on narrow cards it sits below so the chart keeps its width */
 .db-card-body { container-type: inline-size; }
@@ -257,7 +257,7 @@
 .db-main { padding-top: 0; }
 .db-bar { position: sticky; top: 0; z-index: 6; flex: none; height: 52px; margin: 0 -32px; padding: 0 32px;
           display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #fff; border-bottom: 1px solid #D6D5D4; }
-.db-stats { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #767676; white-space: nowrap; }
+.db-stats { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #707070; white-space: nowrap; }
 .db-stat strong { color: #363636; font-weight: 700; }
 .db-stat-sep { width: 1px; height: 16px; background: #D6D5D4; }
 .db-bar-btn { height: 32px; }
@@ -313,7 +313,7 @@
   .db-narrow { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 48px 16px; padding: 32px 16px; text-align: center;
                background: #fff; border: 1px solid #D6D5D4; border-radius: 8px; }
   .db-narrow h2 { margin: 0; font-size: 20px; color: #0B4B66; }
-  .db-narrow p { margin: 0; font-size: 16px; color: #767676; }
+  .db-narrow p { margin: 0; font-size: 16px; color: #707070; }
 }
 .db-pal-list.is-tiles .db-pal-item { aspect-ratio: auto; height: 104px; }
 
@@ -361,7 +361,7 @@
 /* the snapped size preview */
 .db-ghost { position: absolute; left: -1px; top: -1px; z-index: 6; pointer-events: none; border: 1.5px dashed #C84C0E; border-radius: 8px;
             background: rgba(200, 76, 14, .04); transition: width .12s ease, height .12s ease; }
-.db-ghost.is-same { border-color: #767676; background: none; }
+.db-ghost.is-same { border-color: #707070; background: none; }
 .db-ghost-l { position: fixed; z-index: 1000; pointer-events: none; padding: 2px 8px; box-shadow: 0 1px 3px rgba(0,0,0,.2); border-radius: 4px; background: #C84C0E; color: #fff;
               font-size: 14px; font-weight: 700; line-height: 1.37; white-space: nowrap; }
 .db-ghost-l.is-same { background: #363636; }

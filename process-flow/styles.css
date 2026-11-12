@@ -5,7 +5,7 @@
   --primary-bg: #fbeee8;
   --secondary: #0b4b66;
   --text: #363636;
-  --muted: #767676;
+  --muted: #707070;
   --subtle: #c5c5c5;
   --border: #d6d5d4;
   --surface: #ffffff;
@@ -103,8 +103,8 @@ button { cursor: pointer; }
   border-bottom: 1px solid var(--header-border);
 }
 .topbar__title { font-size: 32px; font-weight: 700; color: var(--secondary); line-height: 1; margin-left: 4px; }
-.topbar__back, .topbar__guides { min-height: 32px; font-size: 14px; padding: 0 14px; gap: 6px; background: var(--surface); }
-.topbar__back svg, .topbar__guides svg { width: 18px; height: 18px; }
+.topbar__back, .topbar__guides, .topbar__help { min-height: 32px; font-size: 14px; padding: 0 14px; gap: 6px; background: var(--surface); }
+.topbar__back svg, .topbar__guides svg, .topbar__help svg { width: 18px; height: 18px; }
 .topbar__help { margin-left: auto; }
 /* Tertiary: text-only button, no border or fill */
 .btn--tertiary {
@@ -666,7 +666,7 @@ button { cursor: pointer; }
   position: relative; flex: none;
   width: 48px; height: 26px; padding: 0;
   border: 0; border-radius: 13px;
-  background: #767676;
+  background: #707070;
   transition: background 0.15s;
 }
 .switch__knob {
@@ -1166,14 +1166,14 @@ button { cursor: pointer; }
 .btn.btn--info:hover { background: #00469a; border-color: #00469a; }
 .nf-info__btn { margin: 12px 0 0 28px; }
 
-/* DIGIT TextInput / TextArea (digit-ui-components-css): 40px field, 1px #767676 border,
+/* DIGIT TextInput / TextArea (digit-ui-components-css): 40px field, 1px #707070 border,
    4px corners (user's choice), 16px Roboto, 12px left padding; focus and error get a 1.5px border.
    Placeholder stays #5E5E5E (DIGIT's #C5C5C5 fails WCAG contrast). */
 .digit-text-input-field { position: relative; width: 100%; }
 .digit-employeeCard-input,
 .digit-employee-card-textarea-field {
   display: block; width: 100%;
-  border: 1px solid #767676; border-radius: 4px;
+  border: 1px solid #707070; border-radius: 4px;
   background: #fff; color: var(--text);
   font: 400 16px/24px Roboto, sans-serif;
   padding: 0 12px;
@@ -1181,7 +1181,7 @@ button { cursor: pointer; }
 .digit-employeeCard-input { height: 40px; }
 .digit-employee-card-textarea-field { height: 100px; padding: 8px 12px; resize: vertical; }
 .digit-employeeCard-input::placeholder,
-.digit-employee-card-textarea-field::placeholder { color: #767676; }
+.digit-employee-card-textarea-field::placeholder { color: #707070; }
 .digit-employeeCard-input:focus, .digit-employeeCard-input:focus-visible,
 .digit-employee-card-textarea-field:focus-visible {
   outline: none; border: 1.5px solid var(--primary); box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--primary);
@@ -1226,12 +1226,12 @@ button { cursor: pointer; }
 .pay-calc input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .pay-calc[hidden], #payIntegration[hidden] { display: none; }
 /* Amount field: fixed rupee prefix inside the field (the currency cannot be changed) */
-.pay-amount__prefix { position: absolute; inset: 1px auto 1px 1px; width: 40px; display: flex; align-items: center; justify-content: center; background: #eee; border-right: 1px solid #767676; border-radius: 3px 0 0 3px; color: #767676; font-size: 16px; pointer-events: none; }
+.pay-amount__prefix { position: absolute; inset: 1px auto 1px 1px; width: 40px; display: flex; align-items: center; justify-content: center; background: #eee; border-right: 1px solid #707070; border-radius: 3px 0 0 3px; color: #707070; font-size: 16px; pointer-events: none; }
 .pay-amount .digit-employeeCard-input { padding-left: 52px; }
 .pay-modes { display: grid; gap: 12px; }
 .pay-modes .radio-card { background: var(--surface); } /* each mode card is white; a ticked one keeps the warm tint */
 .pay-modes .radio-card:has(input:checked) { background: #fff8f5; }
-.digit-dropdown-select__value.is-placeholder { color: #767676; }
+.digit-dropdown-select__value.is-placeholder { color: #707070; }
 .nf-control:has(> .nf-meta .field__error:not([hidden])) .digit-dropdown-select { border-color: var(--error); }
 /* Create New Role: fields stack label-over-input; access cards are checkboxes (multi-select) */
 .modal.role-choice { width: min(640px, calc(100vw - 32px)); }
@@ -1274,7 +1274,7 @@ button { cursor: pointer; }
 .digit-dropdown-select {
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
   width: 100%; height: 40px; padding: 0 8px 0 12px;
-  border: 1px solid #767676; border-radius: 4px; background: #fff;
+  border: 1px solid #707070; border-radius: 4px; background: #fff;
   font: 400 16px/24px Roboto, sans-serif; color: var(--text); text-align: left; cursor: pointer;
 }
 .digit-dropdown-select svg { flex: none; }
@@ -1294,7 +1294,7 @@ button { cursor: pointer; }
 .digit-dropdown-item[aria-selected='true'] { font-weight: 500; }
 .cl-opts { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--border); }
 .cl-opt { display: flex; align-items: center; gap: 12px; min-height: 44px; }
-.cl-opt__mark { flex: none; display: grid; place-items: center; width: 22px; height: 22px; border: 1.5px solid #767676; font-size: 14px; color: var(--muted); }
+.cl-opt__mark { flex: none; display: grid; place-items: center; width: 22px; height: 22px; border: 1.5px solid #707070; font-size: 14px; color: var(--muted); }
 .cl-opt__mark--radio { border-radius: 50%; }
 .cl-opt__mark--checkbox { border-radius: 3px; }
 .cl-opt__mark--dropdown { border: 0; width: auto; min-width: 22px; }
@@ -1423,7 +1423,7 @@ button { cursor: pointer; }
 .doc-choice .nf-box + .nf-box { margin-top: 16px; }
 .doc-choice select:disabled { background: #F5F5F5; color: #363636; }
 .doc-choice .radio-card.is-disabled { opacity: 1; cursor: not-allowed; border-color: #D6D5D4; background: #FAFAFA; }
-.doc-choice .radio-card.is-disabled .radio-card__label, .doc-choice .radio-card.is-disabled .radio-card__text { color: #767676; }
+.doc-choice .radio-card.is-disabled .radio-card__label, .doc-choice .radio-card.is-disabled .radio-card__text { color: #707070; }
 
 /* Popup tags = Studio Notifications tags: 28px, 14px / 500, 4px radius. Type (SMS / Email / document type) amber, state blue */
 #addDialog .tag, #docDialog .tag { height: 28px; padding: 0 10px; font-size: 14px; font-weight: 500; border-radius: 4px; }
@@ -1458,8 +1458,8 @@ button { cursor: pointer; }
 .info-btn, .inner-card .info-btn, .cl-nested .info-btn { color: inherit; }
 .panel-section__head .info-btn { color: var(--secondary); }   /* same blue as the heading beside it */
 
-/* Toggle cards (Collect Payment, Notification…): container stays #FAFAFA; off = #767676 title, on = blue title; rows #363636 */
-.toggle-card:not(.is-on) .toggle-card__title { color: #767676; }
+/* Toggle cards (Collect Payment, Notification…): container stays #FAFAFA; off = #707070 title (4.6:1 on #FAFAFA), on = blue title; rows #363636 */
+.toggle-card:not(.is-on) .toggle-card__title { color: #707070; }
 .toggle-card.is-on .toggle-card__title { color: var(--secondary); }
 .logic-item__input, .logic-item { color: #363636; }
 
@@ -1475,3 +1475,10 @@ button { cursor: pointer; }
 
 /* close (×) buttons: no hover fill anywhere; the focus ring stays */
 button[aria-label^="Close"]:hover { background: transparent !important; }
+
+/* Every dropdown in the prototype: DIGIT arrow placement — the 24px arrow_drop_down icon, 8px in from the right edge,
+   text kept clear of it (40px right padding). Overrides the browser arrow and the older per-screen arrows. */
+select:not([multiple]):not([size]) { appearance: none; -webkit-appearance: none; padding-right: 40px !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z' fill='%23505A5F'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important;
+  background-position: right 8px center !important; background-size: 24px 24px !important; }
+select:not([multiple]):not([size]):disabled { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z' fill='%23B1B4B6'/%3E%3C/svg%3E") !important; }

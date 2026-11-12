@@ -12,7 +12,7 @@
   // Studio: one saved process flow per module (?module=<id>)
   const STUDIO_MODULE = new URLSearchParams(location.search).get('module') || 'application';
   const STORAGE_KEY = 'studio-process-flow.' + STUDIO_MODULE;
-  const MODULE_DASHBOARD = '../index.html#/module/' + encodeURIComponent(STUDIO_MODULE);
+  const MODULE_DASHBOARD = '../studio.html#/module/' + encodeURIComponent(STUDIO_MODULE);
   const goToModuleDashboard = () => {
     const target = window.top !== window ? window.top : window;
     target.location.href = new URL(MODULE_DASHBOARD, location.href).href;
@@ -2187,7 +2187,7 @@
         save();
         sessionStorage.setItem('studio.docHandoff', JSON.stringify({ module: STUDIO_MODULE, stateId: s.id, stateName: s.name, ...extra }));
         const target = window.top !== window ? window.top : window;
-        target.location.href = new URL('../index.html#/module/' + encodeURIComponent(STUDIO_MODULE) + '/documents', location.href).href;
+        target.location.href = new URL('../studio.html#/module/' + encodeURIComponent(STUDIO_MODULE) + '/documents', location.href).href;
       };
       const createNew = ({ source }) => {
         // Hand over to Studio Documents (template → details → editor, or upload → details → arrange → editor).
@@ -2195,7 +2195,7 @@
         save();
         sessionStorage.setItem('studio.docHandoff', JSON.stringify({ module: STUDIO_MODULE, stateId: s.id, stateName: s.name, kind: source === 'upload' ? 'UPLOAD' : 'TEMPLATE' }));
         const target = window.top !== window ? window.top : window;
-        target.location.href = new URL('../index.html#/module/' + encodeURIComponent(STUDIO_MODULE) + '/documents', location.href).href;
+        target.location.href = new URL('../studio.html#/module/' + encodeURIComponent(STUDIO_MODULE) + '/documents', location.href).href;
       };
       const nameFrom = (base) => { const used = new Set(wf.states.flatMap((st) => (st.docs?.items || []).map((i) => i.name)));
         let n = base; for (let k = 2; used.has(n); k++) n = `${base} ${k}`; return n; };

@@ -3,10 +3,10 @@
 .nt-main { padding-bottom: 48px; }
 .nt-filters { display: flex; flex-wrap: wrap; gap: 16px 24px; padding: 20px 24px; }
 .nt-filter { display: flex; flex-direction: column; gap: 4px; width: min(300px, 100%); }
-.nt-label { font-size: 16px; line-height: 20px; color: #767676; }
+.nt-label { font-size: 16px; line-height: 20px; color: #707070; }
 .nt-search { position: relative; }
 .nt-search .input { width: 100%; height: 40px; padding: 0 40px 0 12px; }
-.nt-search .rs-ico { position: absolute; left: auto; right: 12px; top: 50%; transform: translateY(-50%); color: #767676; display: grid; }
+.nt-search .rs-ico { position: absolute; left: auto; right: 12px; top: 50%; transform: translateY(-50%); color: #707070; display: grid; }
 .nt-search input[type="search"]::-webkit-search-cancel-button { display: none; }
 .nt-select { width: 100%; height: 40px; }
 
@@ -61,7 +61,7 @@
 .ntw-bars span { flex: 1; height: 6px; border-radius: 3px; background: #C5C5C5; }
 .ntw-bars span.on { background: var(--primary); }
 .ntw-title { font-size: 24px; line-height: 1.3; font-weight: 700; color: #0B4B66; padding-right: 32px; }
-.ntw-desc { margin-top: 4px; font-size: 16px; line-height: 1.5; color: #767676; }
+.ntw-desc { margin-top: 4px; font-size: 16px; line-height: 1.5; color: #707070; }
 .ntw-options { margin: 16px 0 0; padding: 0; border: 0; display: grid; gap: 12px; }
 .ntw-radio { position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 16px; border: 1px solid #D6D5D4; border-radius: 8px; background: #FAFAFA; cursor: pointer; }
 .ntw-radio:hover { border-color: #5E5E5E; }
@@ -82,7 +82,7 @@
 .ntw-tile-ico { width: 40px; height: 40px; border-radius: 8px; background: var(--primary-tint); color: var(--primary); display: grid; place-items: center; }
 .ntw-tile:has(input:checked) .ntw-tile-ico { background: var(--primary); color: #fff; }
 .ntw-tile-title { margin-top: 12px; font-size: 16px; font-weight: 700; color: #0B4B66; }
-.ntw-tile-text { margin-top: 4px; font-size: 14px; line-height: 1.4; color: #767676; }
+.ntw-tile-text { margin-top: 4px; font-size: 14px; line-height: 1.4; color: #707070; }
 
 .ntw-search { margin-top: 16px; }
 .ntw-pick { margin: 12px -4px 0; padding: 4px; display: grid; gap: 12px; max-height: 50vh; overflow-y: auto; }
@@ -111,7 +111,7 @@
 @media (max-width: 599px) { .ntw-row { grid-template-columns: 1fr; } }
 .ntw-label { min-height: 40px; display: flex; align-items: center; font-size: 16px; font-weight: 700; color: #0B4B66; }
 .ntw-control { display: grid; gap: 4px; min-width: 0; }
-.ntw .input { height: 40px; border: 1px solid #767676; border-radius: 4px; font: 400 16px/24px Roboto, sans-serif; padding: 0 12px; }
+.ntw .input { height: 40px; border: 1px solid #707070; border-radius: 4px; font: 400 16px/24px Roboto, sans-serif; padding: 0 12px; }
 .ntw .input:focus-visible { outline: none; border-color: var(--primary); box-shadow: var(--focus-ring); }
 .ntw .input[aria-invalid="true"] { border: 1.5px solid #B91900; }
 .ntw textarea.input { height: 120px; padding: 8px 12px; resize: vertical; }
@@ -122,7 +122,7 @@
 .ntw-foot .btn { min-height: 40px; height: 40px; padding: 0 16px; font-size: 16px; font-weight: 700; min-width: 96px; }
 .ntw-foot .btn:disabled { opacity: .5; cursor: not-allowed; }
 .nt-subject { font-size: 14px; color: #363636; }
-.nt-subject-k { font-weight: 700; color: #767676; }
+.nt-subject-k { font-weight: 700; color: #707070; }
 .ntw .req { color: #B91900; margin-left: 2px; }
 
 /* Confirm popup = process-flow delete popup: 550px, centred, 48px red triangle, 24px blue title,
@@ -132,7 +132,7 @@
 .pfc-close { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; }
 .pfc-icon { display: grid; place-items: center; margin-top: 4px; }
 .pfc-title { font-size: 24px; line-height: 1.3; font-weight: 700; color: #0B4B66; overflow-wrap: anywhere; padding: 0 16px; }
-.pfc-desc { font-size: 16px; line-height: 1.5; color: #767676; overflow-wrap: anywhere; }
+.pfc-desc { font-size: 16px; line-height: 1.5; color: #707070; overflow-wrap: anywhere; }
 .pfc-desc strong { color: #363636; font-weight: 700; }
 .pfc-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
 .pfc-actions .btn { height: 40px; min-height: 40px; font-size: 16px; font-weight: 700; }
@@ -173,7 +173,7 @@
 /* Popup type tag = same amber tag as the notification cards (SMS / Email) */
 .ntw-type-tag { align-self: flex-start; min-height: 0; }
 /* Visible result count when a search / filter is applied (e.g. "3 notifications found."); full row under the filters */
-.nt-count { flex-basis: 100%; margin: 0; font-size: 16px; line-height: 1.37; font-weight: 500; color: #767676; }   /* 7.4:1 on white */
+.nt-count { flex-basis: 100%; margin: 0; font-size: 16px; line-height: 1.37; font-weight: 500; color: #707070; }   /* 7.4:1 on white */
 .nt-count:empty { display: none; }
 .roles-bar .nt-count { margin-top: 8px; }
 /* Count sits outside the white filter card, on the page background */
@@ -191,8 +191,8 @@
             font: inherit; font-size: 16px; font-weight: 500; color: var(--primary); cursor: pointer; }
 .nt-clear:hover:not(:disabled) { background: var(--primary-tint); }
 .nt-clear:focus-visible { outline: none; box-shadow: var(--focus-ring); }
-.nt-clear:disabled { color: #767676; cursor: not-allowed; }
-.nt-filters .nt-count { flex-basis: 100%; margin: -4px 0 0; font-size: 14px; font-weight: 500; color: #767676; }
+.nt-clear:disabled { color: #707070; cursor: not-allowed; }
+.nt-filters .nt-count { flex-basis: 100%; margin: -4px 0 0; font-size: 14px; font-weight: 500; color: #707070; }
 .nt-filters .nt-count:empty { display: none; }
 
 /* Results row OUTSIDE the white card: "1 checklist found." with a tertiary Clear right next to it (only while filtering) */
@@ -213,16 +213,16 @@
 .nt-filters .nt-clear { margin-left: auto; align-self: flex-end; height: 40px; padding: 0 8px; background: none; color: var(--primary);
                         font-size: 16px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 .nt-filters .nt-clear:hover:not(:disabled) { background: none; color: var(--primary); text-decoration-thickness: 2px; }
-.nt-filters .nt-clear:disabled { color: #767676; text-decoration: none; }
+.nt-filters .nt-clear:disabled { color: #707070; text-decoration: none; }
 /* Clear = secondary CTA (white, orange border + text), 40px, right end of the filter row; disabled = DIGIT grey */
 .nt-filters .nt-clear.nt-clear-btn { height: 40px; min-width: 100px; padding: 0 20px; text-decoration: none; font-size: 16px; font-weight: 700;
                                     background: #fff; color: var(--primary); border: 1px solid var(--primary); }
 .nt-filters .nt-clear.nt-clear-btn:hover:not(:disabled) { background: #fff; color: var(--primary); text-decoration: none; box-shadow: inset 0 0 0 1px var(--primary); }
-.nt-filters .nt-clear.nt-clear-btn:disabled { background: #F5F5F5; color: #767676; border-color: #D6D5D4; cursor: not-allowed; }
+.nt-filters .nt-clear.nt-clear-btn:disabled { background: #F5F5F5; color: #707070; border-color: #D6D5D4; cursor: not-allowed; }
 /* Clear Search: 32px secondary CTA, centred on the 40px fields (align to their bottom edge) */
 .nt-filters .nt-clear.nt-clear-btn { height: 32px; min-width: 0; padding: 0 16px; margin-bottom: 4px; }
 /* Disabled Clear Search: grey stroke + grey text only, white background */
-.nt-filters .nt-clear.nt-clear-btn:disabled { background: #fff; color: #767676; border-color: #C5C5C5; }
+.nt-filters .nt-clear.nt-clear-btn:disabled { background: #fff; color: #707070; border-color: #C5C5C5; }
 
 /* selected tile has the orange tint: secondary grey would be 4.33:1 there */
 .ntw-tile:has(input:checked) .ntw-tile-text { color: #363636; }

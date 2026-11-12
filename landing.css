@@ -5,7 +5,7 @@
 .lp-main { display: flex; flex-direction: column; }
 .lp-head { margin-bottom: 16px; }
 .lp-head .page-title { margin: 0; }
-.lp-desc { margin-top: 4px; font-size: 16px; color: #767676; }
+.lp-desc { margin-top: 4px; font-size: 16px; color: #707070; }
 .lp-stage { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 8px 0 24px; }
 
 /* Phone frame */
@@ -18,7 +18,7 @@
 .lp-burger { width: 16px; height: 2px; background: #0B0C0C; box-shadow: 0 -5px 0 #0B0C0C, 0 5px 0 #0B0C0C; }
 .lp-logo { font-size: 14px; font-weight: 900; letter-spacing: .06em; color: #363636; }
 .lp-sep { width: 1px; height: 16px; background: #B1B4B6; }
-.lp-city { font-size: 12px; color: #767676; }
+.lp-city { font-size: 12px; color: #707070; }
 .lp-hero { padding: 18px 16px 20px; background: #0B4B66; color: #fff; }
 .lp-hero-t { font-size: 24px; line-height: 1.2; font-weight: 700; }
 .lp-hero-d { margin-top: 8px; font-size: 13px; line-height: 1.45; font-weight: 500; color: #fff; }
@@ -33,17 +33,17 @@
 .lp-faq { background: #fff; border: 1px solid #D6D5D4; border-radius: 4px; }
 .lp-faq-q { width: 100%; min-height: 40px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px;
             border: 0; background: none; font: inherit; font-size: 13px; font-weight: 500; color: #363636; text-align: left; cursor: pointer; }
-.lp-chev { display: grid; color: #767676; transition: transform .15s; }
+.lp-chev { display: grid; color: #707070; transition: transform .15s; }
 .lp-faq.is-open .lp-chev { transform: rotate(90deg); }
 .lp-faq-q:focus-visible { outline: none; box-shadow: inset 0 0 0 2px #0B4B66; border-radius: 4px; }
 .lp-faq-a { padding: 0 10px 10px; font-size: 12px; line-height: 1.45; color: #363636; }
-.lp-empty { padding: 24px 8px; font-size: 13px; color: #767676; text-align: center; }
+.lp-empty { padding: 24px 8px; font-size: 13px; color: #707070; text-align: center; }
 
 /* Right panel bits */
 .lp-textarea { min-height: 88px; resize: vertical; line-height: 1.4; padding: 8px 12px; }
 textarea.input.lp-textarea { height: auto; }
 .lp-item { padding: 0 4px 0 12px; }
-.lp-item-t { flex: 1; min-width: 0; min-height: 40px; display: flex; align-items: center; font-size: 14px; color: #767676;
+.lp-item-t { flex: 1; min-width: 0; min-height: 40px; display: flex; align-items: center; font-size: 14px; color: #707070;
              overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lp-item .dc-uv-del { flex: none; width: 32px; height: 32px; color: var(--primary); border-radius: 4px; }
 .lp-item .dc-uv-del:hover { background: var(--primary-tint); }
@@ -119,7 +119,7 @@ button.lp-tile.is-sel { box-shadow: 0 0 0 2px #C84C0E; background: #FBEEE8; }
 .lp-psec .fp-field + .fp-field { margin-top: 4px; }
 .lp-tcard { display: grid; gap: 14px; padding: 14px 16px 16px; background: #FAFAFA; border: 1px solid #D6D5D4; border-radius: 12px; }
 .lp-tcard-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.lp-tcard-title { margin: 0; font-size: 14px; font-weight: 700; color: #767676; }
+.lp-tcard-title { margin: 0; font-size: 14px; font-weight: 700; color: #707070; }
 .lp-tcard.is-on .lp-tcard-title { color: #0B4B66; }
 .lp-icard { display: grid; gap: 12px; padding: 14px; background: #fff; border: 1px solid #D6D5D4; border-radius: 10px; }
 .lp-tcard .dc-uv-item { background: #fff; }
@@ -140,7 +140,7 @@ button.lp-tile.is-sel { box-shadow: 0 0 0 2px #C84C0E; background: #FBEEE8; }
 .lp-fc .field-name { color: #0B4B66; }                       /* quick action cards: process-flow card title colour */
 .lp-tc { display: grid; gap: 14px; padding: 14px 16px 16px; background: #FAFAFA; border: 1px solid #D6D5D4; border-radius: 12px; }
 .lp-tc-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.lp-tc-title { margin: 0; font-size: 14px; font-weight: 700; color: #767676; }
+.lp-tc-title { margin: 0; font-size: 14px; font-weight: 700; color: #707070; }
 .lp-tc.is-on .lp-tc-title { color: #0B4B66; }
 .lp-ic { display: grid; gap: 12px; padding: 14px; background: #fff; border: 1px solid #D6D5D4; border-radius: 10px; }
 .lp-ll { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
@@ -157,8 +157,8 @@ button.lp-tile.is-sel { box-shadow: 0 0 0 2px #C84C0E; background: #FBEEE8; }
 .lp-tc .lp-li { background: #fff; }
 
 
-/* v11: quick action names in the properties panel are #767676 */
-.lp-fc .field-name { color: #767676; }
+/* v11: quick action names in the properties panel are #707070 */
+.lp-fc .field-name { color: #707070; }
 
 /* v12: description at the top of the FAQ view (fp-section has its own padding) */
 #lp-q-view .fp-section > .fpp-intro { position: static; margin: 0; padding: 0; }
@@ -167,7 +167,7 @@ button.lp-tile.is-sel { box-shadow: 0 0 0 2px #C84C0E; background: #FBEEE8; }
 
 /* v17: Page Properties = Hero Banner card, Quick Actions card (open their properties), then FAQ */
 .lp-fc-open { justify-content: space-between; gap: 8px; }
-.lp-fc-chev { display: grid; color: #767676; }
+.lp-fc-chev { display: grid; color: #707070; }
 .lp-title-tip { display: inline-flex; align-items: center; gap: 4px; }
 .lp-title-tip .tip-btn { color: inherit; }
 #lp-q-view .fpp-field > .fp-label { margin-bottom: 0; }
@@ -178,9 +178,9 @@ button.lp-tile.is-sel { box-shadow: 0 0 0 2px #C84C0E; background: #FBEEE8; }
 #lp-props .fp-section:first-child { padding-bottom: 8px; }   /* same 8px gap as between the cards */
 /* v19: card titles in Page Properties are 16px */
 #lp-props .lp-fc .field-name, #lp-props .lp-tc-title { font-size: 16px; }
-/* v20: Page Properties card titles in primary blue; FAQ's #767676 when switched off */
+/* v20: Page Properties card titles in primary blue; FAQ's #707070 when switched off */
 #lp-props .lp-fc .field-name, #lp-props .lp-tc.is-on .lp-tc-title { color: #0B4B66; }
-#lp-props .lp-tc:not(.is-on) .lp-tc-title { color: #767676; }
+#lp-props .lp-tc:not(.is-on) .lp-tc-title { color: #707070; }
 /* v21: the Quick Actions section on the phone is selectable as a whole */
 .lp-qa-sec { display: flex; flex-direction: column; gap: 12px; margin: -6px; padding: 6px; border-radius: 10px; cursor: pointer; }
 .lp-qa-sec:hover { box-shadow: inset 0 0 0 2px #C84C0E; }
@@ -207,9 +207,9 @@ button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff;
 .lp-bg-tile { padding: 8px 44px 8px 8px; }
 .lp-bg-tile img { width: 100%; max-height: 120px; object-fit: cover; border-radius: 6px; }
 .dc-logo-drop.is-disabled { opacity: .55; background: #F5F5F5; }
-.lp-or { display: flex; align-items: center; gap: 12px; margin: 0; font-size: 14px; color: #767676; }
+.lp-or { display: flex; align-items: center; gap: 12px; margin: 0; font-size: 14px; color: #707070; }
 .lp-or::before, .lp-or::after { content: ''; flex: 1; height: 1px; background: #D6D5D4; }
-.lp-off-hint { margin: 4px 0 0; font-size: 14px; color: #767676; }
+.lp-off-hint { margin: 4px 0 0; font-size: 14px; color: #707070; }
 #lp-q-view .fpp-field > p.fpp-label { margin: 0; }
 /* Add FAQ popup: error left, count right */
 #lp-faq-form .fp-meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 4px; }

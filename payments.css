@@ -19,14 +19,14 @@
 .py-tag-kind { background: #F1EDFD; color: #5B3FC4; }   /* 6.2:1 */
 .py-facts { margin: 0; display: flex; flex-wrap: wrap; gap: 8px 32px; }
 .py-facts div { display: flex; gap: 8px; align-items: baseline; }
-.py-facts dt { font-size: var(--bodyXS); font-weight: 700; color: #767676; }
+.py-facts dt { font-size: var(--bodyXS); font-weight: 700; color: #707070; }
 .py-facts dd { margin: 0; font-size: var(--bodyS); color: #363636; }
 
 /* Facts row (user's reference): small uppercase grey label above the value, thin dividers between columns */
 .py-facts { display: flex; flex-wrap: wrap; gap: 12px 0; margin: 4px 0 0; }
 .py-facts div { display: flex; flex-direction: column; gap: 4px; padding: 0 32px; border-left: 1px solid #D6D5D4; }
 .py-facts div:first-child { padding-left: 0; border-left: 0; }
-.py-facts dt { font-size: 12px; line-height: 1.3; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #767676; }   /* 7.4:1 */
+.py-facts dt { font-size: 12px; line-height: 1.3; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #707070; }   /* 7.4:1 */
 .py-facts dd { margin: 0; font-size: var(--bodyS); line-height: 1.3; color: #363636; }
 @media (max-width: 599px) { .py-facts div { padding: 0 16px; } }
 
@@ -37,7 +37,7 @@
 .pyw-lab label, .pyw-lab > span:first-child { font-size: 16px; font-weight: 700; color: #0B4B66; }
 .pay-amount { position: relative; }
 .pay-amount__prefix { position: absolute; inset: 1px auto 1px 1px; width: 40px; display: flex; align-items: center; justify-content: center;
-                      background: #EEEEEE; border-right: 1px solid #767676; border-radius: 3px 0 0 3px; color: #767676; font-size: 16px; pointer-events: none; }
+                      background: #EEEEEE; border-right: 1px solid #707070; border-radius: 3px 0 0 3px; color: #707070; font-size: 16px; pointer-events: none; }
 .pay-amount .input { width: 100%; padding-left: 52px; }
 .pay-modes { display: grid; gap: 12px; }
 .pay-modes .ntw-radio { background: #fff; align-items: flex-start; }

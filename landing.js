@@ -171,10 +171,9 @@
     $('lp-screen').innerHTML = `
       <div class="lp-top" aria-hidden="true">
         <span class="lp-burger"></span>
-        <span class="lp-mark"><svg width="16" height="14" viewBox="0 0 16 14" focusable="false"><circle cx="3" cy="3" r="2.2" fill="#F4B41A"/><circle cx="3" cy="11" r="2.2" fill="#00A3AD"/><circle cx="9" cy="7" r="2.2" fill="#0B4B66"/><circle cx="14" cy="3" r="1.6" fill="#29A8E0"/></svg>DIGIT</span>
         <span class="lp-bell"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" fill="#0B0C0C"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0" stroke="#0B0C0C" stroke-width="2" fill="none" stroke-linecap="round"/></svg></span>
       </div>
-      ${h.on ? `<div class="lp-hero${heroOpen ? ' is-sel' : ''}${h.bg ? ' has-bg' : ''}" data-phero${h.bg ? ` style="background-image: linear-gradient(rgba(11,75,102,.78), rgba(11,75,102,.78)), url('${esc(h.bg)}')"` : ''}><p class="lp-hero-t">${esc(h.title || 'Service name')}</p>${h.desc ? `<p class="lp-hero-d">${esc(h.desc)}</p>` : ''}</div>` : ''}
+      ${h.on ? `<div class="lp-hero${heroOpen ? ' is-sel' : ''}" data-phero><p class="lp-hero-t">${esc(h.title || 'Service name')}</p>${h.desc ? `<p class="lp-hero-d">${esc(h.desc)}</p>` : ''}</div>` : ''}
       <div class="lp-content">
         ${a.on && a.list.length ? `<div class="lp-qa-sec lp-sec${actsOpen ? ' is-sel' : ''}" data-pacts><p class="lp-h">Quick <b>Actions</b></p>
           <div class="lp-tiles${a.list.length > 3 ? ' is-many' : ''}">${a.list.map(k => `<button type="button" class="lp-tile${actKey === k ? ' is-sel' : ''}" data-pact="${k}">${icon(ACTIONS[k][1])}<span>${esc(actLabel(k))}</span></button>`).join('')}</div></div>` : ''}
@@ -401,7 +400,6 @@
             <textarea class="fp-textarea" id="lp-h-desc" maxlength="${HL.desc}" data-hero="desc" aria-describedby="lp-h-desc-meta">${esc(h.desc)}</textarea>
             <div class="fp-meta" id="lp-h-desc-meta"><span class="fp-error"></span><span class="fp-count" data-count="desc"></span></div></div>
         </div>
-        ${bgBox()}
       </div></div>`;
     heroCount('title'); heroCount('desc');
     if (!keepFocus) $('lp-h-title').focus();
