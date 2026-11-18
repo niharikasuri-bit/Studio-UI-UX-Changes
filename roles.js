@@ -68,7 +68,7 @@
           <button type="button" class="icon-btn modal-close" data-close aria-label="Close">${I.close}</button>
           <div class="modal-head">
             <h2 class="rm-title" id="role-d-title">Create Role</h2>
-            <p class="rm-desc" id="role-d-desc">Choose what this role can do in the service.</p>
+            <p class="rm-desc" id="role-d-desc">Add this role’s details and choose what it can do in the service.</p>
           </div>
           <div class="field">
             <label class="label" for="role-name">Role name <span class="req" aria-hidden="true">*</span></label>
@@ -142,7 +142,7 @@
     const r = i >= 0 ? roles[i] : null, fixed = !!(r && r.fixed);
     $('role-form').reset();
     $('role-d-title').textContent = r ? 'Edit Role' : 'Create Role';
-    $('role-d-desc').textContent = r ? 'Change this role’s details or what it can do in the service.' : 'Choose what this role can do in the service.';
+    $('role-d-desc').textContent = r ? 'Change this role’s details or what it can do in the service.' : 'Add this role’s details and choose what it can do in the service.';
     $('role-submit').textContent = r ? 'Save' : 'Create Role';
     nameEl.value = r ? r.name : '';
     nameEl.readOnly = fixed;                        // Citizen keeps its name …

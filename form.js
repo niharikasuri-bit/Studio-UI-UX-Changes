@@ -783,10 +783,9 @@
     const fieldsOf = pid => (secById(pid)?.fields || []).filter(x => x.id !== lg.f.id).map(x => ({ v: x.id, t: x.label }));
     const src = fieldOf(c.page, c.field);
     const choices = src && src.type === 'dropdown' && src.options?.source === 'manual' ? src.options.items.filter(x => x.trim()) : null;
-    // one row: If → Field | Operator | Value
-    let html = `<div class="lg-cond" role="group" aria-label="Condition ${i + 1}">
-      <div class="lg-cond-head"><span class="lg-if">If</span>
-        ${n > 1 ? `<button type="button" class="lg-del" data-del="${i}">${ICON.trash} Delete Condition</button>` : ''}</div>
+    // one condition row: Field | Operator | Value (the single "If" heading sits above all rows)
+    let html = `<div class="lg-crow" role="group" aria-label="Condition ${i + 1}">
+      ${n > 1 ? `<div class="lg-crow-head"><span class="lg-crow-t">Condition ${i + 1}</span><button type="button" class="lg-del" data-del="${i}">${ICON.trash} Delete Condition</button></div>` : ''}
       <div class="lg-three">
         ${fieldSelectHTML(`lg-field-${i}`, 'Field', c.field, 'field', i, err.field)}
         ${selectHTML(`lg-op-${i}`, 'Operator', 'Select operator', OPS.map(o => ({ v: o.v, t: o.t })), c.op, 'op', i, err.op)}
@@ -796,7 +795,6 @@
               <input class="pf-input" id="lg-val-${i}" type="text" value="${esc(c.value)}" data-k="value" data-i="${i}"${err.value ? ' aria-invalid="true"' : ''} autocomplete="off"></div>`}
       </div>`;
     if (Object.keys(err).length) html += `<p class="fp-error" id="lg-err-${i}">Complete every part of this condition.</p>`;
-    if (i === n - 1) html += actionHTML();   // "Then" sits in the same grey box, after the last condition
     return html + `</div>`;
   }
   // what happens to this field when the conditions are met
@@ -813,7 +811,7 @@
     if (!done.length) return '';
     const tag = t => `<span class="lg-tag">${esc(t)}</span>`;
     return `<div class="lg-summary" aria-label="Summary">
-      ${done.map((c, i) => `${i ? `<p class="lg-and-s">${lg.join === 'or' ? 'Or' : 'And'}</p>` : ''}<p class="lg-sum-row"><span class="lg-if-s">If</span> ${tag(fieldById(c.field)?.label || '')}
+      ${done.map((c, i) => `${i ? `<p class="lg-and-s">${lg.join === 'or' ? 'Or' : 'And'}</p>` : ''}<p class="lg-sum-row">${i ? '' : '<span class="lg-if-s">If</span> '}${tag(fieldById(c.field)?.label || '')}
         ${OPS.find(o => o.v === c.op).s} ${tag(c.value)}</p>`).join('')}
       <p class="lg-sum-row lg-then">Then ${lg.action === 'hide' ? 'hide' : 'show'} ${tag(lg.f.label)}</p>
     </div>`;
@@ -823,7 +821,10 @@
     // And | Or switch between conditions (one choice for the whole logic; every switch shows it)
     const joinHTML = i => `<div class="lg-join" role="radiogroup" aria-label="Join condition ${i} and ${i + 1} with">${['and', 'or'].map(j =>
       `<button type="button" role="radio" class="lg-join-b" data-join="${j}" aria-checked="${lg.join === j}" tabindex="${lg.join === j ? 0 : -1}">${j === 'and' ? 'And' : 'Or'}</button>`).join('')}</div>`;
-    $('lg-body').innerHTML = lg.conds.map((c, i) => (i ? joinHTML(i) : '') + condHTML(c, i, lg.conds.length)).join('')
+    // If and Then belong together: ONE grey box — "If", every condition (And / Or between them), then "Then"
+    $('lg-body').innerHTML = `<div class="lg-cond"><div class="lg-cond-head"><span class="lg-if">If</span></div>`
+      + lg.conds.map((c, i) => (i ? joinHTML(i) : '') + condHTML(c, i, lg.conds.length)).join('')
+      + actionHTML() + `</div>`
       + `<button type="button" class="btn btn-secondary lg-add" id="lg-add">${ICON.plus} Add Condition</button>` + summaryHTML();
     if (focusSel) $('logic-dialog').querySelector(focusSel)?.focus();
   }
