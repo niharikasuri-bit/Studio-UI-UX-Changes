@@ -23,6 +23,7 @@
   panel.setAttribute('role', 'dialog');
   panel.setAttribute('aria-modal', 'false');
   panel.setAttribute('aria-labelledby', 'tg-title');
+  panel.tabIndex = -1;
   panel.innerHTML = `
     <div class="tg-head">
       <h2 class="tg-title" id="tg-title"><span class="tg-ico" aria-hidden="true">${ICON}</span>Tutorials and Guides</h2>
@@ -42,7 +43,7 @@
   function open(from) {
     back = from || document.activeElement;
     panel.hidden = false;
-    panel.querySelector('.tg-close').focus();
+    panel.focus();   // focus the panel itself, so the close button shows no focus ring until someone tabs to it
     S.announce('Tutorials and guides opened.');
   }
   function close() {

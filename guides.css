@@ -96,3 +96,8 @@ body:has(.sidebar) .tg { --tg-left: 48px; }
 
 /* more room between the play button and the label */
 .tg-thumb { gap: 14px; }
+
+/* Close = plain black cross: no circle, no orange ring (a focus ring still shows only when reached with the keyboard) */
+.tg-close, .tg-close:hover { background: none; color: #0B0C0C; box-shadow: none; border: 0; }
+.tg-close:hover { color: #000; }
+.tg:focus { outline: none; }
