@@ -580,6 +580,33 @@
     $('#payFeeSlot').replaceChildren(dd('fee', PAY_FEES, 'Fee', 'payFeeLabel', 'payFeeErr'));
     $('#payMethodSlot').replaceChildren(dd('method', PAY_METHODS, 'Method type', 'payMethodLabel', 'payMethodErr'));
     $('#payIntegrationSlot').replaceChildren(dd('integration', PAY_INTEGRATIONS, 'Payment integration', 'payIntegrationLabel', 'payIntegrationErr'));
+    syncPayLock();
+  }
+  // "Select Payment" (same as Select Notification): search + pick cards with state + fee type tags
+  const PAY_FEE_LABEL = Object.fromEntries(PAY_FEES);
+  function renderPayPick() {
+    const term = $('#paySearch').value.trim().toLowerCase();
+    const shown = payCtx.sources.map((src, i) => ({ src, i })).filter(({ src }) => !term || [src.item.name, src.stateName].some((t) => t.toLowerCase().includes(term)));
+    $('#payPickList').replaceChildren(...shown.map(({ src, i }) => el('label', { class: 'pick-card' },
+      el('input', { type: 'radio', name: 'payPick', value: String(i) }),
+      el('span', { class: 'pick-card__body' },
+        el('span', { class: 'pick-card__title' }, src.item.name),
+        el('span', { class: 'pick-card__tags' }, stateTag(src.stateName), typeTag(PAY_FEE_LABEL[src.item.fee])),
+        el('span', { class: 'pick-card__text' }, `Fee amount: ${payFeeText(src.item)}`)))));
+    [...$('#payPickList').querySelectorAll('input')].forEach((r) => { r.checked = r.value === payCtx.pick; });
+    $('#payPickEmpty').hidden = shown.length > 0;
+    $('#payResultCount').textContent = term ? `${shown.length} found` : '';
+  }
+  $('#paySearch').addEventListener('input', renderPayPick);
+  $('#payPickList').addEventListener('change', (e) => { payCtx.pick = e.target.value; payError('payPickErr', ''); });
+  // copy the picked payment's fee (locked) and its payment modes / integration (still editable)
+  function applyPaySource(v) {
+    payCtx.pick = v;
+    const src = payCtx.sources[Number(v)]?.item; if (!src) return;
+    Object.assign(payCtx, { fee: src.fee, method: src.method || '', integration: src.integration || '', fromPayment: src.name });
+    Object.entries(payAmounts).forEach(([k, input]) => { input.value = src[k] ?? ''; clError(input, ''); });
+    payHost.value = src.host || ''; clError(payHost, '');
+    payDialog.querySelectorAll('input[name="payMode"]').forEach((c) => { c.checked = (src.modes || []).includes(c.value); });
   }
 
   // Each fee type shows its own fields; the integration shows when online is ticked.
@@ -590,24 +617,57 @@
     $('#payIntegration').hidden = !payModes().includes('ONLINE');
   }
 
+  // A fee taken from another payment is shown but can't be changed (payment mode + next step stay editable).
+  function syncPayLock() {
+    const from = payCtx.fromPayment;
+    $('#payLock').hidden = true;   // no note (user): the fee is just shown read-only
+    $('#payFeeBox').classList.toggle('is-locked', !!from);
+    Object.values(payAmounts).concat(payHost).forEach((i) => { i.readOnly = !!from; });
+    ['#payFeeSlot', '#payMethodSlot'].forEach((s) => { const b = $(`${s} .digit-dropdown-select`); if (b) b.disabled = !!from; });
+  }
+
+  function payFeeText(p) {
+    return p.fee === 'FIXED' ? `₹${Number(p.amount || 0).toLocaleString('en-IN')}`
+      : p.fee === 'USER' ? `₹${Number(p.min || 0).toLocaleString('en-IN')} – ₹${Number(p.max || 0).toLocaleString('en-IN')}` : 'Set by fee API';
+  }
+  // every payment already set up in this process flow, with the state it belongs to
+  const paySources = () => wf.states.flatMap((st) => (st.payment?.items || []).filter((it) => it.fee).map((item) => ({ item, stateName: st.name })));
+
+  function drawPayBars() {
+    const { steps, at } = payCtx;
+    $('#payWizard').hidden = steps.length < 2;
+    $('#payBars').replaceChildren(...steps.map((_, i) => el('span', { class: `wizard__bar${i <= at ? ' is-on' : ''}` })));
+    $('#payStepText').textContent = `Step ${at + 1} of ${steps.length}`;
+  }
   function showPayStep() {
     const { steps, at } = payCtx;
     const step = steps[at];
     payDialog.querySelectorAll('[data-pay-step]').forEach((sec) => { sec.hidden = sec.dataset.payStep !== step; });
-    $('#payWizard').hidden = steps.length < 2;
-    $('#payBars').replaceChildren(...steps.map((_, i) => el('span', { class: `wizard__bar${i <= at ? ' is-on' : ''}` })));
-    $('#payStepText').textContent = `Step ${at + 1} of ${steps.length}`;
-    payDialog.setAttribute('aria-labelledby', step === 'after' ? 'payTitle' : 'payDetailsTitle');
-    payDialog.setAttribute('aria-describedby', step === 'after' ? 'payDesc' : 'payDetailsDesc');
+    drawPayBars();
+    const ids = { how: ['payHowTitle', 'payHowDesc'], pick: ['payPickTitle', 'payPickDesc'], after: ['payTitle', 'payDesc'], details: ['payDetailsTitle', 'payDetailsDesc'] }[step];
+    payDialog.setAttribute('aria-labelledby', ids[0]);
+    payDialog.setAttribute('aria-describedby', ids[1]);
     payBack.textContent = at ? 'Back' : 'Cancel';
     payConfirm.textContent = at === steps.length - 1 ? 'Save' : 'Next';
-    (step === 'after' ? payDialog.querySelector('input[name="payAfter"]:checked') || payDialog.querySelector('input[name="payAfter"]') : $('#payFeeSlot .digit-dropdown-select')).focus();
+    if (step === 'pick') { $('#paySearch').value = ''; renderPayPick(); }
+    if (step === 'details') { renderPayDropdowns(); syncPayFields(); syncPayLock(); }
+    const first = (n) => payDialog.querySelector(`input[name="${n}"]:checked`) || payDialog.querySelector(`input[name="${n}"]`);
+    ({ how: () => first('payHow'), after: () => first('payAfter'), pick: () => first('payPick') || $('#paySearch'),
+       details: () => (payCtx.fromPayment ? payDialog.querySelector('input[name="payMode"]') : $('#payFeeSlot .digit-dropdown-select')) })[step]()?.focus();
   }
 
-  /** value: { after, fee, amount, min, max, host, method, modes, integration }; steps: ['after', 'details'] or ['details']. */
-  function openPayDialog({ steps, value = {}, onSave }) {
+  /** value: { after, fee, amount, min, max, host, method, modes, integration, fromPayment }; steps: ['after', 'details'] or ['details'].
+      sources: payments already in this process flow — when there are any, a new payment first asks
+      "How would you like to create your payment?" (use a fee from an existing payment / create from scratch). */
+  function openPayDialog({ steps, value = {}, onSave, sources = [] }) {
+    // [next step after payment →] [how to create → [Select Payment →]] Set Up Payment (fee + payment mode)
+    const isNew = steps.includes('details') && !value.fee;
+    if (isNew && sources.length) steps = steps.includes('after') ? ['after', 'how', 'details'] : ['how', 'details'];
     // Nothing is picked for a new payment; editing shows what was saved.
-    payCtx = { steps, at: 0, fee: value.fee || '', method: value.method || '', integration: value.integration || '', onSave };
+    payCtx = { steps, at: 0, fee: value.fee || '', method: value.method || '', integration: value.integration || '', onSave,
+      sources, how: '', pick: '', fromPayment: value.fromPayment || '' };
+    payDialog.querySelectorAll('input[name="payHow"]').forEach((r) => { r.checked = false; });
+    payError('payHowErr', ''); payError('payPickErr', '');
     payDialog.querySelectorAll('input[name="payAfter"]').forEach((r) => { r.checked = r.value === value.after; });
     const modes = value.modes || [];
     payDialog.querySelectorAll('input[name="payMode"]').forEach((c) => { c.checked = modes.includes(c.value); });
@@ -622,6 +682,17 @@
   }
 
   payDialog.querySelectorAll('input[name="payAfter"]').forEach((r) => r.addEventListener('change', () => payError('payAfterErr', '')));
+  // the bars follow the choice right away: "existing payment" adds the Select Payment step, "from scratch" removes it
+  payDialog.querySelectorAll('input[name="payHow"]').forEach((r) => r.addEventListener('change', () => {
+    payError('payHowErr', '');
+    if (!payCtx) return;
+    const base = payCtx.steps.filter((s) => s !== 'pick'), hi = base.indexOf('how');
+    payCtx.steps = r.value === 'existing' ? [...base.slice(0, hi + 1), 'pick', ...base.slice(hi + 1)] : base;
+    drawPayBars();
+    payLive.textContent = `Step ${payCtx.at + 1} of ${payCtx.steps.length}.`;   // screen readers hear the new total
+  }));
+  const payLive = el('span', { class: 'sr-only', role: 'status' });
+  payDialog.append(payLive);
   payDialog.querySelectorAll('input[name="payMode"]').forEach((i) =>
     i.addEventListener('change', () => {
       if (payModes().length) payError('payModeErr', '');
@@ -635,9 +706,57 @@
   payConfirm.addEventListener('click', () => {
     const ctx = payCtx;
     if (!ctx) return;
-    if (ctx.steps[ctx.at] === 'after' && !payChecked('payAfter')) {
+    const cur = ctx.steps[ctx.at];
+    if (cur === 'how') {
+      const how = payChecked('payHow');
+      if (!how) { payError('payHowErr', 'Select how you would like to create the payment.'); return payDialog.querySelector('input[name="payHow"]').focus(); }
+      if (how === 'scratch' && ctx.fromPayment) {   // switched back: the fee starts empty again
+        Object.assign(ctx, { fromPayment: '', pick: '', fee: '', method: '', integration: '' });
+        Object.values(payAmounts).forEach((i) => { i.value = ''; }); payHost.value = '';
+        payDialog.querySelectorAll('input[name="payMode"]').forEach((c) => { c.checked = false; });
+      }
+      ctx.how = how;
+      // like "Copy existing notification": using an existing payment adds a Select Payment step after this one
+      const base = ctx.steps.filter((s) => s !== 'pick'), hi = base.indexOf('how');
+      ctx.steps = how === 'existing' ? [...base.slice(0, hi + 1), 'pick', ...base.slice(hi + 1)] : base;
+      ctx.at++;
+      return showPayStep();
+    }
+    if (cur === 'pick') {
+      if (!ctx.sources[Number(ctx.pick)]) {
+        payError('payPickErr', 'Select a payment.');
+        return (payDialog.querySelector('input[name="payPick"]') || $('#paySearch')).focus();
+      }
+      applyPaySource(ctx.pick);
+      ctx.at++;
+      return showPayStep();
+    }
+    if (cur === 'after' && !payChecked('payAfter')) {
       payError('payAfterErr', 'Select what happens when the payment is successful.');
       return payDialog.querySelector('input[name="payAfter"]').focus();
+    }
+    const fee = ctx.fee;
+    const modes = payModes();
+    const calc = fee === 'CALCULATED';
+    const online = modes.includes('ONLINE');
+    // Amounts: a number of 0 or more; the maximum can't be below the minimum.
+    const num = (input) => (input.value === '' || Number(input.value) < 0 ? null : Number(input.value));
+    const [amount, min, max] = [payAmounts.amount, payAmounts.min, payAmounts.max].map(num);
+    // Set Up Payment ('details'): the fee first, then the payment mode below
+    if (cur === 'details') {
+      payError('payFeeErr', fee ? '' : 'Select the fee.');
+      clError(payAmounts.amount, fee === 'FIXED' && amount === null ? 'Enter the fee amount.' : '');
+      clError(payAmounts.min, fee === 'USER' && min === null ? 'Enter the minimum amount.' : '');
+      clError(payAmounts.max, fee !== 'USER' ? '' : max === null ? 'Enter the maximum amount.' : min !== null && max < min ? 'The maximum amount can’t be less than the minimum amount.' : '');
+      clError(payHost, calc && !payHost.value.trim() ? 'Enter the host endpoint.' : '');
+      payError('payMethodErr', calc && !ctx.method ? 'Select the method type.' : '');
+      const badFee = [
+        !fee && $('#payFeeSlot .digit-dropdown-select'),
+        ...Object.values(payAmounts).filter((input) => input.getAttribute('aria-invalid')),
+        calc && !payHost.value.trim() && payHost,
+        calc && !ctx.method && $('#payMethodSlot .digit-dropdown-select'),
+      ].find(Boolean);
+      if (badFee) return badFee.focus();
     }
     if (ctx.at < ctx.steps.length - 1) {
       ctx.at++;
@@ -648,26 +767,10 @@
       payDialog.close();
       return ctx.onSave({ after: payChecked('payAfter') });
     }
-    const fee = ctx.fee;
-    const modes = payModes();
-    const calc = fee === 'CALCULATED';
-    const online = modes.includes('ONLINE');
-    // Amounts: a number of 0 or more; the maximum can't be below the minimum.
-    const num = (input) => (input.value === '' || Number(input.value) < 0 ? null : Number(input.value));
-    const [amount, min, max] = [payAmounts.amount, payAmounts.min, payAmounts.max].map(num);
-    payError('payFeeErr', fee ? '' : 'Select the fee.');
-    clError(payAmounts.amount, fee === 'FIXED' && amount === null ? 'Enter the fee amount.' : '');
-    clError(payAmounts.min, fee === 'USER' && min === null ? 'Enter the minimum amount.' : '');
-    clError(payAmounts.max, fee !== 'USER' ? '' : max === null ? 'Enter the maximum amount.' : min !== null && max < min ? 'The maximum amount can’t be less than the minimum amount.' : '');
-    clError(payHost, calc && !payHost.value.trim() ? 'Enter the host endpoint.' : '');
-    payError('payMethodErr', calc && !ctx.method ? 'Select the method type.' : '');
+    // payment mode + integration (same screen)
     payError('payIntegrationErr', online && !ctx.integration ? 'Select the payment integration.' : '');
     payError('payModeErr', modes.length ? '' : 'Select at least one payment mode.');
     const firstBad = [
-      !fee && $('#payFeeSlot .digit-dropdown-select'),
-      ...Object.values(payAmounts).filter((input) => input.getAttribute('aria-invalid')),
-      calc && !payHost.value.trim() && payHost,
-      calc && !ctx.method && $('#payMethodSlot .digit-dropdown-select'),
       !modes.length && payDialog.querySelector('input[name="payMode"]'),
       online && !ctx.integration && $('#payIntegrationSlot .digit-dropdown-select'),
     ].find(Boolean);
@@ -681,6 +784,7 @@
       ...(calc && { host: payHost.value.trim(), method: ctx.method }),
       modes,
       ...(online && { integration: ctx.integration }),
+      ...(ctx.fromPayment && { fromPayment: ctx.fromPayment }),
     });
   });
   payBack.addEventListener('click', () => {
@@ -2035,6 +2139,7 @@
             return openPayDialog({
               steps: data.items.length ? ['after'] : ['after', 'details'],
               value: { after: data.after },
+              sources: paySources(),
               onSave: ({ after, ...details }) => {
                 data.enabled = true;
                 data.after = after;
@@ -2097,7 +2202,7 @@
                 steps: ['details'],
                 value: item,
                 onSave: ({ after, ...details }) => {
-                  ['fee', 'amount', 'min', 'max', 'host', 'method', 'modes', 'integration'].forEach((k) => delete item[k]);
+                  ['fee', 'amount', 'min', 'max', 'host', 'method', 'modes', 'integration', 'fromPayment'].forEach((k) => delete item[k]);
                   Object.assign(item, details);
                   commit();
                   renderInspector();
@@ -2211,7 +2316,7 @@
     const add = () => {
       // Notifications open the add wizard, payments the payment popup, documents the document popup.
       if (key === 'docs') return addDocument();
-      if (key === 'payment') return openPayDialog({ steps: ['details'], onSave: ({ after, ...details }) => push({ name: uniqueName(), ...details }) });
+      if (key === 'payment') return openPayDialog({ steps: ['details'], sources: paySources(), onSave: ({ after, ...details }) => push({ name: uniqueName(), ...details }) });
       if (!cfg.wizard) return push({ name: uniqueName() });
       const sources = wf.states.flatMap((st) =>
         (st[key]?.items || []).map((item) => ({

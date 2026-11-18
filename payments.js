@@ -88,18 +88,48 @@
         <div class="ntw-body" id="pyw-body">
           <button type="button" class="icon-btn ntw-close" data-close aria-label="Close">${I.close}</button>
           <div class="ntw-bars-wrap" id="pyw-bars-wrap"><span class="sr-only" id="pyw-step-text"></span><span class="ntw-bars" id="pyw-bars" aria-hidden="true"></span></div>
-          <section data-step="after">
-            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-after">Select Next Step After Payment</h2>
-            <p class="ntw-desc">Select what happens when the payment is successful.</p></div>
-            <fieldset class="ntw-options"><legend class="sr-only">Next step after payment</legend>${Object.entries(AFTER).map(([v, [t, d]]) => `
+          <section data-step="how" hidden>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-how">How would you like to create your payment?</h2>
+            <p class="ntw-desc">Pick a starting point for creating your payment.</p></div>
+            <fieldset class="ntw-tiles"><legend class="sr-only">How to create the payment</legend>
+              <label class="ntw-tile"><input type="radio" name="pyw-how" value="existing">
+                <span class="ntw-tile-ico" aria-hidden="true"><svg viewBox="0 -960 960 960" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Zm80-80h400q0-33 23.5-56.5T840-480v-160q-33 0-56.5-23.5T760-720H360q0 33-23.5 56.5T280-640v160q33 0 56.5 23.5T360-400Zm440 240H120q-33 0-56.5-23.5T40-240v-440h80v440h680v80ZM280-400v-320 320Z"/></svg></span>
+                <span class="ntw-tile-title">Use a fee from an existing payment</span><span class="ntw-tile-text">Reuse the fee amount of a payment you already created.</span></label>
+              <label class="ntw-tile"><input type="radio" name="pyw-how" value="scratch">
+                <span class="ntw-tile-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor"/><path d="M12 8v8M8 12h8" fill="none" class="ntw-ico-cut" stroke-width="2" stroke-linecap="round"/></svg></span>
+                <span class="ntw-tile-title">Create from scratch</span><span class="ntw-tile-text">Set up a new fee amount for this payment.</span></label>
+            </fieldset>
+            <p class="error" id="pyw-err-how" hidden>Select how you would like to create the payment.</p>
+          </section>
+          <section data-step="pick" hidden>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-pick">Select Payment</h2>
+            <p class="ntw-desc">Select the payment whose fee you want to use.</p></div>
+            <div class="nt-search ntw-search"><label class="sr-only" for="pyw-q">Search payments</label><input class="input" id="pyw-q" type="search" autocomplete="off" aria-controls="pyw-pick"><span class="rs-ico" aria-hidden="true">${I.search}</span></div>
+            <p class="sr-only" id="pyw-pick-count" role="status"></p>
+            <div class="ntw-pick" id="pyw-pick" role="radiogroup" aria-labelledby="pyw-title-pick" aria-describedby="pyw-err-pick"></div>
+            <p class="ntw-none" id="pyw-pick-none" hidden>No payments match your search.</p>
+            <p class="error" id="pyw-err-pick" hidden>Select a payment.</p>
+          </section>
+          <section data-step="after" hidden>
+            <!-- Studio only: the state is chosen here too (the process flow already knows it, so its step 1 keeps the original title) -->
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-after">Connect Payment to Process Flow</h2>
+            <p class="ntw-desc">Choose the state that collects this payment and what happens once it is paid.</p></div>
+            <div class="pyw-q">
+              <h3 class="pyw-q-label" id="pyw-state-q">Which process flow state is this payment collected at?</h3>
+              <label class="pyw-field-label" for="pyw-state">Process flow state <span class="req" aria-hidden="true">*</span></label>
+              <select class="input" id="pyw-state" data-k="state" aria-describedby="pyw-state-q pyw-err-state"></select>
+              <p class="error" id="pyw-err-state" hidden>Select a process flow state.</p>
+            </div>
+            <hr class="pyw-q-divider">
+            <fieldset class="ntw-options pyw-q"><legend class="pyw-q-label">What happens after the payment is successful? <span class="req" aria-hidden="true">*</span></legend>${Object.entries(AFTER).map(([v, [t, d]]) => `
               <label class="ntw-radio"><input type="radio" name="pyw-after" value="${v}" data-k="after"><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">${t}</span><span class="ntw-rtext">${d}</span></span></label>`).join('')}
             </fieldset>
             <p class="error" id="pyw-err-after" hidden>Select what happens after payment.</p>
           </section>
-          <section data-step="details" hidden>
-            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-details">Set Up Payment</h2>
+          <section data-step="fee" hidden>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-fee">Set Up Payment</h2>
             <p class="ntw-desc">Choose how the fee amount is worked out and how people can pay the fee at this state.</p></div>
-            <div class="ntw-fields pyw-fields" id="pyw-fields"></div>
+            <div class="ntw-fields pyw-fields"><div id="pyw-fields-fee"></div><div id="pyw-fields-pay"></div></div>
           </section>
         </div>
         <div class="ntw-foot">
@@ -174,7 +204,7 @@
   const LINKED = 'This payment is linked to a process flow state. Any change you make here will also be changed in the process flow.';
 
   /* ---------- Editor = process-flow payment popup ----------
-       Step 1 "Select Next Step After Payment" → Step 2 "Set Up Payment". Edit opens on step 2 (no bars).
+       Steps: next step after payment → [how to create →] Set Up Fee → Set Up Payment Mode. Edit opens on Set Up Fee.
        Studio adds Payment name + Process flow state at the top of step 2 (in the process flow the state is known). */
   const dlg = $('py-dialog'); let D = null, opener = null, errs = {};
   const nextName = () => { let k = list.length + 1; while (list.some(x => x.name === `Payment ${k}`)) k++; return `Payment ${k}`; };
@@ -186,9 +216,19 @@
   const rupee = (id, k, ph) => `<div class="pay-amount"><span class="pay-amount__prefix" aria-hidden="true">₹</span><input class="input" id="${id}" type="text" inputmode="decimal" placeholder="${ph}" data-k="${k}" value="${esc(D.draft[k] || '')}" autocomplete="off"${inv(k)}></div>${errP(k)}`;
   function fields() {
     const d = D.draft;
-    let h = `<div class="ntw-box">
-        ${row(lab('pyw-state', 'Process flow state'), `<select class="input" id="pyw-state" data-k="state"${inv('state')}>${opts(STATES.map(x => [x, x]), d.state, 'Select a state')}</select>${errP('state')}`)}
+    let h = '';   // the process flow state is asked on step 1
+    // fee taken from an existing payment: pick the payment here (step 3), then its fee shows read-only;
+    // payment mode + next step stay editable
+    if (d.presetFrom) {
+      // read-only (grey); no note — the fee simply can't be edited
+      const ro = (id, t, v) => row(`<label for="${id}">${t}</label>`, `<input class="input pyw-locked" id="${id}" type="text" value="${esc(v)}" readonly>`);
+      h += `<div class="ntw-box">
+        ${d.presetFrom ? `${ro('pyw-fee', 'Fee', FEES[d.fee])}
+        ${d.fee === 'FIXED' ? ro('pyw-amount', 'Fee amount', money('INR', d.amount || 0)) : ''}
+        ${d.fee === 'USER' ? ro('pyw-min', 'Minimum amount', money('INR', d.min || 0)) + ro('pyw-max', 'Maximum amount', money('INR', d.max || 0)) : ''}
+        ${d.fee === 'CALC' ? ro('pyw-endpoint', 'Host endpoint', d.endpoint) + ro('pyw-method', 'Method type', d.method) : ''}` : ''}
       </div>`;
+    } else
     h += `<div class="ntw-box">
         ${row(`${lab('pyw-fee', 'Fee')}${tipHTML('pyw-tip-fee', 'fee', 'The fee is the amount people pay at this state.')}`, `<select class="input" id="pyw-fee" data-k="fee"${inv('fee')}>${opts(Object.entries(FEES), d.fee, 'Select fee type')}</select>${errP('fee')}`)}
         ${d.fee === 'FIXED' ? row(lab('pyw-amount', 'Fee amount'), rupee('pyw-amount', 'amount', 'Enter fee amount')) : ''}
@@ -199,7 +239,8 @@
               <p class="ntw-info-text">This fee type requires a custom calculator API that follows the DIGIT fee contract.</p>
               <button type="button" class="btn pyw-guide" id="pyw-guide">View Integration Guide</button></div>` : ''}
       </div>`;
-    h += `<div class="ntw-box">
+    $('pyw-fields-fee').innerHTML = h;
+    h = `<div class="ntw-box">
         ${row(`<span id="pyw-mode-l">Payment mode <span class="req" aria-hidden="true">*</span></span>${tipHTML('pyw-tip-mode', 'payment mode', 'The payment mode is how people pay the fee at this state.')}`,
           `<div class="pay-modes" role="group" aria-labelledby="pyw-mode-l" aria-describedby="pyw-err-mode">
             <label class="ntw-radio pyw-check"><input type="checkbox" data-k="online"${d.online ? ' checked' : ''}><span class="ft-box" aria-hidden="true"></span><span><span class="ntw-rlabel">Online payment</span><span class="ntw-rtext">Collect payment through an integrated payment gateway.</span></span></label>
@@ -207,10 +248,14 @@
           </div>${errP('mode')}`)}
         ${d.online ? row(lab('pyw-gw', 'Payment integration'), `<select class="input" id="pyw-gw" data-k="gateway"${inv('gateway')}>${opts(GATEWAYS.map(g => [g, g]), d.gateway, 'Select payment integration')}</select>${errP('gateway')}`) : ''}
       </div>`;
-    $('pyw-fields').innerHTML = h;
-    $('pyw-fields').querySelectorAll('.tip').forEach(t => { const b2 = t.querySelector('.tip-btn');
+    $('pyw-fields-pay').innerHTML = h;
+    dlg.querySelectorAll('.pyw-fields .tip').forEach(t => { const b2 = t.querySelector('.tip-btn');
       b2.addEventListener('click', () => { t.classList.remove('dismissed'); t.classList.toggle('open'); });
       t.addEventListener('mouseleave', () => t.classList.remove('dismissed')); b2.addEventListener('blur', () => t.classList.remove('open', 'dismissed')); });
+  }
+  function drawBars() {
+    $('pyw-bars').innerHTML = D.path.map((_, k) => `<span class="${k <= D.i ? 'on' : ''}"></span>`).join('');
+    $('pyw-step-text').textContent = `Step ${D.i + 1} of ${D.path.length}`;
   }
   function showStep(focus = true) {
     const st = D.path[D.i];
@@ -218,12 +263,20 @@
     dlg.setAttribute('aria-labelledby', 'pyw-title-' + st);
     const bars = D.path.length > 1;
     $('pyw-bars-wrap').hidden = !bars;
-    if (bars) { $('pyw-bars').innerHTML = D.path.map((_, k) => `<span class="${k <= D.i ? 'on' : ''}"></span>`).join(''); $('pyw-step-text').textContent = `Step ${D.i + 1} of ${D.path.length}`; }
+    if (bars) drawBars();
     $('pyw-back').textContent = D.i === 0 ? 'Cancel' : 'Back';
-    $('py-submit').textContent = st === 'details' ? 'Save' : 'Next';
-    if (st === 'after') dlg.querySelectorAll('input[name="pyw-after"]').forEach(r => { r.checked = r.value === D.draft.after; });
-    if (st === 'details') fields();
-    if (focus) (st === 'after' ? (dlg.querySelector('input[name="pyw-after"]:checked') || dlg.querySelector('input[name="pyw-after"]')) : $('pyw-state')).focus();
+    $('py-submit').textContent = D.i === D.path.length - 1 ? 'Save' : 'Next';
+    $('py-submit').disabled = false;
+    if (st === 'how') dlg.querySelectorAll('input[name="pyw-how"]').forEach(r => { r.checked = r.value === D.how; });
+    if (st === 'after') {
+      dlg.querySelectorAll('input[name="pyw-after"]').forEach(r => { r.checked = r.value === D.draft.after; });
+      $('pyw-state').innerHTML = opts(STATES.map(x => [x, x]), D.draft.state, 'Select a state');
+    }
+    if (st === 'pick') { $('pyw-q').value = ''; renderPick(); }
+    if (st === 'fee') fields();
+    const firstOf = n => dlg.querySelector(`input[name="${n}"]:checked`) || dlg.querySelector(`input[name="${n}"]`);
+    if (focus) ({ how: () => firstOf('pyw-how'), after: () => $('pyw-state'), pick: () => firstOf('pyw-pick') || $('pyw-q'),
+      fee: () => (D.draft.presetFrom ? dlg.querySelector('[data-k="online"]') : $('pyw-fee')) })[st]()?.focus();
     $('pyw-body').scrollTop = 0;
   }
   // copy = card Copy: straight to the details, prefilled, named "… (copy)"; nothing is added until Save
@@ -232,17 +285,41 @@
     const blank = { name: nextName(), state: '', fee: '', amount: '', min: '', max: '', endpoint: '', method: '', online: false, gateway: '', offline: false, after: '' };
     const draft = p ? JSON.parse(JSON.stringify(p)) : blank;
     if (copy) { delete draft.id; let n = `${p.name} (copy)`, k = 2; while (list.some(x => x.name === n)) n = `${p.name} (copy ${k++})`; draft.name = n; }
-    D = { edit: copy ? null : p, draft, path: p ? ['details'] : ['after', 'details'], i: 0 };
-    $('pyw-err-after').hidden = true;
+    // Step 1 asks the state + next step (edit too, so the state can be changed). First payment: step 1 → Set Up Payment.
+    // Once payments exist: step 1 → how to create → [Select Payment, when using an existing one] → Set Up Payment.
+    D = { edit: copy ? null : p, draft, path: p ? ['after', 'fee'] : list.length ? ['after', 'how', 'fee'] : ['after', 'fee'], i: 0, how: '', pick: '' };
+    ['after', 'how', 'pick', 'state'].forEach(k => { $('pyw-err-' + k).hidden = true; });
+    $('pyw-state').removeAttribute('aria-invalid');
     dlg.showModal(); showStep();
   }
+  // Select Payment (same as Notifications' Select Notification): search + cards with state (blue) and fee type (amber) tags
+  function renderPick() {
+    const q = $('pyw-q').value.trim().toLowerCase(), shown = list.filter(x => !q || x.name.toLowerCase().includes(q));
+    $('pyw-pick').innerHTML = shown.map(x => `
+      <label class="ntw-pcard"><input type="radio" name="pyw-pick" value="${x.id}"${x.id === D.pick ? ' checked' : ''}>
+        <span class="ntw-pbody"><span class="ntw-ptitle">${esc(x.name)}</span>
+          <span class="ntw-ptags"><span class="nt-tag nt-tag-state">${esc(x.state)}</span><span class="nt-tag nt-tag-type">${FEES[x.fee]}</span></span>
+          <span class="pyw-pfee">Fee amount: ${esc(feeText(x))}</span></span>
+        <span class="ntw-pcheck" aria-hidden="true"></span></label>`).join('');
+    $('pyw-pick-none').hidden = shown.length > 0;
+    $('pyw-pick-count').textContent = q ? `${shown.length} payment${shown.length === 1 ? '' : 's'} found.` : '';
+  }
+  $('pyw-q').addEventListener('input', renderPick);
   $('pyw-back').addEventListener('click', () => { if (D.i === 0) return dlg.close(); D.i--; showStep(); });
   dlg.addEventListener('change', e => {
-    const t = e.target, k = t.dataset.k; if (!k || !D) return;
+    const t = e.target; if (!D) return;
+    if (t.name === 'pyw-how') {   // the bars follow the choice right away: existing payment adds the Select Payment step
+      D.how = t.value; $('pyw-err-how').hidden = true;
+      D.path = D.how === 'existing' ? ['after', 'how', 'pick', 'fee'] : ['after', 'how', 'fee'];
+      drawBars(); S.announce(`Step ${D.i + 1} of ${D.path.length}.`); return;   // screen readers hear the new total
+    }
+    if (t.name === 'pyw-pick') { D.pick = t.value; $('pyw-err-pick').hidden = true; return; }
+    const k = t.dataset.k; if (!k) return;
     D.draft[k] = t.type === 'checkbox' ? t.checked : t.value;
     if (k === 'after') $('pyw-err-after').hidden = true;
+    if (k === 'state') { $('pyw-err-state').hidden = true; t.removeAttribute('aria-invalid'); return; }
     delete errs[k]; if (k === 'online' || k === 'offline') delete errs.mode;
-    if (['fee', 'online', 'offline'].includes(k)) { fields(); $('pyw-fields').querySelector(`[data-k="${k}"]`)?.focus(); }
+    if (['fee', 'online', 'offline'].includes(k)) { fields(); dlg.querySelector(`section:not([hidden]) [data-k="${k}"]`)?.focus(); }
   });
   dlg.addEventListener('input', e => {
     const t = e.target, k = t.dataset.k; if (!k || !D || t.tagName !== 'INPUT' || t.type === 'checkbox' || t.type === 'radio') return;
@@ -254,14 +331,33 @@
   $('py-form').addEventListener('submit', e => {
     e.preventDefault();
     const d = D.draft, st = D.path[D.i];
+    if (st === 'how') {
+      if (!D.how) { $('pyw-err-how').hidden = false; dlg.querySelector('input[name="pyw-how"]').focus(); return; }
+      if (D.how === 'scratch' && d.presetFrom) {   // switched back: the fee starts empty again
+        D.pick = ''; Object.assign(d, { fee: '', amount: '', min: '', max: '', endpoint: '', method: '', online: false, gateway: '', offline: false, presetFrom: '' }); }
+      // like Notifications' "Copy existing": using an existing payment adds a Select Payment step
+      D.path = D.how === 'existing' ? ['after', 'how', 'pick', 'fee'] : ['after', 'how', 'fee'];
+      D.i++; return showStep();
+    }
+    if (st === 'pick') {
+      const src = list.find(x => x.id === D.pick);
+      if (!src) { $('pyw-err-pick').hidden = false; (dlg.querySelector('input[name="pyw-pick"]') || $('pyw-q')).focus(); return; }
+      // the fee is fetched and locked; payment mode + integration start from it but stay editable
+      ['fee', 'amount', 'min', 'max', 'endpoint', 'method', 'online', 'gateway', 'offline'].forEach(k => { d[k] = src[k]; });
+      d.presetFrom = src.name;
+      D.i++; return showStep();
+    }
     if (st === 'after') {
-      if (!d.after) { $('pyw-err-after').hidden = false; dlg.querySelector('input[name="pyw-after"]').focus(); return; }
+      $('pyw-err-state').hidden = !!d.state; $('pyw-state').toggleAttribute('aria-invalid', !d.state);
+      $('pyw-err-after').hidden = !!d.after;
+      if (!d.state) return $('pyw-state').focus();
+      if (!d.after) return dlg.querySelector('input[name="pyw-after"]').focus();
       D.i++; return showStep();
     }
     errs = {};
     // No name field (same as the process flow): new payments are called "Payment N"
     const nm = d.name || nextName();
-    if (!d.state) errs.state = 'Select a process flow state.';
+    // Set Up Payment: fee + payment mode on one screen
     if (!d.fee) errs.fee = 'Select the fee type.';
     if (d.fee === 'FIXED' && !(+d.amount > 0)) errs.amount = 'Enter the fee amount.';
     if (d.fee === 'USER') { if (d.min === '') errs.min = 'Enter the minimum amount.'; if (!(+d.max > 0)) errs.max = 'Enter the maximum amount.'; else if (+d.max < +d.min) errs.max = 'The maximum amount must be more than the minimum amount.'; }
@@ -270,8 +366,8 @@
     if (d.online && !d.gateway) errs.gateway = 'Select the payment integration.';
     if (Object.keys(errs).length) {
       fields();
-      const k = ['state', 'fee', 'amount', 'min', 'max', 'endpoint', 'method', 'mode', 'gateway'].find(x => errs[x]);
-      $('pyw-fields').querySelector(k === 'mode' ? '[data-k="online"]' : `[data-k="${k}"]`)?.focus();
+      const k = ['fee', 'amount', 'min', 'max', 'endpoint', 'method', 'mode', 'gateway'].find(x => errs[x]);
+      dlg.querySelector(`section:not([hidden]) ${k === 'mode' ? '[data-k="online"]' : `[data-k="${k}"]`}`)?.focus();
       return;
     }
     d.name = nm;

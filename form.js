@@ -493,7 +493,7 @@
     const items = (L.dep.items || (L.dep.items = [])).map((it, i) => (L.dep.items[i] = typeof it === 'string' ? { name: it, conds: [] } : it));
     html += box(`<div class="fpp-box-head"><h3 class="fpp-box-title">Dependent Field</h3>${sw('dep', L.dep.on, 'Dependent Field', !!f.required, 'This field is required, so every applicant must see it. Turn off Required to show it only to some applicants.')}</div>
       ${L.dep.on ? `<div class="dl-card">
-        <h4 class="dl-title fpp-with-tip" id="dl-title">Display Logic ${tip('tip-dl', 'display logic', 'Display logic decides when this field is shown to applicants, based on their answers to other fields.')}</h4>
+        <h4 class="dl-title fpp-with-tip" id="dl-title">Display Logic ${tip('tip-dl', 'display logic', 'Display logic decides when this field is shown or hidden for applicants, based on their answers to other fields.')}</h4>
         ${items.length ? `<ul class="dl-list" aria-labelledby="dl-title">${items.map((it, i) => `
           <li class="dl-item">
             <span class="dl-name">${esc(it.name)}</span>
@@ -621,7 +621,7 @@
     const el = $('dl-edit'); if (!el || editLogic < 0) return;
     const f = curField(), i = editLogic, v = el.value.trim();
     editLogic = -1;
-    if (save && v && f) { f.logic.dep.items[i] = v; S.saveModules(); }
+    if (save && v && f) { const it = f.logic.dep.items[i]; if (typeof it === 'object' && it) it.name = v; else f.logic.dep.items[i] = { name: v, conds: [] }; S.saveModules(); }   /* keep the conditions + show/hide when renaming */
     renderFieldProps(`[data-act="editLogic"][data-i="${i}"]`);
   }
   $('field-props').addEventListener('keydown', e => {
@@ -767,7 +767,7 @@
     return `<div class="lg-field">
       <label class="lg-label" for="${id}">${label}</label>
       <select class="pf-input pf-select lg-select${cur ? '' : ' is-ph'}" id="${id}" data-k="${key}" data-i="${i}"${err ? ' aria-invalid="true"' : ''}>
-        <option value="">Choose a field</option>${groups}
+        <option value="">Field name</option>${groups}
       </select></div>`;
   }
   function selectHTML(id, label, placeholder, options, cur, key, i, err) {
@@ -783,53 +783,62 @@
     const fieldsOf = pid => (secById(pid)?.fields || []).filter(x => x.id !== lg.f.id).map(x => ({ v: x.id, t: x.label }));
     const src = fieldOf(c.page, c.field);
     const choices = src && src.type === 'dropdown' && src.options?.source === 'manual' ? src.options.items.filter(x => x.trim()) : null;
+    // one row: If → Field | Operator | Value
     let html = `<div class="lg-cond" role="group" aria-label="Condition ${i + 1}">
       <div class="lg-cond-head"><span class="lg-if">If</span>
         ${n > 1 ? `<button type="button" class="lg-del" data-del="${i}">${ICON.trash} Delete Condition</button>` : ''}</div>
-      ${fieldSelectHTML(`lg-field-${i}`, 'Field', c.field, 'field', i, err.field)}
-      ${selectHTML(`lg-op-${i}`, 'Operator', 'Choose an operator for comparison', OPS.map(o => ({ v: o.v, t: o.t })), c.op, 'op', i, err.op)}
-      <div class="lg-modes" role="radiogroup" aria-label="Compare with">
-        <label class="lg-mode${c.mode === 'value' ? ' is-on' : ''}"><input type="radio" name="lg-mode-${i}" value="value" data-k="mode" data-i="${i}"${c.mode === 'value' ? ' checked' : ''}>
-          <span class="rc-dot" aria-hidden="true"></span><span><strong>Enter Value</strong><small>Enter a number or text, or choose a value from the options</small></span></label>
-        <label class="lg-mode${c.mode === 'field' ? ' is-on' : ''}"><input type="radio" name="lg-mode-${i}" value="field" data-k="mode" data-i="${i}"${c.mode === 'field' ? ' checked' : ''}>
-          <span class="rc-dot" aria-hidden="true"></span><span><strong>Use Another Field</strong><small>Compare with an existing field in the form</small></span></label>
+      <div class="lg-three">
+        ${fieldSelectHTML(`lg-field-${i}`, 'Field', c.field, 'field', i, err.field)}
+        ${selectHTML(`lg-op-${i}`, 'Operator', 'Select operator', OPS.map(o => ({ v: o.v, t: o.t })), c.op, 'op', i, err.op)}
+        ${choices
+          ? selectHTML(`lg-val-${i}`, 'Value', 'Select value', choices.map(x => ({ v: x, t: x })), c.value, 'value', i, err.value)
+          : `<div class="lg-field"><label class="lg-label" for="lg-val-${i}">Value</label>
+              <input class="pf-input" id="lg-val-${i}" type="text" value="${esc(c.value)}" data-k="value" data-i="${i}"${err.value ? ' aria-invalid="true"' : ''} autocomplete="off"></div>`}
       </div>`;
-    if (c.mode === 'value') {
-      html += choices
-        ? `<div class="lg-narrow">${selectHTML(`lg-val-${i}`, 'Value', 'Choose a value', choices.map(x => ({ v: x, t: x })), c.value, 'value', i, err.value)}</div>`
-        : `<div class="lg-field lg-narrow"><label class="lg-label" for="lg-val-${i}">Enter Value</label>
-            <input class="pf-input" id="lg-val-${i}" type="text" placeholder="Value" value="${esc(c.value)}" data-k="value" data-i="${i}"${err.value ? ' aria-invalid="true"' : ''} autocomplete="off"></div>`;
-    } else {
-      html += fieldSelectHTML(`lg-field2-${i}`, 'Compare with field', c.field2, 'field2', i, err.field2);
-    }
     if (Object.keys(err).length) html += `<p class="fp-error" id="lg-err-${i}">Complete every part of this condition.</p>`;
+    if (i === n - 1) html += actionHTML();   // "Then" sits in the same grey box, after the last condition
     return html + `</div>`;
   }
+  // what happens to this field when the conditions are met
+  function actionHTML() {
+    const a = lg.action, card = (v, t, d) => `<label class="lg-mode${a === v ? ' is-on' : ''}"><input type="radio" name="lg-action" value="${v}" data-k="action"${a === v ? ' checked' : ''}>
+      <span class="rc-dot" aria-hidden="true"></span><span><strong>${t}</strong><small>${d}</small></span></label>`;
+    return `<fieldset class="lg-actions"><legend class="lg-if">Then</legend><div class="lg-modes">
+      ${card('show', 'Show this field', 'The field appears when the conditions are met.')}
+      ${card('hide', 'Hide this field', 'The field is hidden when the conditions are met.')}
+    </div></fieldset>`;
+  }
   function summaryHTML() {
-    const done = lg.conds.filter(c => c.field && c.op && (c.mode === 'value' ? c.value : c.field2));
+    const done = lg.conds.filter(c => c.field && c.op && c.value);
     if (!done.length) return '';
     const tag = t => `<span class="lg-tag">${esc(t)}</span>`;
     return `<div class="lg-summary" aria-label="Summary">
-      ${done.map((c, i) => `${i ? '<p class="lg-and-s">And</p>' : ''}<p class="lg-sum-row"><span class="lg-if-s">If</span> ${tag(fieldById(c.field)?.label || '')}
-        ${OPS.find(o => o.v === c.op).s} ${c.mode === 'value' ? tag(c.value) : tag(fieldById(c.field2)?.label || '')}</p>`).join('')}
-      <p class="lg-sum-row lg-then">Then show ${tag(lg.f.label)}</p>
+      ${done.map((c, i) => `${i ? `<p class="lg-and-s">${lg.join === 'or' ? 'Or' : 'And'}</p>` : ''}<p class="lg-sum-row"><span class="lg-if-s">If</span> ${tag(fieldById(c.field)?.label || '')}
+        ${OPS.find(o => o.v === c.op).s} ${tag(c.value)}</p>`).join('')}
+      <p class="lg-sum-row lg-then">Then ${lg.action === 'hide' ? 'hide' : 'show'} ${tag(lg.f.label)}</p>
     </div>`;
   }
+  // order (user): grey box with If (Field | Operator | Value) and Then (Show / Hide this field) → Add Condition
   function renderLogic(focusSel) {
-    $('lg-body').innerHTML = lg.conds.map((c, i) => (i ? '<p class="lg-and" aria-hidden="true">And</p>' : '') + condHTML(c, i, lg.conds.length)).join('')
+    // And | Or switch between conditions (one choice for the whole logic; every switch shows it)
+    const joinHTML = i => `<div class="lg-join" role="radiogroup" aria-label="Join condition ${i} and ${i + 1} with">${['and', 'or'].map(j =>
+      `<button type="button" role="radio" class="lg-join-b" data-join="${j}" aria-checked="${lg.join === j}" tabindex="${lg.join === j ? 0 : -1}">${j === 'and' ? 'And' : 'Or'}</button>`).join('')}</div>`;
+    $('lg-body').innerHTML = lg.conds.map((c, i) => (i ? joinHTML(i) : '') + condHTML(c, i, lg.conds.length)).join('')
       + `<button type="button" class="btn btn-secondary lg-add" id="lg-add">${ICON.plus} Add Condition</button>` + summaryHTML();
     if (focusSel) $('logic-dialog').querySelector(focusSel)?.focus();
   }
   function openLogicDialog(f, index, opener) {
     const item = index >= 0 ? f.logic.dep.items[index] : null;
-    lg = { f, index, opener, errors: [], conds: item && item.conds.length ? JSON.parse(JSON.stringify(item.conds)) : [blankCond()] };
-    lg.conds.forEach(c => { if (!c.page) c.page = form.sections[active].id; });
+    lg = { f, index, opener, errors: [], action: (item && item.action) || 'show', join: (item && item.join) || 'and', conds: item && item.conds.length ? JSON.parse(JSON.stringify(item.conds)) : [blankCond()] };
+    // older conditions that compared with another field now compare with a typed value
+    lg.conds.forEach(c => { if (!c.page) c.page = form.sections[active].id; if (c.mode === 'field') { c.mode = 'value'; c.value = c.value || ''; c.field2 = ''; } });
     renderLogic();
     $('logic-dialog').showModal();
     $('lg-field-0')?.focus();
   }
   $('lg-body').addEventListener('change', e => {
     const k = e.target.dataset.k; if (!k || !lg) return;
+    if (k === 'action') { lg.action = e.target.value; renderLogic(`input[name="lg-action"][value="${lg.action}"]`); return; }
     const i = +e.target.dataset.i, c = lg.conds[i];
     c[k] = e.target.value;
     if (k === 'page') { c.field = ''; c.value = ''; }
@@ -839,6 +848,11 @@
     renderLogic(`#${e.target.id}` + (k === 'mode' ? `, input[name="lg-mode-${i}"][value="${c.mode}"]` : ''));
     if (k === 'mode') $('logic-dialog').querySelector(`input[name="lg-mode-${i}"][value="${c.mode}"]`)?.focus();
   });
+  // arrow keys move between And / Or (radio group)
+  $('lg-body').addEventListener('keydown', e => {
+    const jb = e.target.closest('[data-join]'); if (!jb || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+    e.preventDefault(); jb.parentElement.querySelector(`[data-join="${jb.dataset.join === 'and' ? 'or' : 'and'}"]`).click();
+  });
   $('lg-body').addEventListener('input', e => {
     if (e.target.dataset.k !== 'value' || e.target.tagName !== 'INPUT' || !lg) return;
     lg.conds[+e.target.dataset.i].value = e.target.value;
@@ -847,6 +861,10 @@
     if (e.target.dataset.k === 'value' && e.target.tagName === 'INPUT') { const id = e.relatedTarget?.id; renderLogic(id ? `#${id}` : null); }
   });
   $('lg-body').addEventListener('click', e => {
+    const jb = e.target.closest('[data-join]');
+    if (jb) { const g = [...$('lg-body').querySelectorAll('.lg-join')].indexOf(jb.parentElement); lg.join = jb.dataset.join;
+      renderLogic(); $('lg-body').querySelectorAll('.lg-join')[g]?.querySelector(`[data-join="${lg.join}"]`)?.focus();
+      S.announce(`Conditions joined with ${lg.join === 'or' ? 'Or: any condition can be met' : 'And: all conditions must be met'}.`); return; }
     if (e.target.closest('#lg-add')) { lg.conds.push({ ...blankCond(), page: form.sections[active].id }); renderLogic(`#lg-field-${lg.conds.length - 1}`); S.announce(`Condition ${lg.conds.length} added.`); return; }
     const d = e.target.closest('[data-del]');
     if (d) { const i = +d.dataset.del; lg.conds.splice(i, 1); lg.errors.splice(i, 1); renderLogic(`#lg-field-${Math.max(0, i - 1)}`); S.announce(`Condition ${i + 1} deleted.`); }
@@ -856,8 +874,7 @@
     lg.errors = lg.conds.map(c => {
       const er = {};
       ['field', 'op'].forEach(k => { if (!c[k]) er[k] = 1; });
-      if (c.mode === 'value' && !String(c.value).trim()) er.value = 1;
-      if (c.mode === 'field' && !c.field2) er.field2 = 1;
+      if (!String(c.value).trim()) er.value = 1;
       return er;
     });
     const bad = lg.errors.findIndex(er => Object.keys(er).length);
@@ -869,8 +886,8 @@
       return;
     }
     const items = lg.f.logic.dep.items;
-    if (lg.index >= 0) items[lg.index].conds = lg.conds;
-    else items.push({ name: `Logic ${items.length + 1}`, conds: lg.conds });
+    if (lg.index >= 0) Object.assign(items[lg.index], { conds: lg.conds, action: lg.action, join: lg.join });
+    else items.push({ name: `Logic ${items.length + 1}`, conds: lg.conds, action: lg.action, join: lg.join });
     const name = lg.index >= 0 ? items[lg.index].name : items[items.length - 1].name;
     S.saveModules();
     lg.saved = true;

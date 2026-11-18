@@ -324,6 +324,11 @@
         <div class="db-bar" role="toolbar" aria-label="Dashboard tools">
           <p class="db-stats" id="db-stats" aria-live="polite"></p>
         </div>
+        <div class="db-sample" role="note" aria-labelledby="db-sample-t">
+          <p class="db-sample-t" id="db-sample-t"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M12 10.5v6M12 7.2v.1" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>Info</p>
+          <p class="db-sample-d">This dashboard uses sample data, so you can see how each visualisation will look.</p>
+          <button type="button" class="btn db-sample-btn" id="db-sample-open">View Sample Data</button>
+        </div>
         <div class="db-head">
           <h2 class="db-prev-title">Preview Dashboard</h2>
           <p class="db-desc" id="db-desc"></p>
@@ -383,6 +388,16 @@
         <div class="vd-head"><h2 class="dc-vd-title" id="db-kb-t"><span class="dc-vd-ico" aria-hidden="true">${I.kb}</span><span>Keyboard Shortcuts</span></h2>
         <p class="dc-vd-desc" id="db-kb-d">Everything you can do with a mouse, you can also do with these keys. On a Mac, use Cmd instead of Ctrl.</p></div>
         <div class="db-kb-body" tabindex="0" role="region" aria-label="Shortcut list"><h3 class="db-kb-h">Anywhere on this page</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>Ctrl + /</kbd></td><td>Show these keyboard shortcuts</td></tr><tr><td><kbd>Ctrl + S</kbd></td><td>Save the dashboard</td></tr><tr><td><kbd>Ctrl + Z</kbd></td><td>Undo the last change</td></tr><tr><td><kbd>Ctrl + Y or Ctrl + Shift + Z</kbd></td><td>Redo</td></tr><tr><td><kbd>F6 / Shift + F6</kbd></td><td>Go to the next / previous area: Visualisations panel, dashboard, properties panel</td></tr><tr><td><kbd>Esc</kbd></td><td>Close Item Properties, or leave Preview Dashboard</td></tr></tbody></table><h3 class="db-kb-h">Visualisations (left)</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>↑ / ↓</kbd></td><td>Go to the previous / next visualisation</td></tr><tr><td><kbd>Enter or Space</kbd></td><td>Add the visualisation at the end of the dashboard</td></tr></tbody></table><h3 class="db-kb-h">A visualisation on the dashboard</h3><table class="db-kb-table"><thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><kbd>← → ↑ ↓</kbd></td><td>Go to the previous / next visualisation</td></tr><tr><td><kbd>Home / End</kbd></td><td>Go to the first / last visualisation</td></tr><tr><td><kbd>Enter or Space</kbd></td><td>Select it and open its properties</td></tr><tr><td><kbd>Ctrl + ← / Ctrl + →</kbd></td><td>Move it left / right (swaps with the visualisation next to it)</td></tr><tr><td><kbd>Ctrl + ↑ / Ctrl + ↓</kbd></td><td>Move it up / down a row</td></tr><tr><td><kbd>Ctrl + Shift + → / ←</kbd></td><td>Make it wider / narrower</td></tr><tr><td><kbd>Ctrl + Shift + ↑ / ↓</kbd></td><td>Make a chart shorter / taller</td></tr><tr><td><kbd>Ctrl + D</kbd></td><td>Copy it</td></tr><tr><td><kbd>Delete</kbd></td><td>Delete it</td></tr></tbody></table></div>
+        <div class="dc-vd-actions"><button type="button" class="btn btn-primary" data-close>Close</button></div>
+      </div>
+    </dialog>
+
+    <dialog class="modal dc-vd db-kb-dlg db-sd-dlg" id="db-sd-dlg" aria-labelledby="db-sd-t" aria-describedby="db-sd-d">
+      <div class="db-kb-in">
+        <button type="button" class="icon-btn dc-vd-close" data-close aria-label="Close">${I.close}</button>
+        <div class="vd-head"><h2 class="dc-vd-title" id="db-sd-t">Sample Data</h2>
+        <p class="dc-vd-desc" id="db-sd-d">These are example application records. The visualisations on this dashboard are worked out from data like this.</p></div>
+        <div class="db-kb-body db-sd-body" tabindex="0" role="region" aria-label="Sample application records" id="db-sd-body"></div>
         <div class="dc-vd-actions"><button type="button" class="btn btn-primary" data-close>Close</button></div>
       </div>
     </dialog>
@@ -854,6 +869,27 @@
   kbDlg.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => kbDlg.close()));
   kbDlg.addEventListener('click', e => { if (e.target === kbDlg) kbDlg.close(); });
   kbDlg.addEventListener('close', () => { kbBack && document.contains(kbBack) && kbBack.focus(); });
+  /* ---------- Sample data popup (Info card under the stats bar; hidden in Preview Dashboard) ---------- */
+  const sdDlg = $('db-sd-dlg'); let sdBack = null;
+  function sampleRows() {
+    const r = rnd(hash('sample-records')), pick = a => a[Math.floor(r() * a.length)];
+    const mods = ['Application', 'Renewal', 'Amendment'], st = BY.status[1];
+    return Array.from({ length: 20 }, (_, i) => {
+      const status = pick(st), done = status === 'Approved' || status === 'Rejected';
+      return [`BL-2026-${String(1041 + i * 7).padStart(5, '0')}`, pick(mods), pick(BY.ward[1]), pick(BY.channel[1]), status,
+        '₹' + (Math.round((300 + r() * 1700) / 50) * 50).toLocaleString('en-IN'), done ? String(Math.round(3 + r() * 10)) : '-', pick(BY.month[1])];
+    });
+  }
+  $('db-sample-open').addEventListener('click', () => {
+    const head = ['Application number', 'Module', 'Ward', 'Channel', 'Workflow status', 'Fee paid', 'Days to approve', 'Month submitted'];
+    $('db-sd-body').innerHTML = `<table class="db-kb-table db-sd-table"><thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead>
+      <tbody>${sampleRows().map(row => `<tr>${row.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+    sdBack = document.activeElement; sdDlg.showModal(); sdDlg.querySelector('[data-close]').focus();
+  });
+  sdDlg.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => sdDlg.close()));
+  sdDlg.addEventListener('click', e => { if (e.target === sdDlg) sdDlg.close(); });
+  sdDlg.addEventListener('close', () => { sdBack && document.contains(sdBack) && sdBack.focus(); });
+
   const ORDER = [3, 4, 6, 8, 12];
   // On a visualisation (its title button)
   grid.addEventListener('keydown', e => {

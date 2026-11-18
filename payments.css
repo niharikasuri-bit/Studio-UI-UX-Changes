@@ -50,3 +50,23 @@
 /* Fee amount: first in the details row and a step larger so it stands out */
 .py-facts .py-fact-amount dd { }   /* same size and weight as the other values */
 .py-facts div { justify-content: flex-start; }
+
+/* Fee preset (2026-11-18): read-only fee fetched from an existing payment */
+.pyw-locked, .pyw-locked:hover { background: #F5F5F5; border-color: #D6D5D4; color: #363636; cursor: default; }   /* 11:1 */
+.pyw-locked:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.pyw-lock { margin-bottom: 0; }
+.pyw-lock .ntw-info-text { display: flex; align-items: flex-start; gap: 8px; margin: 0; }
+.pyw-lock .ntw-info-text svg { flex: none; margin-top: 1px; color: #0057BD; }
+.pyw-pfee { display: block; margin-top: 8px; font-size: 14px; color: #505A5F; }
+/* Step 1 (Studio): two separate questions — which state, then what happens after payment — split by a divider */
+.pyw-q { display: flex; flex-direction: column; gap: 4px; margin: 0; }
+.pyw-q-label { padding: 0; margin-bottom: 8px; font-size: 16px; font-weight: 700; color: #0B4B66; }
+.pyw-q-divider { margin: 24px 0; border: 0; border-top: 1px solid #D6D5D4; }
+#pyw-fields-fee, #pyw-fields-pay { display: contents; }   /* fee + payment mode boxes on one screen, normal spacing */
+/* How would you like to create your payment? — square-ish tiles like the document / SMS-Email tiles: fixed width, title on one line, text wraps */
+.pyw .ntw-tile { flex: 0 1 300px; min-height: 180px; justify-content: flex-start; }
+.pyw .ntw-tile-title { white-space: nowrap; }
+.ntw-head + .pyw-q { margin-top: 24px; }
+/* box heading (blue question) → dark input label → field */
+.pyw-q h3.pyw-q-label { margin: 0 0 12px; }
+.pyw-field-label { font-size: 16px; color: #0B0C0C; }
