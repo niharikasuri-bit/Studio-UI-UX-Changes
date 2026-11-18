@@ -89,17 +89,17 @@
           <button type="button" class="icon-btn ntw-close" data-close aria-label="Close">${I.close}</button>
           <div class="ntw-bars-wrap" id="pyw-bars-wrap"><span class="sr-only" id="pyw-step-text"></span><span class="ntw-bars" id="pyw-bars" aria-hidden="true"></span></div>
           <section data-step="how" hidden>
-            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-how">How would you like to create your payment?</h2>
-            <p class="ntw-desc">Pick a starting point for creating your payment.</p></div>
-            <fieldset class="ntw-tiles"><legend class="sr-only">How to create the payment</legend>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-how">How would you like to create your fee?</h2>
+            <p class="ntw-desc">Pick a starting point for creating your fee.</p></div>
+            <fieldset class="ntw-tiles"><legend class="sr-only">How to create the fee</legend>
               <label class="ntw-tile"><input type="radio" name="pyw-how" value="existing">
                 <span class="ntw-tile-ico" aria-hidden="true"><svg viewBox="0 -960 960 960" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Zm80-80h400q0-33 23.5-56.5T840-480v-160q-33 0-56.5-23.5T760-720H360q0 33-23.5 56.5T280-640v160q33 0 56.5 23.5T360-400Zm440 240H120q-33 0-56.5-23.5T40-240v-440h80v440h680v80ZM280-400v-320 320Z"/></svg></span>
                 <span class="ntw-tile-title">Use a fee from an existing payment</span><span class="ntw-tile-text">Reuse the fee amount of a payment you already created.</span></label>
               <label class="ntw-tile"><input type="radio" name="pyw-how" value="scratch">
                 <span class="ntw-tile-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor"/><path d="M12 8v8M8 12h8" fill="none" class="ntw-ico-cut" stroke-width="2" stroke-linecap="round"/></svg></span>
-                <span class="ntw-tile-title">Create from scratch</span><span class="ntw-tile-text">Set up a new fee amount for this payment.</span></label>
+                <span class="ntw-tile-title">Create from scratch</span><span class="ntw-tile-text">Set up a new fee amount and payment mode for this payment.</span></label>
             </fieldset>
-            <p class="error" id="pyw-err-how" hidden>Select how you would like to create the payment.</p>
+            <p class="error" id="pyw-err-how" hidden>Select how you would like to create the fee.</p>
           </section>
           <section data-step="pick" hidden>
             <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-pick">Select Payment</h2>
@@ -114,17 +114,23 @@
             <!-- Studio only: the state is chosen here too (the process flow already knows it, so its step 1 keeps the original title) -->
             <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-after">Connect Payment to Process Flow</h2>
             <p class="ntw-desc">Choose the state that collects this payment and what happens once it is paid.</p></div>
-            <div class="pyw-q">
-              <h3 class="pyw-q-label" id="pyw-state-q">Which process flow state is this payment collected at?</h3>
-              <label class="pyw-field-label" for="pyw-state">Process flow state <span class="req" aria-hidden="true">*</span></label>
-              <select class="input" id="pyw-state" data-k="state" aria-describedby="pyw-state-q pyw-err-state"></select>
-              <p class="error" id="pyw-err-state" hidden>Select a process flow state.</p>
+            <!-- same left/right grey boxes as Set Up Payment -->
+            <div class="ntw-fields pyw-fields">
+              <div class="ntw-box"><div class="ntw-row">
+                <div class="ntw-label pyw-lab"><label for="pyw-state">Process flow state&nbsp;<span class="req" aria-hidden="true">*</span></label></div>
+                <div class="ntw-control"><select class="input" id="pyw-state" data-k="state" aria-describedby="pyw-err-state"></select>
+                  <p class="error" id="pyw-err-state" hidden>Select a process flow state.</p></div>
+              </div></div>
+              <div class="ntw-box"><div class="ntw-row">
+                <div class="ntw-label pyw-lab"><span id="pyw-after-l">Next step after payment&nbsp;<span class="req" aria-hidden="true">*</span></span></div>
+                <div class="ntw-control">
+                  <div class="pay-modes" role="radiogroup" aria-labelledby="pyw-after-l" aria-describedby="pyw-err-after">${Object.entries(AFTER).map(([v, [t, d]]) => `
+                    <label class="ntw-radio"><input type="radio" name="pyw-after" value="${v}" data-k="after"><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">${t}</span><span class="ntw-rtext">${d}</span></span></label>`).join('')}
+                  </div>
+                  <p class="error" id="pyw-err-after" hidden>Select what happens after payment.</p>
+                </div>
+              </div></div>
             </div>
-            <hr class="pyw-q-divider">
-            <fieldset class="ntw-options pyw-q"><legend class="pyw-q-label">What happens after the payment is successful? <span class="req" aria-hidden="true">*</span></legend>${Object.entries(AFTER).map(([v, [t, d]]) => `
-              <label class="ntw-radio"><input type="radio" name="pyw-after" value="${v}" data-k="after"><span class="ntw-rdot" aria-hidden="true"></span><span><span class="ntw-rlabel">${t}</span><span class="ntw-rtext">${d}</span></span></label>`).join('')}
-            </fieldset>
-            <p class="error" id="pyw-err-after" hidden>Select what happens after payment.</p>
           </section>
           <section data-step="fee" hidden>
             <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-fee">Set Up Payment</h2>

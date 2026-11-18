@@ -658,7 +658,7 @@
 
   /** value: { after, fee, amount, min, max, host, method, modes, integration, fromPayment }; steps: ['after', 'details'] or ['details'].
       sources: payments already in this process flow — when there are any, a new payment first asks
-      "How would you like to create your payment?" (use a fee from an existing payment / create from scratch). */
+      "How would you like to create your fee?" (use a fee from an existing payment / create from scratch). */
   function openPayDialog({ steps, value = {}, onSave, sources = [] }) {
     // [next step after payment →] [how to create → [Select Payment →]] Set Up Payment (fee + payment mode)
     const isNew = steps.includes('details') && !value.fee;
@@ -709,7 +709,7 @@
     const cur = ctx.steps[ctx.at];
     if (cur === 'how') {
       const how = payChecked('payHow');
-      if (!how) { payError('payHowErr', 'Select how you would like to create the payment.'); return payDialog.querySelector('input[name="payHow"]').focus(); }
+      if (!how) { payError('payHowErr', 'Select how you would like to create the fee.'); return payDialog.querySelector('input[name="payHow"]').focus(); }
       if (how === 'scratch' && ctx.fromPayment) {   // switched back: the fee starts empty again
         Object.assign(ctx, { fromPayment: '', pick: '', fee: '', method: '', integration: '' });
         Object.values(payAmounts).forEach((i) => { i.value = ''; }); payHost.value = '';
