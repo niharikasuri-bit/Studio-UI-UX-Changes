@@ -433,7 +433,7 @@
     updateCount();
   }
 
-  function chooseAdd({ key, sources, stateName, uniqueName, onSave, edit }) {
+  function chooseAdd({ key, sources, stateName, uniqueName, onSave, edit, view }) {
     const wiz = ADD_WIZARDS[key];
     const noun = wiz.noun;
     const n = noun.toLowerCase();
@@ -486,6 +486,7 @@
     }
     addDialog.showModal();
     showAddStep();
+    if (view) setViewMode(addDialog, wiz.noun);
   }
 
   addConfirm.addEventListener('click', () => {
@@ -526,7 +527,52 @@
   });
   addDialog.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => addDialog.close()));
   addDialog.addEventListener('click', (e) => { if (e.target === addDialog) addDialog.close(); });
-  addDialog.addEventListener('close', () => { addCtx = null; });
+  addDialog.addEventListener('close', () => { addCtx = null; setViewMode(addDialog, null); });
+
+  /* View only. Items are edited in their own Studio dashboard, so the process flow opens them read-only:
+     every field is locked and the footer asks "Want to make changes to this <item>?" + Go to <Item> Dashboard. */
+  const DASH_SUB = { Payment: 'payments', Notification: 'notifications', Checklist: 'checklists', Document: 'documents' };
+  function goDashboard(noun) {
+    const target = window.top !== window ? window.top : window;
+    target.location.href = new URL(`${MODULE_DASHBOARD}/${DASH_SUB[noun]}`, location.href).href;
+  }
+  const viewLocked = new WeakMap();   // dialog -> controls this view disabled (re-enabled on close)
+  function setViewMode(dialog, noun) {
+    const foot = dialog.querySelector(':scope > .modal__foot');
+    let ask = foot.querySelector('.view-ask'), link = foot.querySelector('.view-link');
+    if (!ask) {
+      ask = el('p', { class: 'view-ask' });
+      link = el('button', { type: 'button', class: 'btn btn--secondary view-link', onClick: () => { const n = link.dataset.noun; dialog.close(); goDashboard(n); } },
+        el('span'), icon('M5 12h14M13 6l6 6-6 6', 18));
+      foot.prepend(ask, link);
+    }
+    (viewLocked.get(dialog) || []).forEach((c) => { c.disabled = false; });
+    viewLocked.delete(dialog);
+    dialog.classList.toggle('is-view', !!noun);
+    ask.hidden = link.hidden = !noun;
+    if (!noun) return;
+    ask.textContent = `Want to make changes to this ${noun.toLowerCase()}?`;
+    link.firstChild.textContent = `Go to ${noun} Dashboard`;
+    link.dataset.noun = noun;
+    const body = dialog.querySelector('.add-choice__body');
+    const locked = [...body.querySelectorAll('input, textarea, select, button')].filter((c) => !c.matches('[data-close]') && !c.disabled);
+    locked.forEach((c) => { c.disabled = true; });
+    viewLocked.set(dialog, locked);
+    dialog.querySelector('.add-choice__close')?.focus();
+  }
+  // Documents have no details popup here: a small read-only one
+  const viewDialog = $('#viewDialog');
+  function openViewDialog({ title, noun, rows }) {
+    $('#viewTitle').textContent = title;
+    $('#viewRows').replaceChildren(...rows.map(([label, value], i) => el('div', { class: 'nf-row' },
+      el('div', { class: 'digit-label-row' }, el('label', { class: 'digit-label', for: `viewF${i}` }, label)),
+      el('div', { class: 'nf-control' }, el('div', { class: 'digit-text-input-field' },
+        el('input', { class: 'digit-employeeCard-input', id: `viewF${i}`, type: 'text', value, readOnly: true }))))));
+    viewDialog.showModal();
+    setViewMode(viewDialog, noun);
+  }
+  viewDialog.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => viewDialog.close()));
+  viewDialog.addEventListener('click', (e) => { if (e.target === viewDialog) viewDialog.close(); });
 
   /* Payment popup. Turning payment on asks "Next step after payment"
      (PROCESS = continue to the next state, TERMINATE = end the process flow),
@@ -537,6 +583,9 @@
   const payConfirm = $('#payConfirm');
   const payBack = $('#payBack');
   const payHost = $('#payHost');
+  const payFeeName = $('#payFeeName');
+  const capWords = (t) => String(t || '').trim().replace(/(^|\s)(\S)/g, (m, sp, ch) => sp + ch.toUpperCase());   // fee names: each word starts with a capital
+  const feeNameOf = (p) => capWords(p.feeName);   // exactly the name they gave   // payments saved before fee names existed
   // Amount fields: the fee for a fixed amount, the allowed range for an amount entered by the user.
   const payAmounts = { amount: $('#payAmount'), min: $('#payMin'), max: $('#payMax') };
   const PAY_METHODS = [['GET', 'GET'], ['POST', 'POST']];
@@ -586,11 +635,11 @@
   const PAY_FEE_LABEL = Object.fromEntries(PAY_FEES);
   function renderPayPick() {
     const term = $('#paySearch').value.trim().toLowerCase();
-    const shown = payCtx.sources.map((src, i) => ({ src, i })).filter(({ src }) => !term || [src.item.name, src.stateName].some((t) => t.toLowerCase().includes(term)));
+    const shown = payCtx.sources.map((src, i) => ({ src, i })).filter(({ src }) => !term || [feeNameOf(src.item), src.item.name, src.stateName].some((t) => t.toLowerCase().includes(term)));
     $('#payPickList').replaceChildren(...shown.map(({ src, i }) => el('label', { class: 'pick-card' },
       el('input', { type: 'radio', name: 'payPick', value: String(i) }),
       el('span', { class: 'pick-card__body' },
-        el('span', { class: 'pick-card__title' }, src.item.name),
+        el('span', { class: 'pick-card__title' }, feeNameOf(src.item) ? `${src.item.name} - ${feeNameOf(src.item)}` : src.item.name),
         el('span', { class: 'pick-card__tags' }, stateTag(src.stateName), typeTag(PAY_FEE_LABEL[src.item.fee])),
         el('span', { class: 'pick-card__text' }, `Fee amount: ${payFeeText(src.item)}`)))));
     [...$('#payPickList').querySelectorAll('input')].forEach((r) => { r.checked = r.value === payCtx.pick; });
@@ -606,6 +655,7 @@
     Object.assign(payCtx, { fee: src.fee, method: src.method || '', integration: src.integration || '', fromPayment: src.name });
     Object.entries(payAmounts).forEach(([k, input]) => { input.value = src[k] ?? ''; clError(input, ''); });
     payHost.value = src.host || ''; clError(payHost, '');
+    payFeeName.value = feeNameOf(src); clError(payFeeName, '');
     payDialog.querySelectorAll('input[name="payMode"]').forEach((c) => { c.checked = (src.modes || []).includes(c.value); });
   }
 
@@ -619,11 +669,14 @@
 
   // A fee taken from another payment is shown but can't be changed (payment mode + next step stay editable).
   function syncPayLock() {
-    const from = payCtx.fromPayment;
+    const from = payCtx.fromPayment || payCtx.view;
     $('#payLock').hidden = true;   // no note (user): the fee is just shown read-only
     $('#payFeeBox').classList.toggle('is-locked', !!from);
-    Object.values(payAmounts).concat(payHost).forEach((i) => { i.readOnly = !!from; });
+    Object.values(payAmounts).concat(payHost, payFeeName).forEach((i) => { i.readOnly = !!from; });
     ['#payFeeSlot', '#payMethodSlot'].forEach((s) => { const b = $(`${s} .digit-dropdown-select`); if (b) b.disabled = !!from; });
+    // view: payment mode + integration are read-only too
+    payDialog.querySelectorAll('input[name="payMode"]').forEach((c) => { c.disabled = payCtx.view; });
+    const ib = $('#payIntegrationSlot .digit-dropdown-select'); if (ib) ib.disabled = payCtx.view;
   }
 
   function payFeeText(p) {
@@ -647,25 +700,33 @@
     const ids = { how: ['payHowTitle', 'payHowDesc'], pick: ['payPickTitle', 'payPickDesc'], after: ['payTitle', 'payDesc'], details: ['payDetailsTitle', 'payDetailsDesc'] }[step];
     payDialog.setAttribute('aria-labelledby', ids[0]);
     payDialog.setAttribute('aria-describedby', ids[1]);
+    // View: just the details, the cross to close, and a "Go to Payment Dashboard" link under the title — no footer
     payBack.textContent = at ? 'Back' : 'Cancel';
     payConfirm.textContent = at === steps.length - 1 ? 'Save' : 'Next';
+    // view: the footer holds only the question + Go to Payment Dashboard
+    $('#payViewAsk').hidden = $('#payViewLink').hidden = !payCtx.view;
+    payBack.hidden = payConfirm.hidden = !!payCtx.view;
+    $('#payDetailsTitle').textContent = payCtx.view ? payCtx.viewName : 'Set Up Payment';
+    $('#payDetailsDesc').hidden = !!payCtx.view;
+    if (payCtx.view) payDialog.removeAttribute('aria-describedby');
     if (step === 'pick') { $('#paySearch').value = ''; renderPayPick(); }
     if (step === 'details') { renderPayDropdowns(); syncPayFields(); syncPayLock(); }
     const first = (n) => payDialog.querySelector(`input[name="${n}"]:checked`) || payDialog.querySelector(`input[name="${n}"]`);
     ({ how: () => first('payHow'), after: () => first('payAfter'), pick: () => first('payPick') || $('#paySearch'),
-       details: () => (payCtx.fromPayment ? payDialog.querySelector('input[name="payMode"]') : $('#payFeeSlot .digit-dropdown-select')) })[step]()?.focus();
+       details: () => (payCtx.view ? payDialog.querySelector('.add-choice__close') : payCtx.fromPayment ? payDialog.querySelector('input[name="payMode"]') : payFeeName) })[step]()?.focus();
   }
 
   /** value: { after, fee, amount, min, max, host, method, modes, integration, fromPayment }; steps: ['after', 'details'] or ['details'].
       sources: payments already in this process flow — when there are any, a new payment first asks
-      "How would you like to create your fee?" (use a fee from an existing payment / create from scratch). */
-  function openPayDialog({ steps, value = {}, onSave, sources = [] }) {
+      "How would you like to set the fee for this payment?" (use a fee from an existing payment / create from scratch). */
+  function openPayDialog({ steps, value = {}, onSave, sources = [], view = false }) {
     // [next step after payment →] [how to create → [Select Payment →]] Set Up Payment (fee + payment mode)
     const isNew = steps.includes('details') && !value.fee;
     if (isNew && sources.length) steps = steps.includes('after') ? ['after', 'how', 'details'] : ['how', 'details'];
     // Nothing is picked for a new payment; editing shows what was saved.
     payCtx = { steps, at: 0, fee: value.fee || '', method: value.method || '', integration: value.integration || '', onSave,
-      sources, how: '', pick: '', fromPayment: value.fromPayment || '' };
+      sources, how: '', pick: '', fromPayment: value.fromPayment || '', view, viewName: value.name || '' };
+    payDialog.classList.toggle('is-view', view);
     payDialog.querySelectorAll('input[name="payHow"]').forEach((r) => { r.checked = false; });
     payError('payHowErr', ''); payError('payPickErr', '');
     payDialog.querySelectorAll('input[name="payAfter"]').forEach((r) => { r.checked = r.value === value.after; });
@@ -673,6 +734,8 @@
     payDialog.querySelectorAll('input[name="payMode"]').forEach((c) => { c.checked = modes.includes(c.value); });
     payHost.value = value.host || '';
     clError(payHost, '');
+    payFeeName.value = value.fee ? feeNameOf(value) : '';
+    clError(payFeeName, '');
     Object.entries(payAmounts).forEach(([k, input]) => { input.value = value[k] ?? ''; clError(input, ''); });
     ['payAfterErr', 'payFeeErr', 'payMethodErr', 'payIntegrationErr', 'payModeErr'].forEach((id) => payError(id, ''));
     renderPayDropdowns();
@@ -700,6 +763,7 @@
     })
   );
   payHost.addEventListener('input', () => payHost.value.trim() && clError(payHost, ''));
+  payFeeName.addEventListener('input', () => payFeeName.value.trim() && clError(payFeeName, ''));
   Object.values(payAmounts).forEach((input) => input.addEventListener('input', () => input.value !== '' && clError(input, '')));
   $('#payGuide').addEventListener('click', () => toast('The integration guide is not linked yet.'));
 
@@ -709,10 +773,10 @@
     const cur = ctx.steps[ctx.at];
     if (cur === 'how') {
       const how = payChecked('payHow');
-      if (!how) { payError('payHowErr', 'Select how you would like to create the fee.'); return payDialog.querySelector('input[name="payHow"]').focus(); }
+      if (!how) { payError('payHowErr', 'Select how you would like to set the fee.'); return payDialog.querySelector('input[name="payHow"]').focus(); }
       if (how === 'scratch' && ctx.fromPayment) {   // switched back: the fee starts empty again
         Object.assign(ctx, { fromPayment: '', pick: '', fee: '', method: '', integration: '' });
-        Object.values(payAmounts).forEach((i) => { i.value = ''; }); payHost.value = '';
+        Object.values(payAmounts).forEach((i) => { i.value = ''; }); payHost.value = ''; payFeeName.value = '';
         payDialog.querySelectorAll('input[name="payMode"]').forEach((c) => { c.checked = false; });
       }
       ctx.how = how;
@@ -724,7 +788,7 @@
     }
     if (cur === 'pick') {
       if (!ctx.sources[Number(ctx.pick)]) {
-        payError('payPickErr', 'Select a payment.');
+        payError('payPickErr', 'Select a fee.');
         return (payDialog.querySelector('input[name="payPick"]') || $('#paySearch')).focus();
       }
       applyPaySource(ctx.pick);
@@ -744,6 +808,7 @@
     const [amount, min, max] = [payAmounts.amount, payAmounts.min, payAmounts.max].map(num);
     // Set Up Payment ('details'): the fee first, then the payment mode below
     if (cur === 'details') {
+      clError(payFeeName, payFeeName.value.trim() || ctx.fromPayment ? '' : 'Enter the fee name.');
       payError('payFeeErr', fee ? '' : 'Select the fee.');
       clError(payAmounts.amount, fee === 'FIXED' && amount === null ? 'Enter the fee amount.' : '');
       clError(payAmounts.min, fee === 'USER' && min === null ? 'Enter the minimum amount.' : '');
@@ -751,6 +816,7 @@
       clError(payHost, calc && !payHost.value.trim() ? 'Enter the host endpoint.' : '');
       payError('payMethodErr', calc && !ctx.method ? 'Select the method type.' : '');
       const badFee = [
+        !payFeeName.value.trim() && !ctx.fromPayment && payFeeName,
         !fee && $('#payFeeSlot .digit-dropdown-select'),
         ...Object.values(payAmounts).filter((input) => input.getAttribute('aria-invalid')),
         calc && !payHost.value.trim() && payHost,
@@ -778,6 +844,7 @@
     payDialog.close();
     ctx.onSave({
       after: payChecked('payAfter'),
+      feeName: capWords(payFeeName.value),
       fee,
       ...(fee === 'FIXED' && { amount }),
       ...(fee === 'USER' && { min, max }),
@@ -794,7 +861,14 @@
   });
   payDialog.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => payDialog.close()));
   payDialog.addEventListener('click', (e) => { if (e.target === payDialog) payDialog.close(); });
-  payDialog.addEventListener('close', () => { payCtx = null; });
+  payDialog.addEventListener('close', () => { payCtx = null; payDialog.classList.remove('is-view'); });
+  $('#payViewLink').addEventListener('click', () => goPaymentDashboard());
+  // Studio's Payment dashboard for this module (same way Back goes to the module dashboard)
+  function goPaymentDashboard() {
+    payDialog.close();
+    const target = window.top !== window ? window.top : window;
+    target.location.href = new URL(`${MODULE_DASHBOARD}/payments`, location.href).href;
+  }
 
   /* Create New Role: name and access. Access is multi-select
      (Viewer, Editor, Creator); at least one is needed. */
@@ -1106,7 +1180,7 @@
     renderQuestions();
   }
 
-  function openChecklistDialog({ sources, actionName, onSave }) {
+  function openChecklistDialog({ sources, actionName, onSave, view }) {
     $('#clPickList').replaceChildren(
       ...sources.map((src, i) =>
         el(
@@ -1124,9 +1198,11 @@
     );
     clDialog.querySelector('input[name="clMode"][value="new"]').checked = true;
     clCtx = { sources, actionName, onSave, path: sources.length ? ['how', 'build'] : ['build'], at: 0 };
-    if (!sources.length) fillChecklist({ name: 'Checklist 1', questions: [newQuestion()] });
+    if (view) { clCtx.path = ['build']; fillChecklist({ name: view.name, questions: JSON.parse(JSON.stringify(view.questions || [])) }); }
+    else if (!sources.length) fillChecklist({ name: 'Checklist 1', questions: [newQuestion()] });
     clDialog.showModal();
     showClStep();
+    if (view) setViewMode(clDialog, 'Checklist');
   }
 
   clConfirm.addEventListener('click', () => {
@@ -1171,7 +1247,7 @@
   });
   clDialog.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => clDialog.close()));
   clDialog.addEventListener('click', (e) => { if (e.target === clDialog) clDialog.close(); });
-  clDialog.addEventListener('close', () => { clCtx = null; });
+  clDialog.addEventListener('close', () => { clCtx = null; setViewMode(clDialog, null); });
 
   /* Document popup. "Use an existing document" attaches a document that other
      states already have (the same document: items share a docId, so renaming it
@@ -2190,50 +2266,20 @@
         input.addEventListener('blur', () => finish(true));
         return el('li', { class: 'logic-item is-editing', 'data-item': item.id }, input);
       }
+      // every item is view only: the row is a button that opens it read-only (edited in its Studio dashboard)
+      const openView = () => {
+        if (key === 'payment') return openPayDialog({ steps: ['details'], value: item, view: true });
+        if (key === 'notify') {
+          item.channel ||= 'SMS';
+          return chooseAdd({ key, sources: [], stateName: s.name, uniqueName: () => item.name, edit: item, view: true, onSave: () => {} });
+        }
+        const on = wf.states.filter((st) => st.docs?.items.some((x) => (item.docId ? x.docId === item.docId : x.id === item.id))).map((st) => st.name);
+        openViewDialog({ title: item.name, noun: 'Document', rows: [['Document name', item.name], ['Document type', docTypeOf(item)], ['Used in states', on.join(', ') || s.name]] });
+      };
       return el(
         'li',
-        { class: 'logic-item', 'data-item': item.id },
-        el('span', { class: 'logic-item__name' }, item.name),
-        el('button', {
-          type: 'button', class: 'logic-item__btn', 'aria-label': cfg.wizard || key === 'payment' ? `Edit ${item.name}` : `Rename ${item.name}`, title: 'Edit',
-          onClick: () => {
-            if (key === 'payment') {
-              return openPayDialog({
-                steps: ['details'],
-                value: item,
-                onSave: ({ after, ...details }) => {
-                  ['fee', 'amount', 'min', 'max', 'host', 'method', 'modes', 'integration', 'fromPayment'].forEach((k) => delete item[k]);
-                  Object.assign(item, details);
-                  commit();
-                  renderInspector();
-                  $(`[data-item="${item.id}"] .logic-item__btn`, inspector)?.focus();
-                  toast(`${item.name} updated`);
-                },
-              });
-            }
-            if (!cfg.wizard) {
-              renaming = { stateId: s.id, key, id: item.id };
-              return renderInspector({ focusRename: true });
-            }
-            // Notifications open the same details popup used when adding one.
-            if (key === 'notify') item.channel ||= 'SMS';
-            chooseAdd({
-              key,
-              sources: [],
-              stateName: s.name,
-              uniqueName: () => item.name,
-              edit: item,
-              onSave: (values) => {
-                delete item.subject;
-                Object.assign(item, values);
-                commit();
-                renderInspector();
-                $(`[data-item="${item.id}"] .logic-item__btn`, inspector)?.focus();
-                toast(`${item.name} updated`);
-              },
-            });
-          },
-        }, icon('M4 20h16M14.5 4.5l3 3L9 16H6v-3z', 18)),
+        { class: 'logic-item logic-item--view', 'data-item': item.id },
+        el('button', { type: 'button', class: 'logic-item__open', 'aria-haspopup': 'dialog', 'aria-label': `View ${item.name}`, onClick: openView }, item.name),
         el('button', {
           type: 'button', class: 'logic-item__btn', 'aria-label': `Delete ${item.name}`, title: 'Delete',
           onClick: () => confirmDelete(item.name, () => {
@@ -2639,12 +2685,10 @@
         { class: 'logic-list' },
         el(
           'li',
-          { class: 'logic-item' },
-          el('span', { class: 'logic-item__name' }, item.name),
-          el('button', {
-            type: 'button', class: 'logic-item__btn', 'aria-label': `Rename ${item.name}`, title: 'Edit',
-            onClick: () => { renamingChecklist = true; renderInspector({ focusRename: true }); },
-          }, icon('M4 20h16M14.5 4.5l3 3L9 16H6v-3z', 18)),
+          { class: 'logic-item logic-item--view' },
+          // the row opens the checklist read-only; it is edited in the checklist dashboard
+          el('button', { type: 'button', class: 'logic-item__open', 'aria-haspopup': 'dialog', 'aria-label': `View ${item.name}`,
+            onClick: () => openChecklistDialog({ sources: [], actionName: a.name, view: item }) }, item.name),
           el('button', {
             type: 'button', class: 'logic-item__btn', 'aria-label': `Delete ${item.name}`, title: 'Delete',
             onClick: () => confirmDelete(item.name, () => {
@@ -3055,7 +3099,7 @@
   }, true);
 
   document.addEventListener('keydown', (e) => {
-    if ($('#configDialog').open || $('#helpDialog').open || deleteDialog.open) return;
+    if ($('#configDialog').open || $('#helpDialog').open || $('#kbDialog').open || deleteDialog.open) return;
     if (e.key === 'Escape') {
       if (connectFrom) cancelConnect();
       else if (issuesOpen) closeIssues();
@@ -3248,6 +3292,13 @@
   $('#viewConfigBtn').addEventListener('click', openConfig);
 
   // Instructions to make a workflow
+  // Keyboard Shortcuts: header button or Ctrl + / (Cmd + / on a Mac)
+  const kbDialog = $('#kbDialog');
+  const openKb = () => { if (!kbDialog.open) { kbDialog.showModal(); kbDialog.querySelector('[data-close]').focus(); } };
+  $('#kbBtn').addEventListener('click', openKb);
+  kbDialog.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => kbDialog.close()));
+  kbDialog.addEventListener('click', (e) => { if (e.target === kbDialog) kbDialog.close(); });
+  document.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === '/') { e.preventDefault(); openKb(); } });
   const helpDialog = $('#helpDialog');
   $('#headerHelpBtn').addEventListener('click', () => helpDialog.showModal());
   helpDialog.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => helpDialog.close()));

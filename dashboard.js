@@ -305,6 +305,7 @@
     <div class="subbar db-topbar">
       <a class="btn btn-secondary" href="#/">${I.back} Back to Service Dashboard</a>
       <h1 class="db-top-title" id="db-page-t" tabindex="-1">Dashboard</h1>
+      <button type="button" class="btn btn-secondary db-kb-btn" id="db-kb-open" aria-haspopup="dialog" aria-keyshortcuts="Control+/">${I.kb} Keyboard Shortcuts</button>
       <button type="button" class="btn btn-secondary db-guides">${I.guides} Tutorials and Guides</button>
     </div>
     <div class="form-body db-body" id="db-body">
@@ -866,6 +867,7 @@
   const mod = e => e.ctrlKey || e.metaKey;
   const kbDlg = $('db-kb-dlg'); let kbBack = null;
   function openKb() { kbBack = document.activeElement; kbDlg.showModal(); kbDlg.querySelector('[data-close]').focus(); }
+  $('db-kb-open').addEventListener('click', openKb);
   kbDlg.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => kbDlg.close()));
   kbDlg.addEventListener('click', e => { if (e.target === kbDlg) kbDlg.close(); });
   kbDlg.addEventListener('close', () => { kbBack && document.contains(kbBack) && kbBack.focus(); });

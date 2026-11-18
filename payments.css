@@ -64,7 +64,7 @@
 .pyw-q-divider { margin: 24px 0; border: 0; border-top: 1px solid #D6D5D4; }
 #pyw-fields-fee, #pyw-fields-pay { display: contents; }   /* fee + payment mode boxes on one screen, normal spacing */
 /* How would you like to create your payment? — square-ish tiles like the document / SMS-Email tiles: fixed width, title on one line, text wraps */
-.pyw .ntw-tile { flex: 0 1 300px; min-height: 180px; justify-content: flex-start; }
+.pyw .ntw-tile { flex: 0 1 300px; justify-content: flex-start; }   /* height follows the content; both tiles stay equal (row stretch) */
 .pyw .ntw-tile-title { white-space: nowrap; }
 .ntw-head + .pyw-q { margin-top: 24px; }
 /* box heading (blue question) → dark input label → field */

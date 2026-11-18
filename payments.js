@@ -21,9 +21,9 @@
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
   let uid = 0; const nid = () => 'p' + Date.now().toString(36) + (uid++);
   const seed = () => [
-    { id: nid(), name: 'Renewal fee', state: 'Due for Renewal', fee: 'FIXED', currency: 'INR', amount: '500', min: '', max: '', endpoint: '', method: 'POST',
+    { id: nid(), name: 'Payment 1', feeName: 'Standard Renewal Fee', state: 'Due for Renewal', fee: 'FIXED', currency: 'INR', amount: '500', min: '', max: '', endpoint: '', method: 'POST',
       online: true, gateway: 'Razorpay', offline: true, after: 'PROCESS' },
-    { id: nid(), name: 'Inspection charge', state: 'Pending for Field Inspect', fee: 'CALC', currency: 'INR', amount: '', min: '', max: '',
+    { id: nid(), name: 'Payment 2', feeName: 'Field Inspection Fee', state: 'Pending for Field Inspect', fee: 'CALC', currency: 'INR', amount: '', min: '', max: '',
       endpoint: 'https://api.example.gov/fees/inspection', method: 'POST', online: true, gateway: 'PayGov', offline: false, after: 'PROCESS' },
   ];
   const I = {
@@ -37,6 +37,9 @@
     trash: '<svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     close: '<svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   };
+  const capWords = t => String(t || '').trim().replace(/(^|\s)(\S)/g, (m, sp, ch) => sp + ch.toUpperCase());   // fee names: each word starts with a capital
+  const feeNameOf = p => capWords(p.feeName);   // exactly the name they gave (no made-up name for older payments)
+  const withFee = p => feeNameOf(p) ? `${p.name} - ${feeNameOf(p)}` : p.name;
   const opts = (list, cur, all) => (all ? `<option value="">${all}</option>` : '') + list.map(([v, t]) => `<option value="${esc(v)}"${v === cur ? ' selected' : ''}>${esc(t)}</option>`).join('');
   const money = (c, a) => `${SYMBOL[c] || c + ' '}${Number(a).toLocaleString('en-IN')}`;
   const FEE_KIND = { FIXED: 'Fixed fee', CALC: 'Formula', USER: 'Entered by applicant' };
@@ -65,7 +68,7 @@
       </div>
       <section class="section nt-filters" aria-label="Filter payments">
         <div class="nt-filter">
-          <label class="nt-label" for="py-search">Search by payment name</label>
+          <label class="nt-label" for="py-search">Search by payment or fee name</label>
           <div class="nt-search"><input class="input" id="py-search" type="search" autocomplete="off" aria-describedby="py-count"><span class="rs-ico" aria-hidden="true">${I.search}</span></div>
         </div>
         <div class="nt-filter">
@@ -89,9 +92,9 @@
           <button type="button" class="icon-btn ntw-close" data-close aria-label="Close">${I.close}</button>
           <div class="ntw-bars-wrap" id="pyw-bars-wrap"><span class="sr-only" id="pyw-step-text"></span><span class="ntw-bars" id="pyw-bars" aria-hidden="true"></span></div>
           <section data-step="how" hidden>
-            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-how">How would you like to create your fee?</h2>
-            <p class="ntw-desc">Pick a starting point for creating your fee.</p></div>
-            <fieldset class="ntw-tiles"><legend class="sr-only">How to create the fee</legend>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-how">How would you like to set the fee for this payment?</h2>
+            <p class="ntw-desc">Pick a starting point for setting the fee for this payment.</p></div>
+            <fieldset class="ntw-tiles"><legend class="sr-only">How to set the fee</legend>
               <label class="ntw-tile"><input type="radio" name="pyw-how" value="existing">
                 <span class="ntw-tile-ico" aria-hidden="true"><svg viewBox="0 -960 960 960" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Zm80-80h400q0-33 23.5-56.5T840-480v-160q-33 0-56.5-23.5T760-720H360q0 33-23.5 56.5T280-640v160q33 0 56.5 23.5T360-400Zm440 240H120q-33 0-56.5-23.5T40-240v-440h80v440h680v80ZM280-400v-320 320Z"/></svg></span>
                 <span class="ntw-tile-title">Use a fee from an existing payment</span><span class="ntw-tile-text">Reuse the fee amount of a payment you already created.</span></label>
@@ -99,16 +102,16 @@
                 <span class="ntw-tile-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor"/><path d="M12 8v8M8 12h8" fill="none" class="ntw-ico-cut" stroke-width="2" stroke-linecap="round"/></svg></span>
                 <span class="ntw-tile-title">Create from scratch</span><span class="ntw-tile-text">Set up a new fee amount and payment mode for this payment.</span></label>
             </fieldset>
-            <p class="error" id="pyw-err-how" hidden>Select how you would like to create the fee.</p>
+            <p class="error" id="pyw-err-how" hidden>Select how you would like to set the fee.</p>
           </section>
           <section data-step="pick" hidden>
-            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-pick">Select Payment</h2>
-            <p class="ntw-desc">Select the payment whose fee you want to use.</p></div>
-            <div class="nt-search ntw-search"><label class="sr-only" for="pyw-q">Search payments</label><input class="input" id="pyw-q" type="search" autocomplete="off" aria-controls="pyw-pick"><span class="rs-ico" aria-hidden="true">${I.search}</span></div>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="pyw-title-pick">Select Fee</h2>
+            <p class="ntw-desc">Select the fee you want to use for this payment.</p></div>
+            <div class="nt-search ntw-search"><label class="sr-only" for="pyw-q">Search fees</label><input class="input" id="pyw-q" type="search" autocomplete="off" aria-controls="pyw-pick"><span class="rs-ico" aria-hidden="true">${I.search}</span></div>
             <p class="sr-only" id="pyw-pick-count" role="status"></p>
             <div class="ntw-pick" id="pyw-pick" role="radiogroup" aria-labelledby="pyw-title-pick" aria-describedby="pyw-err-pick"></div>
-            <p class="ntw-none" id="pyw-pick-none" hidden>No payments match your search.</p>
-            <p class="error" id="pyw-err-pick" hidden>Select a payment.</p>
+            <p class="ntw-none" id="pyw-pick-none" hidden>No fees match your search.</p>
+            <p class="error" id="pyw-err-pick" hidden>Select a fee.</p>
           </section>
           <section data-step="after" hidden>
             <!-- Studio only: the state is chosen here too (the process flow already knows it, so its step 1 keeps the original title) -->
@@ -159,11 +162,11 @@
   const f = { q: '', state: '', fee: '' };
   function render() {
     const qq = f.q.trim().toLowerCase();
-    const shown = list.filter(p => (!qq || p.name.toLowerCase().includes(qq)) && (!f.state || p.state === f.state) && (!f.fee || p.fee === f.fee));
+    const shown = list.filter(p => (!qq || p.name.toLowerCase().includes(qq) || feeNameOf(p).toLowerCase().includes(qq)) && (!f.state || p.state === f.state) && (!f.fee || p.fee === f.fee));
     $('py-list').innerHTML = shown.map(p => `
       <li class="nt-card">
         <div class="nt-body">
-          <h2 class="nt-name" id="py-n-${p.id}">${esc(p.name)}</h2>
+          <h2 class="nt-name" id="py-n-${p.id}">${esc(withFee(p))}</h2>
           <ul class="nt-tags" aria-label="Details">
             <li class="nt-tag nt-tag-state">${esc(p.state)}</li>
             <li class="nt-tag nt-tag-type">${FEES[p.fee]}</li>
@@ -177,7 +180,6 @@
         <div class="nt-foot">
           <button type="button" class="nt-del" data-del="${p.id}" aria-describedby="py-n-${p.id}" aria-haspopup="dialog">${I.trash} Delete</button>
           <span class="nt-right">
-            <button type="button" class="btn btn-secondary nt-act" data-dup="${p.id}" aria-describedby="py-n-${p.id}" aria-haspopup="dialog">${I.copy} Copy</button>
             <button type="button" class="btn btn-secondary nt-act" data-edit="${p.id}" aria-describedby="py-n-${p.id}" aria-haspopup="dialog">${I.pencil} Edit</button>
           </span>
         </div>
@@ -229,13 +231,14 @@
       // read-only (grey); no note — the fee simply can't be edited
       const ro = (id, t, v) => row(`<label for="${id}">${t}</label>`, `<input class="input pyw-locked" id="${id}" type="text" value="${esc(v)}" readonly>`);
       h += `<div class="ntw-box">
-        ${d.presetFrom ? `${ro('pyw-fee', 'Fee', FEES[d.fee])}
+        ${d.presetFrom ? `${ro('pyw-feename', 'Fee name', feeNameOf(d))}${ro('pyw-fee', 'Fee', FEES[d.fee])}
         ${d.fee === 'FIXED' ? ro('pyw-amount', 'Fee amount', money('INR', d.amount || 0)) : ''}
         ${d.fee === 'USER' ? ro('pyw-min', 'Minimum amount', money('INR', d.min || 0)) + ro('pyw-max', 'Maximum amount', money('INR', d.max || 0)) : ''}
         ${d.fee === 'CALC' ? ro('pyw-endpoint', 'Host endpoint', d.endpoint) + ro('pyw-method', 'Method type', d.method) : ''}` : ''}
       </div>`;
     } else
     h += `<div class="ntw-box">
+        ${row(lab('pyw-feename', 'Fee name'), `<input class="input" id="pyw-feename" type="text" placeholder="Enter fee name" data-k="feeName" value="${esc(d.feeName || '')}" autocomplete="off"${inv('feeName')}>${errP('feeName')}`)}
         ${row(`${lab('pyw-fee', 'Fee')}${tipHTML('pyw-tip-fee', 'fee', 'The fee is the amount people pay at this state.')}`, `<select class="input" id="pyw-fee" data-k="fee"${inv('fee')}>${opts(Object.entries(FEES), d.fee, 'Select fee type')}</select>${errP('fee')}`)}
         ${d.fee === 'FIXED' ? row(lab('pyw-amount', 'Fee amount'), rupee('pyw-amount', 'amount', 'Enter fee amount')) : ''}
         ${d.fee === 'USER' ? row(lab('pyw-min', 'Minimum amount'), rupee('pyw-min', 'min', 'Enter minimum amount')) + row(lab('pyw-max', 'Maximum amount'), rupee('pyw-max', 'max', 'Enter maximum amount')) : ''}
@@ -282,13 +285,13 @@
     if (st === 'fee') fields();
     const firstOf = n => dlg.querySelector(`input[name="${n}"]:checked`) || dlg.querySelector(`input[name="${n}"]`);
     if (focus) ({ how: () => firstOf('pyw-how'), after: () => $('pyw-state'), pick: () => firstOf('pyw-pick') || $('pyw-q'),
-      fee: () => (D.draft.presetFrom ? dlg.querySelector('[data-k="online"]') : $('pyw-fee')) })[st]()?.focus();
+      fee: () => (D.draft.presetFrom ? dlg.querySelector('[data-k="online"]') : $('pyw-feename')) })[st]()?.focus();
     $('pyw-body').scrollTop = 0;
   }
   // copy = card Copy: straight to the details, prefilled, named "… (copy)"; nothing is added until Save
   function open(p, from, copy) {
     opener = from; errs = {};
-    const blank = { name: nextName(), state: '', fee: '', amount: '', min: '', max: '', endpoint: '', method: '', online: false, gateway: '', offline: false, after: '' };
+    const blank = { name: nextName(), state: '', feeName: '', fee: '', amount: '', min: '', max: '', endpoint: '', method: '', online: false, gateway: '', offline: false, after: '' };
     const draft = p ? JSON.parse(JSON.stringify(p)) : blank;
     if (copy) { delete draft.id; let n = `${p.name} (copy)`, k = 2; while (list.some(x => x.name === n)) n = `${p.name} (copy ${k++})`; draft.name = n; }
     // Step 1 asks the state + next step (edit too, so the state can be changed). First payment: step 1 → Set Up Payment.
@@ -300,15 +303,15 @@
   }
   // Select Payment (same as Notifications' Select Notification): search + cards with state (blue) and fee type (amber) tags
   function renderPick() {
-    const q = $('pyw-q').value.trim().toLowerCase(), shown = list.filter(x => !q || x.name.toLowerCase().includes(q));
+    const q = $('pyw-q').value.trim().toLowerCase(), shown = list.filter(x => !q || feeNameOf(x).toLowerCase().includes(q) || x.name.toLowerCase().includes(q));
     $('pyw-pick').innerHTML = shown.map(x => `
       <label class="ntw-pcard"><input type="radio" name="pyw-pick" value="${x.id}"${x.id === D.pick ? ' checked' : ''}>
-        <span class="ntw-pbody"><span class="ntw-ptitle">${esc(x.name)}</span>
+        <span class="ntw-pbody"><span class="ntw-ptitle">${esc(withFee(x))}</span>
           <span class="ntw-ptags"><span class="nt-tag nt-tag-state">${esc(x.state)}</span><span class="nt-tag nt-tag-type">${FEES[x.fee]}</span></span>
           <span class="pyw-pfee">Fee amount: ${esc(feeText(x))}</span></span>
         <span class="ntw-pcheck" aria-hidden="true"></span></label>`).join('');
     $('pyw-pick-none').hidden = shown.length > 0;
-    $('pyw-pick-count').textContent = q ? `${shown.length} payment${shown.length === 1 ? '' : 's'} found.` : '';
+    $('pyw-pick-count').textContent = q ? `${shown.length} fee${shown.length === 1 ? '' : 's'} found.` : '';
   }
   $('pyw-q').addEventListener('input', renderPick);
   $('pyw-back').addEventListener('click', () => { if (D.i === 0) return dlg.close(); D.i--; showStep(); });
@@ -340,7 +343,7 @@
     if (st === 'how') {
       if (!D.how) { $('pyw-err-how').hidden = false; dlg.querySelector('input[name="pyw-how"]').focus(); return; }
       if (D.how === 'scratch' && d.presetFrom) {   // switched back: the fee starts empty again
-        D.pick = ''; Object.assign(d, { fee: '', amount: '', min: '', max: '', endpoint: '', method: '', online: false, gateway: '', offline: false, presetFrom: '' }); }
+        D.pick = ''; Object.assign(d, { feeName: '', fee: '', amount: '', min: '', max: '', endpoint: '', method: '', online: false, gateway: '', offline: false, presetFrom: '' }); }
       // like Notifications' "Copy existing": using an existing payment adds a Select Payment step
       D.path = D.how === 'existing' ? ['after', 'how', 'pick', 'fee'] : ['after', 'how', 'fee'];
       D.i++; return showStep();
@@ -350,6 +353,7 @@
       if (!src) { $('pyw-err-pick').hidden = false; (dlg.querySelector('input[name="pyw-pick"]') || $('pyw-q')).focus(); return; }
       // the fee is fetched and locked; payment mode + integration start from it but stay editable
       ['fee', 'amount', 'min', 'max', 'endpoint', 'method', 'online', 'gateway', 'offline'].forEach(k => { d[k] = src[k]; });
+      d.feeName = feeNameOf(src);
       d.presetFrom = src.name;
       D.i++; return showStep();
     }
@@ -364,6 +368,7 @@
     // No name field (same as the process flow): new payments are called "Payment N"
     const nm = d.name || nextName();
     // Set Up Payment: fee + payment mode on one screen
+    if (!d.presetFrom && !(d.feeName || '').trim()) errs.feeName = 'Enter the fee name.';
     if (!d.fee) errs.fee = 'Select the fee type.';
     if (d.fee === 'FIXED' && !(+d.amount > 0)) errs.amount = 'Enter the fee amount.';
     if (d.fee === 'USER') { if (d.min === '') errs.min = 'Enter the minimum amount.'; if (!(+d.max > 0)) errs.max = 'Enter the maximum amount.'; else if (+d.max < +d.min) errs.max = 'The maximum amount must be more than the minimum amount.'; }
@@ -372,11 +377,12 @@
     if (d.online && !d.gateway) errs.gateway = 'Select the payment integration.';
     if (Object.keys(errs).length) {
       fields();
-      const k = ['fee', 'amount', 'min', 'max', 'endpoint', 'method', 'mode', 'gateway'].find(x => errs[x]);
+      const k = ['feeName', 'fee', 'amount', 'min', 'max', 'endpoint', 'method', 'mode', 'gateway'].find(x => errs[x]);
       dlg.querySelector(`section:not([hidden]) ${k === 'mode' ? '[data-k="online"]' : `[data-k="${k}"]`}`)?.focus();
       return;
     }
     d.name = nm;
+    d.feeName = capWords(d.feeName);
     const rec = { ...d, currency: 'INR' }; delete rec.id;
     const apply = () => {
       if (D.edit) Object.assign(D.edit, rec); else list.unshift({ id: nid(), ...rec });

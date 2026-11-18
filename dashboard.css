@@ -267,7 +267,8 @@
 .db-topbar { justify-content: flex-start; gap: 24px; }
 .db-top-title { margin: 0; font-size: 32px; line-height: 1; font-weight: 700; color: #0B4B66; }
 .db-top-title:focus { outline: none; }
-.db-topbar .db-guides { margin-left: auto; }
+.db-topbar .db-kb-btn { margin-left: auto; }
+.db-topbar .db-kb-btn + .db-guides { margin-left: -16px; }   /* 8px apart, like the process flow's Help + Tutorials */
 /* Second header = process flow canvas bar: white, 52px, counts left, actions right (sticks while the dashboard scrolls) */
 .db-main { padding-top: 0; }
 .db-bar { position: sticky; top: 0; z-index: 6; flex: none; height: 52px; margin: 0 -32px; padding: 0 32px;

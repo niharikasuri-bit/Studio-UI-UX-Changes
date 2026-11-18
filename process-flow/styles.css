@@ -508,6 +508,7 @@ button { cursor: pointer; }
 .tab:hover { color: var(--text); }
 .modal__body { padding: 16px 24px; overflow-y: auto; flex: 1; display: grid; gap: 14px; align-content: start; }
 .modal__foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 24px; border-top: 1px solid var(--border); border-radius: 0 0 12px 12px; }
+.modal__foot[hidden] { display: none; }
 /* Black code container: the copy button is pinned top-right while the code scrolls under it */
 .code-box { position: relative; background: #1e2329; border-radius: var(--radius); }
 .code-box__copy {
@@ -704,6 +705,11 @@ button { cursor: pointer; }
   background: none; color: var(--primary);
 }
 .logic-item__btn:hover { background: var(--primary-bg); }
+.logic-item--view { padding-left: 0; }
+.logic-item--view:hover { border-color: var(--primary); }
+.logic-item__open { flex: 1; min-width: 0; align-self: stretch; padding: 0 12px; border: 0; border-radius: 7px 0 0 7px; background: none;
+  font: inherit; font-size: 14px; color: #363636; text-align: left; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.logic-item__open:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--primary); }
 .inner-card .btn--secondary, .panel-section .btn--secondary { background: var(--surface); }
 
 .checks { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 16px; }
@@ -895,7 +901,19 @@ button { cursor: pointer; }
 /* Tooltip keeps line breaks (state to-dos) */
 .tooltip { white-space: pre-line; }
 .node__issue { cursor: help; }
-.topbar__help + .topbar__guides { margin-left: -16px; } /* sit 8px apart inside the 24px header gap */
+.topbar__help + .topbar__kb, .topbar__kb + .topbar__guides { margin-left: -16px; }
+.topbar__help + .topbar__guides { margin-left: -16px; }
+.topbar__kb { min-height: 32px; font-size: 14px; padding: 0 14px; gap: 6px; background: var(--surface); }
+/* Keyboard Shortcuts popup (same tables as the dashboard designer's) */
+.kb-dialog { width: min(720px, calc(100vw - 48px)); }
+.kb-body { gap: 8px; max-height: min(60vh, 560px); }
+.kb-body:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--primary); }
+.kb-h { margin: 8px 0 0; font-size: 16px; font-weight: 700; color: var(--secondary); }
+.kb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.kb-table th { text-align: left; font-weight: 500; color: #707070; padding: 6px 8px; border-bottom: 1px solid #D6D5D4; }
+.kb-table td { padding: 8px; border-bottom: 1px solid #EEEEEE; color: #363636; vertical-align: top; }
+.kb-table td:first-child { width: 44%; }
+.kb-table kbd { display: inline-block; padding: 2px 6px; border: 1px solid #B1B4B6; border-bottom-width: 2px; border-radius: 4px; background: #FAFAFA; font: 500 13px/1.3 Roboto, system-ui, sans-serif; color: #363636; } /* sit 8px apart inside the 24px header gap */
 
 /* Panel headers share one look: #FAFAFA, 20px blue title, 13px description */
 .panel-head, .sidebar__head { background: var(--surface-2); }
@@ -1491,7 +1509,33 @@ select:not([multiple]):not([size]):disabled { background-image: url("data:image/
 #payFeeBox.is-locked .nf-row:not(#paySrcRow) .digit-dropdown-select { background: #F5F5F5; border-color: #D6D5D4; color: #363636; cursor: default; opacity: 1; }
 #payFeeBox.is-locked .nf-row:not(#paySrcRow) .digit-dropdown-select svg { display: none; }
 #payFeeBox.is-locked #payCalc .nf-info { display: none; }   /* the API guide is only for setting up a new fee */
+/* View payment (read-only): every field greyed, no required marks, no guide */
+/* View only (any item): question + secondary CTA on the left of the footer, locked fields */
+.modal.is-view .modal__foot { justify-content: flex-start; }
+.modal.is-view .modal__foot > :not(.view-ask):not(.view-link):not(.pay-view-ask):not(.pay-view-link) { display: none; }
+.view-ask { margin: 0 16px 0 0; align-self: center; font-size: 16px; font-weight: 700; color: #0B4B66; }
+.view-ask[hidden], .view-link[hidden] { display: none; }
+.view-link svg { margin-left: 2px; }
+.modal.is-view .add-choice__body input:not([type="checkbox"]):not([type="radio"]),
+.modal.is-view .add-choice__body textarea,
+.modal.is-view .add-choice__body select,
+.modal.is-view .add-choice__body .digit-dropdown-select { background: #F5F5F5; border-color: #D6D5D4; color: #363636; cursor: default; opacity: 1; -webkit-text-fill-color: #363636; }
+.modal.is-view .add-choice__body button:disabled:not(.digit-dropdown-select) { display: none; }
+.modal.is-view .req, .modal.is-view .info-btn { display: none; }
+.modal.is-view .digit-dropdown-select:disabled { background-color: #F5F5F5 !important; border-color: #D6D5D4 !important; color: #363636 !important; }
+.modal.is-view .nf-row:has(#nfVars) { display: none; }   /* variables are only for writing the message */
+.view-choice { width: min(640px, calc(100vw - 32px)); }
+.pay-view-ask { margin: 0 16px 0 0; align-self: center; font-size: 16px; font-weight: 700; color: #0B4B66; }
+.pay-choice.is-view .modal__foot { justify-content: flex-start; }   /* question + button together on the left */
+.pay-view-ask[hidden], .pay-view-link[hidden] { display: none; }
+.pay-view-link svg { margin-left: 2px; }
+.pay-choice.is-view .req, .pay-choice.is-view #payCalc .nf-info, .pay-choice.is-view .info-btn { display: none; }
+.pay-choice.is-view .digit-employeeCard-input,
+.pay-choice.is-view .digit-dropdown-select { background: #F5F5F5; border-color: #D6D5D4; color: #363636; cursor: default; opacity: 1; }
+.pay-choice.is-view .digit-dropdown-select svg { display: none; }
+.pay-choice.is-view .radio-card, .pay-choice.is-view .radio-card * { cursor: default; opacity: 1; }
+.pay-choice.is-view .radio-card:not(:has(input:checked)) { display: none; }   /* only the modes this payment uses */
 .pay-choice .pick-card__text { display: block; font-size: 14px; line-height: 1.4; color: #505A5F; }
 /* How would you like to create your payment? — same square-ish tiles as the document popup: title on one line, text wraps */
-.pay-choice .type-tiles__grid > .type-tile { flex: 0 1 300px; min-height: 180px; }
+.pay-choice .type-tiles__grid > .type-tile { flex: 0 1 300px; }   /* height follows the content */
 .pay-choice .type-tile__label { white-space: nowrap; }
