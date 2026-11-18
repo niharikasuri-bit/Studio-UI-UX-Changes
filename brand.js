@@ -121,7 +121,20 @@
       css += 'body, button, input, select, textarea, .btn { font-family: "' + f[0] + '", system-ui, sans-serif !important; }';
     }
     var rd = RADII[t.radius];
-    if (rd && t.radius !== 'rounded') css += '.btn, .btn-primary, .btn-secondary { border-radius: ' + rd[0] + 'px !important; } .section, .card, .um-table-box, .nt-filters { border-radius: ' + rd[1] + 'px !important; }';
+    if (rd && t.radius !== 'rounded') css += '.btn, .btn-primary, .btn-secondary, .btn-link, .tg-cta { border-radius: ' + rd[0] + 'px !important; } .section, .card, .um-table-box, .nt-filters { border-radius: ' + rd[1] + 'px !important; }';
+    // tags + chips follow the button corners; the module switch (tabs at the top) too; cards / popups / boxes the card corners
+    if (rd && t.radius !== 'rounded') {
+      var R = rd[0], C = rd[1];
+      css += '.tag, .nt-tag, .type-tag, .lg-tag, .db-flt-tag, .db-type-tag, .dc-ar-tag, .dc-tag-cat, .dc-ar-badge, .draft-tag, .pb-gen-tag, .pv-tag, .py-tag-kind,'
+        + ' .rt-tag, .sv-choice-tag, .tg-tag, .um-rtag, .vb-tag, .as-used-tag, .ntw-type-tag, .chip, .um-chip, .var-chip, .lg-and, .lg-join, .lg-join-b'
+        + ' { border-radius: ' + R + 'px !important; }';
+      css += '.module-toggle { border-radius: ' + R + 'px !important; overflow: hidden; }'
+        + ' .module-tab:first-child { border-radius: ' + R + 'px 0 0 ' + R + 'px !important; } .module-tab:last-child { border-radius: 0 ' + R + 'px ' + R + 'px 0 !important; }'
+        + ' .module-tab:only-child { border-radius: ' + R + 'px !important; }';
+      css += '.modal, .role-modal, .db-card, .dc-fcard, .ntw-tile, .ntw-radio, .radio-card, .fpp-box, .tg-card, .rm-card, .field-card, .type-tile, .inner-card, .lp-tile,'
+        + ' .state-box, .roles-box, .pick-card, .toggle-card, .ntw-pcard, .lp-tcard, .cz-tile, .as-card, .role-tile, .ntw-box, .empty-state, .lg-cond, .lg-mode, .add-card, .nt-card'
+        + ' { border-radius: ' + C + 'px !important; }';
+    }   // input fields keep their own corners (not themed)
     if (css) { var s = document.createElement('style'); s.id = 'brand-css'; s.textContent = css; document.head.appendChild(s); }
   };
   var header = function () {

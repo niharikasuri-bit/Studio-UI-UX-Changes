@@ -24,10 +24,10 @@
   // Sample services (fictional): the first is this Studio's own service
   const SERVICE = () => ((document.querySelector('#view-service .page-title') || {}).firstChild || {}).textContent?.trim() || 'Studio Prototype';
   const SERVICES = () => [
-    { name: SERVICE(), desc: 'Apply for, renew, and amend business licences online.', date: '12/11/2026', ver: 'V1', tint: '#F6EFE8', own: true },
+    { name: SERVICE(), desc: 'Apply for, renew, and amend business licences online.', date: '12/11/2026', ver: 'V1', tint: '#F6F0E8', own: true },
     { name: 'Building Permit', desc: 'Apply for permission to build or change a building.', date: '28/10/2026', ver: 'V3', tint: '#E8F4EA' },
     { name: 'Water Connection', desc: 'Request a new water connection for a property.', date: '14/10/2026', ver: 'V2', tint: '#E9E7F5' },
-    { name: 'Property Tax', desc: 'Assess, pay, and get receipts for property tax.', date: '02/10/2026', ver: 'V1', tint: '#F6EFE8' },
+    { name: 'Property Tax', desc: 'Assess, pay, and get receipts for property tax.', date: '02/10/2026', ver: 'V1', tint: '#F6F0E8' },
     { name: 'Birth Certificate', desc: 'Register a birth and get a certificate.', date: '19/09/2026', ver: 'V4', tint: '#E8F4EA' },
   ];
   let mode = 'nodraft', tab = 'published';

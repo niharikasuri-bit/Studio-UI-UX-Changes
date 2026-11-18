@@ -177,8 +177,7 @@
       <div class="lp-content">
         ${a.on && a.list.length ? `<div class="lp-qa-sec lp-sec${actsOpen ? ' is-sel' : ''}" data-pacts><p class="lp-h">Quick <b>Actions</b></p>
           <div class="lp-tiles${a.list.length > 3 ? ' is-many' : ''}">${a.list.map(k => `<button type="button" class="lp-tile${actKey === k ? ' is-sel' : ''}" data-pact="${k}">${icon(ACTIONS[k][1])}<span>${esc(actLabel(k))}</span></button>`).join('')}</div></div>` : ''}
-        ${f.on ? `<div class="lp-sec lp-fq-sec${qIdx >= 0 ? ' is-sel' : ''}" data-pfaqs><p class="lp-h">Frequently Asked <b>Questions</b></p>
-          ${f.list.length ? '' : '<p class="lp-faqs-empty">FAQs yet to be added</p>'}
+        ${f.on && f.list.length ? `<div class="lp-sec lp-fq-sec${qIdx >= 0 ? ' is-sel' : ''}" data-pfaqs><p class="lp-h">Frequently Asked <b>Questions</b></p>
           <div class="lp-faqs">${f.list.map((x, i) => `<div class="lp-faq${openFaq === i ? ' is-open' : ''}${qIdx === i ? ' is-sel' : ''}">
               <button type="button" class="lp-faq-q" data-pfaq="${i}" aria-expanded="${openFaq === i}">${esc(x.q)}<span class="lp-chev">${I.chev}</span></button>
               ${openFaq === i ? `<p class="lp-faq-a">${esc(x.a)}</p>` : ''}</div>`).join('')}</div></div>` : ''}
