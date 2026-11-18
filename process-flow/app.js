@@ -3288,7 +3288,11 @@
   /* ================= Footer ================= */
   $('#backBtn').addEventListener('click', goToModuleDashboard);
   $('#moduleBackBtn').addEventListener('click', goToModuleDashboard);
-  $('#guidesBtn').addEventListener('click', () => toast('Tutorials and Guides will open here.'));
+  // Inside Studio: open Studio's Tutorials and Guides panel; on its own: a note
+  $('#guidesBtn').addEventListener('click', () => {
+    try { if (window.parent !== window && window.parent.Studio?.openGuides) return window.parent.Studio.openGuides(); } catch { /* other site */ }
+    toast('Tutorials and Guides will open here.');
+  });
   $('#saveBtn').addEventListener('click', () => {
     clearTimeout(saveTimer);
     try {
