@@ -256,3 +256,18 @@ button.lp-tile.is-sel { box-shadow: 0 1px 3px rgba(0,0,0,.12); background: #fff;
 .lp-screen .lp-hero, .lp-screen .lp-sec, .lp-screen .lp-faq, .lp-screen .lp-tile { scroll-margin-top: 60px; scroll-margin-bottom: 12px; }
 /* FAQ row bins: 20px, same as the bins in form field cards and dashboard items */
 .lp-li-btn svg { width: 20px; height: 20px; }
+
+/* FAQ empty state (2026-11-18): side panel + phone preview */
+.lp-faq-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 12px; padding: 16px; border: 1px dashed #B1B4B6; border-radius: 8px; background: #fff; text-align: center; }
+.lp-faq-empty-ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #EEEEEE; color: #505A5F; font-weight: 700; font-size: 16px; }
+.lp-faq-empty-t { margin: 0; font-size: 14px; font-weight: 500; color: #505A5F; }
+.lp-faqs-empty { margin: 8px 0 0; padding: 12px; border-radius: 8px; background: #fff; border: 1px dashed #B1B4B6; text-align: center; font-size: 12px; color: #505A5F; }
+
+/* FAQ empty state = the shared Studio empty state (same art, title, text, primary CTA), sized for the side panel */
+.lp-faq-es { margin-top: 12px; padding: 24px 16px; gap: 12px; box-shadow: none; border: 1px solid #D6D5D4; }
+.lp-faq-es .es-art-new { width: 96px; height: auto; }
+.lp-faq-es .es-title { font-size: 18px; }
+.lp-faq-es .es-text { font-size: 14px; max-width: 260px; }
+.lp-faq-es .es-cta { height: 40px; }
+/* FAQ empty = the form builder's grey dashed "no fields" row (same look as workflow / form lists) */
+.lp-faq-none { margin: 12px 0 0; }

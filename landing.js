@@ -177,7 +177,8 @@
       <div class="lp-content">
         ${a.on && a.list.length ? `<div class="lp-qa-sec lp-sec${actsOpen ? ' is-sel' : ''}" data-pacts><p class="lp-h">Quick <b>Actions</b></p>
           <div class="lp-tiles${a.list.length > 3 ? ' is-many' : ''}">${a.list.map(k => `<button type="button" class="lp-tile${actKey === k ? ' is-sel' : ''}" data-pact="${k}">${icon(ACTIONS[k][1])}<span>${esc(actLabel(k))}</span></button>`).join('')}</div></div>` : ''}
-        ${f.on && f.list.length ? `<div class="lp-sec lp-fq-sec${qIdx >= 0 ? ' is-sel' : ''}" data-pfaqs><p class="lp-h">Frequently Asked <b>Questions</b></p>
+        ${f.on ? `<div class="lp-sec lp-fq-sec${qIdx >= 0 ? ' is-sel' : ''}" data-pfaqs><p class="lp-h">Frequently Asked <b>Questions</b></p>
+          ${f.list.length ? '' : '<p class="lp-faqs-empty">FAQs yet to be added</p>'}
           <div class="lp-faqs">${f.list.map((x, i) => `<div class="lp-faq${openFaq === i ? ' is-open' : ''}${qIdx === i ? ' is-sel' : ''}">
               <button type="button" class="lp-faq-q" data-pfaq="${i}" aria-expanded="${openFaq === i}">${esc(x.q)}<span class="lp-chev">${I.chev}</span></button>
               ${openFaq === i ? `<p class="lp-faq-a">${esc(x.a)}</p>` : ''}</div>`).join('')}</div></div>` : ''}
@@ -225,7 +226,8 @@
             <button type="button" class="switch" role="switch" data-lsw="faq" aria-checked="${f.on}" aria-labelledby="lp-fq-sw"><span class="switch-knob" aria-hidden="true"></span></button></div>
           ${f.on ? `${f.list.length ? `<ul class="lp-ll" aria-label="Frequently Asked Questions">${f.list.map((x, i) => `<li class="lp-li">
               <button type="button" class="lp-li-open" data-editfaq="${i}" aria-label="Edit FAQ ${i + 1}: ${esc(x.q)}">FAQ ${i + 1}</button>
-              <button type="button" class="lp-li-btn" data-rmfaq="${i}" aria-label="Delete FAQ ${i + 1}">${I.trash}</button></li>`).join('')}</ul>` : ''}
+              <button type="button" class="lp-li-btn" data-rmfaq="${i}" aria-label="Delete FAQ ${i + 1}">${I.trash}</button></li>`).join('')}</ul>`
+              : `<p class="field-empty lp-faq-none" role="status"><svg class="field-empty-ico" aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4M4 13l2.5-7h11L20 13v5a1 1 0 01-1 1H5a1 1 0 01-1-1z"/></svg><span>FAQs yet to be added.</span></p>`}
             <button type="button" class="btn btn-secondary lp-ic-add" id="lp-add-faq">${I.plus} Add FAQ</button>` : ''}
         </div>
       </div>`;
