@@ -230,6 +230,7 @@
   // Top-left back: Manage Documents → module dashboard; every later screen → the previous step (same as the footer Back)
   function topBack() {
     const a = $('dc-back-top'); if (!a) return;
+    a.hidden = screen === 'list';   // the list screen has breadcrumbs instead of Back to Module Dashboard
     if (screen === 'list') { a.href = '#/module/' + encodeURIComponent(mod.id); return; }
     const b = document.createElement('button');
     b.type = 'button'; b.className = a.className; b.id = 'dc-back-top'; b.innerHTML = `${I.back} Back`;

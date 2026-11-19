@@ -124,6 +124,19 @@
   .br-dash.is-mobile, .br-dash.is-tablet { margin: 0 auto; }
   .br-dash.is-mobile { max-width: 390px; } .br-dash.is-tablet { max-width: 768px; }
   .br-dash.is-mobile .pv-screen, .br-dash.is-tablet .pv-screen { height: 600px; overflow-y: auto; }
+  /* Device frames at fixed CSS-pixel sizes (like browser dev tools / Figma / Webflow previews):
+     zooming in makes the device bigger and the canvas scrolls; the device is never squeezed to fit. */
+  .br-preview.is-dash { overflow: auto; justify-items: safe center; }
+  .br-dash.is-mobile, .br-dash.is-tablet { position: relative; flex: none; max-width: none; box-sizing: content-box; overflow: visible;
+    border: 0; background: #1B1B1F; box-shadow: 0 0 0 2px #3A3A40, 0 24px 60px rgba(0,0,0,.45); }
+  .br-dash.is-mobile { width: 375px; padding: 12px; border-radius: 54px; }
+  .br-dash.is-tablet { width: 768px; padding: 20px; border-radius: 34px; }
+  .br-dash.is-mobile .br-dash-chrome, .br-dash.is-tablet .br-dash-chrome { display: none; }   /* browser dots only on Laptop */
+  .br-dash.is-mobile .pv-screen { height: 760px; min-height: 0; border-radius: 42px; overflow: hidden auto; padding-top: 44px; box-sizing: border-box; }
+  .br-dash.is-tablet .pv-screen { height: 900px; min-height: 0; border-radius: 16px; overflow: hidden auto; }
+  .br-dash.is-mobile::before { content: ''; position: absolute; z-index: 2; top: 24px; left: 50%; width: 110px; height: 30px; margin-left: -55px; border-radius: 20px; background: #000; }   /* dynamic island */
+  .br-dash.is-mobile::after { content: ''; position: absolute; z-index: 2; bottom: 20px; left: 50%; width: 124px; height: 5px; margin-left: -62px; border-radius: 3px; background: rgba(0,0,0,.35); }   /* home indicator */
+  .br-dash.is-tablet::before { content: ''; position: absolute; top: 9px; left: 50%; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #3A3A40; }   /* front camera */
   #pv-dev.br-preview-bar { justify-content: center; position: sticky; top: 0; z-index: 3; padding-top: 16px !important; padding-bottom: 12px !important; height: auto !important; flex-shrink: 0; background: #4A4A4A; }   /* stays in view while the preview scrolls */
   /* device choice: the DIGIT Toggle used on the module dashboard (square, equal-width segments, grey border, selected = orange) */
   .pv-seg { display: inline-flex; border: 1px solid #D6D5D4; border-radius: 4px; background: #fff; overflow: hidden; }

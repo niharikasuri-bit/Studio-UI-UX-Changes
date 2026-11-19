@@ -10,6 +10,7 @@
     copy: '<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
     open: '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
     idcard: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.6-1.5 1.7-2 3-2s2.4.5 3 2M14 10h4M14 13h3"/>',
+    manageUsers: '<path d="M14 13H19V11H14V13ZM14 10H19V8H14V10ZM5 16H13V15.45C13 14.7 12.6333 14.1042 11.9 13.6625C11.1667 13.2208 10.2 13 9 13C7.8 13 6.83333 13.2208 6.1 13.6625C5.36667 14.1042 5 14.7 5 15.45V16ZM10.4125 11.4125C10.8042 11.0208 11 10.55 11 10C11 9.45 10.8042 8.97917 10.4125 8.5875C10.0208 8.19583 9.55 8 9 8C8.45 8 7.97917 8.19583 7.5875 8.5875C7.19583 8.97917 7 9.45 7 10C7 10.55 7.19583 11.0208 7.5875 11.4125C7.97917 11.8042 8.45 12 9 12C9.55 12 10.0208 11.8042 10.4125 11.4125ZM4 20C3.45 20 2.97917 19.8042 2.5875 19.4125C2.19583 19.0208 2 18.55 2 18V6C2 5.45 2.19583 4.97917 2.5875 4.5875C2.97917 4.19583 3.45 4 4 4H20C20.55 4 21.0208 4.19583 21.4125 4.5875C21.8042 4.97917 22 5.45 22 6V18C22 18.55 21.8042 19.0208 21.4125 19.4125C21.0208 19.8042 20.55 20 20 20H4ZM4 18H20V6H4V18Z" fill="currentColor" stroke="none"/>',   // DIGIT library: ManageUsers
     lang: '<path d="M4 5h9M8.5 3v2M6 5c.6 3 2.6 5.5 5.5 7M11 5c-.8 3.5-3 6.3-6 8"/><path d="M12 21l4.5-10L21 21M13.6 17.5h5.8"/>',
     alert: '<circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="M12 7.5v5.5M12 16.2v.3" stroke="#fff" stroke-width="2.4"/>',
     plus: '<rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor" stroke="none"/><path d="M12 8v8M8 12h8" stroke="#fff" stroke-width="2.4"/>',
@@ -112,7 +113,7 @@
   const VIEW_NAME = { 'Service Landing Page': 'Landing Page' };
   function viewBtn(card, href) {
     const t = (card.querySelector('.card-title') || {}).textContent || '';
-    return `<button type="button" class="btn btn-secondary pb-view">${ic('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', 16)} View ${esc(VIEW_NAME[t] || t)}</button>`;   // goes nowhere for now
+    return `<a class="btn btn-secondary pb-view" href="${href}">${ic('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', 16)} View ${esc(VIEW_NAME[t] || t)}</a>`;   // goes nowhere for now
   }
   // the service page's own Service Configuration cards
   function serviceGrid() {
@@ -142,7 +143,7 @@
           </div>` : `
           <div class="pb-url">
             <div class="pb-url-txt"><p class="pb-url-k" id="pb-u${i}">${k}</p><a class="pb-url-a" href="#" aria-describedby="pb-u${i}">${esc(u)}</a></div>
-            <button type="button" class="pb-icon-btn" data-copy="${esc(u)}" aria-label="Copy ${k} link">${ic(I.copy, 18)}</button>
+            <button type="button" class="pb-icon-btn" data-copy="${esc(u)}" aria-label="Copy ${k} link"><svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"/></svg></button>
             <a class="btn btn-primary pb-open" href="#" aria-label="Open ${k}">${ic(I.open, 14)} Open</a>
           </div>`).join('')}</div>
       </section>
@@ -154,10 +155,10 @@
         </div>
         <div class="pb-panel" id="pb-panel" role="tabpanel" aria-labelledby="${tab === 'users' ? 'pb-tab-users' : 'pb-tab-tr'}">
           ${tab === 'users' ? `
-            <h2 class="pb-h"><span class="card-icon pb-ic-lg">${ic(I.idcard, 24)}</span>Manage User</h2>
+            <h2 class="pb-h"><span class="card-icon pb-ic-lg">${ic(I.manageUsers, 24)}</span>Manage User</h2>
             <p class="card-desc">Add the users who will work on this service and give them roles to decide what each user can do.</p>
             ${n ? `<ul class="pb-ucount" aria-label="Users by role">${roles.map(([r, c]) => `<li><b>${c} ${c === 1 ? 'User' : 'Users'}</b><span>${esc(r)}</span></li>`).join('')}</ul>
-            <div class="pb-foot"><a class="btn btn-secondary" href="#/users">${ic(I.idcard, 16)} Manage Users</a><a class="btn btn-primary" href="#/users/new">${ic('<path d="M12 5v14M5 12h14" stroke-width="2.4"/>', 16)} Add User</a></div>`
+            <div class="pb-foot"><a class="btn btn-secondary" href="#/users">${ic(I.manageUsers, 16)} Manage Users</a><a class="btn btn-primary" href="#/users/new">${ic('<path d="M12 5v14M5 12h14" stroke-width="2.4"/>', 16)} Add User</a></div>`
             : `<p class="pb-note">${ic(I.alert, 18)} Users yet to be added</p>
             <div class="pb-foot is-empty"><a class="btn btn-primary" href="#/users/new">${ic('<path d="M12 5v14M5 12h14" stroke-width="2.4"/>', 16)} Add User</a></div>`}`
           : `
@@ -203,5 +204,5 @@
     e.preventDefault(); tabs[(i + k + tabs.length) % tabs.length].click();
   });
 
-  window.StudioPublished = { render: started => render(started ? 'title' : null) };
+  window.StudioPublished = { render: started => render(started ? 'title' : null), moduleBlock: m => moduleBlock(m), serviceGrid: () => serviceGrid() };
 })();

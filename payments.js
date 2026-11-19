@@ -58,7 +58,6 @@
   const view = $('view-payments');
   view.innerHTML = `
     <div class="subbar">
-      <a class="btn btn-secondary" id="py-back-top" href="#">${I.back} Back to Module Dashboard</a>
       <button type="button" class="btn btn-secondary">${I.guides} Tutorials and Guides</button>
     </div>
     <main class="content nt-main">
@@ -420,7 +419,7 @@
       mod = m;
       if (!store[m.id]) { store[m.id] = seed(); save(); }
       list = store[m.id];
-      $('py-back-top').href = '#/module/' + encodeURIComponent(m.id);
+      ($('py-back-top') || {}).href = '#/module/' + encodeURIComponent(m.id);
       render();
       if (focus) $('py-title').focus();
     },

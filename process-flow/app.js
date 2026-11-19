@@ -2823,7 +2823,11 @@
     }
   });
 
+  const viewOnly = () => document.body.classList.contains('view-mode');   // set by Studio when opened view only
+  // view only: the properties panel can be read, not typed into
+  ['beforeinput', 'paste', 'drop'].forEach((t) => document.addEventListener(t, (e) => { if (viewOnly() && e.target.closest && e.target.closest('#inspector')) e.preventDefault(); }, true));
   window.addEventListener('pointermove', (e) => {
+    if (gesture && viewOnly() && gesture.kind !== 'pan') return;   // view only: states can't be moved or connected
     if (!gesture) {
       if (connectFrom) drawGhost(connectFrom, e.clientX, e.clientY);
       return;
@@ -3076,6 +3080,7 @@
 
   /* ================= Keyboard ================= */
   function onNodeKey(e, s) {
+    if (viewOnly() && e.key !== 'Enter' && e.key !== ' ') return;   // view only: select, nothing else
     const moves = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -3112,6 +3117,7 @@
 
   document.addEventListener('keydown', (e) => {
     if ($('#configDialog').open || $('#helpDialog').open || $('#kbDialog').open || deleteDialog.open) return;
+    if (viewOnly() && (e.key === 'Delete' || e.key === 'Backspace')) return;
     if (e.key === 'Escape') {
       if (connectFrom) cancelConnect();
       else if (issuesOpen) closeIssues();

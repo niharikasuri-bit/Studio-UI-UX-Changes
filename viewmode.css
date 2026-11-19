@@ -9,13 +9,20 @@
 /* hide what changes the configuration */
 body.view-mode :is(#view-form, #view-roles, #view-notifications, #view-checklists, #view-payments, #view-documents, #view-landing, #view-dashboard)
   :is(.btn-primary, .form-foot .btn:not(:first-child), .nt-foot, .rt-foot, .fp-foot, .lg-foot, [data-edit], [data-dup], [data-del], [data-delete], [data-remove],
-      .add-card, .nt-add, .es-cta, .switch, [draggable="true"]:not(.db-card), .db-card-acts, .db-rz, .field-actions, .pf-file-actions) { display: none !important; }
+      .add-card, .nt-add, .es-cta, .db-card-acts, .db-rz, .field-actions, .pf-file-actions) { display: none !important; }
+/* draggable rows (section fields, FAQs, palette items) stay visible — they just can't be dragged; toggles show their state but can't be flipped */
+body.view-mode :is(#view-form, #view-landing, #view-dashboard, #view-citizen, #view-documents) [draggable="true"] { cursor: default !important; }
+body.view-mode :is(#view-form, #view-roles, #view-notifications, #view-checklists, #view-payments, #view-documents, #view-landing, #view-dashboard, #view-citizen) .switch { pointer-events: none !important; }
 /* fields can be read, not typed into (search and filters still work) */
 body.view-mode :is(#view-form, #view-roles, #view-notifications, #view-checklists, #view-payments, #view-documents, #view-landing, #view-dashboard)
   :is(input, select, textarea, [contenteditable="true"]):not([type="search"]):not(.nt-filters *) { pointer-events: none !important; background-color: #FAFAFA !important; }
 body.view-mode .actionbar { display: none !important; }
 /* the floating banner sits over the bottom bar: give the page room */
-body.view-mode :is(#view-form, #view-roles, #view-notifications, #view-checklists, #view-payments, #view-documents, #view-landing, #view-dashboard) { padding-bottom: 72px; }
+body.view-mode :is(#view-roles, #view-notifications, #view-checklists, #view-payments) { padding-bottom: 72px; }
+/* view only: the screens' own backs and footers go; our Back (blue header + floating card) stays */
+body.view-mode :is(#view-form, #view-roles, #view-notifications, #view-checklists, #view-payments, #view-documents, #view-landing, #view-dashboard) .subbar > :is(a, button):not(:last-child):not(.vm-top-back) { display: none !important; }
+body.view-mode #subbar #back-btn { display: none !important; }
+body.view-mode :is(#view-form, #view-roles, #view-notifications, #view-checklists, #view-payments, #view-documents, #view-landing, #view-dashboard) .form-foot { display: none !important; }
 
 /* Published Service footer: one primary "Preview Service" */
 .actionbar.is-published > :not(#ab-preview) { display: none !important; }
@@ -23,3 +30,10 @@ body.view-mode :is(#view-form, #view-roles, #view-notifications, #view-checklist
 .vm-hide { display: none !important; }
 .view-banner { flex-wrap: nowrap; white-space: nowrap; }
 @media (max-width: 760px) { .view-banner { flex-wrap: wrap; white-space: normal; } }
+
+/* room under the scrolling content so the floating View only card never covers the last thing on screen (e.g. the form's section switcher) */
+body.view-mode :is(#view-form, #view-documents, #view-landing, #view-dashboard, #view-citizen) :is(.form-main, .fp-scroll, .db-main, .lp-main) { padding-bottom: 112px !important; }
+/* the landing page's FAQ rows are buttons named "Edit FAQ …": keep them visible (they open the read-only FAQ) */
+body.view-mode :is(#view-landing, #view-citizen) .lp-li-open.vm-hide { display: block !important; }
+/* dashboard: with Keyboard Shortcuts hidden, Tutorials and Guides stays on the right */
+body.view-mode #view-dashboard .db-topbar .db-guides { margin-left: auto !important; }

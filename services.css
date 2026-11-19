@@ -50,3 +50,76 @@
 /* draft version tag next to the service name (service and module pages) */
 .draft-tag { display: inline-flex; align-items: center; gap: 4px; vertical-align: middle; margin-left: 12px; height: 28px; padding: 0 10px; border-radius: 6px;
              background: #FFF6E5; border: 1px solid #F3D9A6; color: #9E5F00; font-size: 14px; font-weight: 700; }
+
+/* ---------- #/services/all (copy of the Studio landing) ---------- */
+.sva-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.sva-head .sv-desc { margin-bottom: 0; }
+.sva-import { flex: none; height: 36px; min-height: 36px; padding: 0 20px; font-size: 16px; gap: 8px; }
+.sva-tabs { position: relative; z-index: 1; display: flex; align-items: flex-end; margin-top: 24px; }   /* above the box, so the Drafts bottom line shows */
+.sva-tab + .sva-tab { margin-left: -1px; }   /* tabs sit side by side, sharing a border */
+.sva-head .page-title { margin-bottom: 12px; }
+.sva-tab { height: 56px; min-width: 140px; padding: 0 28px; border: 1px solid var(--border); border-radius: 8px 8px 0 0; background: #F3F3F3;
+  font: 400 18px Roboto, sans-serif; color: #707070; cursor: pointer; }   /* non-selected: full border incl. a bottom line */
+.sva-tab[aria-selected="true"] { height: 64px; background: var(--surface); color: var(--primary); font-weight: 700; border-color: var(--primary); border-bottom: 0; box-shadow: inset 0 -3px 0 var(--primary); }
+.sva-tab:hover:not([aria-selected="true"]) { color: #A33E0B; background: #FBEEE8; }
+.sva-tab:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.sva-box { padding: 0 !important; overflow: visible; }
+.sva-tabs + .sva-box { margin-top: -9px; border-top-left-radius: 0; }   /* tabs sit right on the white box (cancels the page's 8px gap) */
+.sva-tab[aria-selected="true"] { position: relative; z-index: 1; }
+.sva-grid { display: grid; grid-template-columns: repeat(auto-fill, min(100%, 340px)); gap: 28px; padding: 28px; }   /* fixed 340px cards, like the reference */
+.sva .sv-new { min-height: 280px; border: 1px dashed var(--primary); background: #FFFBF8; color: var(--primary);   /* same as the Add New Module card */
+  box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.08); }
+.sva .sv-new:hover { background: var(--primary-tint); }
+.sva .sv-new .sva-plus { color: var(--primary); }
+.sva-card { gap: 12px !important; }
+.sva-card .card-title, .sva-tcard .card-title { font-size: 18px; line-height: 1.3; }
+.sva-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.sva-menu-wrap { position: relative; flex: none; }
+.sva-kebab { display: grid; place-items: center; width: 32px; height: 32px; margin: -4px -8px 0 0; border: 0; border-radius: 4px; background: none; color: var(--primary); cursor: pointer; }
+.sva-kebab:hover { background: #FBEEE8; }
+.sva-kebab:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.sva-menu { position: absolute; right: 0; top: calc(100% + 4px); z-index: 5; min-width: 160px; padding: 4px 0; background: #fff; border: 1px solid #D6D5D4; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+.sva-menu button { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 40px; padding: 0 12px; border: 0; background: none; font: 400 16px Roboto, sans-serif; color: #363636; text-align: left; cursor: pointer; }
+.sva-menu button:hover, .sva-menu button:focus-visible { background: #FBEEE8; outline: none; }
+.sva-menu button svg { flex: none; color: #505A5F; }
+.sva-menu button.is-danger, .sva-menu button.is-danger svg { color: #B91900; }
+.sva-meta { margin: 0 !important; }
+.sva-meta .tag { display: inline-flex; align-items: center; gap: 4px; }
+/* date + V1 use the activation-state tag (tag-info), V2 the amber tag-warn; V3 and later lavender (6.2:1) */
+.tag.sva-ver-3 { background: #F1EDFD; color: #5B3FC4; border: 1px solid #C9BDF5; font-weight: 700; border-radius: 6px; }
+.sva-img { height: 100px; border-radius: 6px; display: grid; place-items: center; color: #BDBDBD; }
+.sva-acts .btn { height: 36px; min-height: 36px; font-size: 16px; }
+.sva-more { display: flex; justify-content: center; padding: 0 28px 28px; }
+.sva-more .btn { min-width: 160px; gap: 8px; }
+.sva-tpl { margin-top: 16px; }
+.sva-tpl-title { margin: 0; padding: 28px 28px 0; }
+.sva-tcard { gap: 16px !important; }
+.sva-timg { height: 120px; }
+.sva-tbody { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.sva-tbody .card-title { margin: 0; }
+.sva-tdesc { margin: 0; font-size: 14px; line-height: 1.5; color: #505A5F; }   /* full description, no truncation; buttons stay aligned at the bottom */
+.sva-tcard .sva-acts { margin-top: 0; }
+.sva-tcard .sva-acts { grid-template-columns: 1fr 1fr; gap: 12px; }   /* View Template left, Use Template right */
+.sva-tcard .sva-acts .btn { min-width: 0; padding: 0 10px; gap: 6px; font-size: 15px; white-space: nowrap; }
+.sva-file { height: auto; padding: 8px; }
+@media (max-width: 640px) { .sva-head { flex-direction: column; align-items: flex-start; } .sva-grid { grid-template-columns: 1fr; padding: 16px; } }
+
+.sva-meta .tag svg { flex: none; }
+.sva-import svg, .sva-acts svg { flex: none; }
+
+/* ---------- Template Overview (#/services/template/<n>): same structure + components as Published Service ---------- */
+.tov { gap: 24px; padding-bottom: 32px; }
+.tov-titlerow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.tov-titlerow .page-title { margin: 0; }
+.tov-tag { align-self: center; }
+.tov .pb-urls .section-title { margin: 0; }
+.tov-desc { margin: 0; font-size: 16px; line-height: 1.5; color: #505A5F; max-width: 1000px; }
+.tov-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.tov-fact { align-items: flex-start; }
+.tov-fact-v { margin: 0; font-size: 16px; line-height: 1.37; font-weight: 700; color: #0B4B66; }
+/* cards behave as on Published Service */
+.tov .config-grid .card, .tov .grid-config > .card { min-height: 0; }
+.tov .card-foot { margin-top: auto; }
+.tov .pb-view { height: 32px !important; min-height: 32px !important; min-width: 240px; padding: 0 16px !important; font-size: 14px !important; gap: 6px; }
+.tov-foot { position: sticky; bottom: 0; justify-content: flex-end; gap: 16px; }   /* Preview + Use Template, like Preview + Publish Service */
+.tov-foot .btn { gap: 8px; }

@@ -41,7 +41,6 @@
   const view = $('view-roles');
   view.innerHTML = `
     <div class="subbar">
-      <a class="btn btn-secondary" id="roles-back-top" href="#">${I.back} Back to Module Dashboard</a>
       <button type="button" class="btn btn-secondary">${I.guides} Tutorials and Guides</button>
     </div>
     <main class="content roles-main">
@@ -191,7 +190,7 @@
   window.StudioRoles = {
     render(m, focus) {
       const back = '#/module/' + encodeURIComponent(m.id);
-      $('roles-back-top').href = back;
+      ($('roles-back-top') || {}).href = back;
       render();
       if (focus) $('roles-title').focus();
     },

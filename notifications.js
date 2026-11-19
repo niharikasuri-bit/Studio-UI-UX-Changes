@@ -39,7 +39,6 @@
   const view = $('view-notifications');
   view.innerHTML = `
     <div class="subbar">
-      <a class="btn btn-secondary" id="nt-back-top" href="#">${I.back} Back to Module Dashboard</a>
       <button type="button" class="btn btn-secondary">${I.guides} Tutorials and Guides</button>
     </div>
     <main class="content nt-main">
@@ -411,7 +410,7 @@
       mod = m;
       if (!store[m.id]) { store[m.id] = seed(); save(); }
       list = store[m.id];
-      $('nt-back-top').href = '#/module/' + encodeURIComponent(m.id);
+      ($('nt-back-top') || {}).href = '#/module/' + encodeURIComponent(m.id);
       render();
       if (focus) $('nt-title').focus();
     },

@@ -42,7 +42,6 @@
   const view = $('view-checklists');
   view.innerHTML = `
     <div class="subbar">
-      <a class="btn btn-secondary" id="cl-back-top" href="#">${I.back} Back to Module Dashboard</a>
       <button type="button" class="btn btn-secondary">${I.guides} Tutorials and Guides</button>
     </div>
     <main class="content nt-main">
@@ -362,7 +361,7 @@
       if (!store[m.id]) { store[m.id] = seed(); save(); }
       list = store[m.id];
       list.forEach(c => { delete c.desc; c.questions.forEach(normQ); });
-      $('cl-back-top').href = '#/module/' + encodeURIComponent(m.id);
+      ($('cl-back-top') || {}).href = '#/module/' + encodeURIComponent(m.id);
       render();
       if (focus) $('cl-title').focus();
     },
