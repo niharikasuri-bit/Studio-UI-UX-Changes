@@ -58,7 +58,7 @@
 .sva-tabs { position: relative; z-index: 1; display: flex; align-items: flex-end; margin-top: 24px; }   /* above the box, so the Drafts bottom line shows */
 .sva-tab + .sva-tab { margin-left: -1px; }   /* tabs sit side by side, sharing a border */
 .sva-head .page-title { margin-bottom: 12px; }
-.sva-tab { height: 56px; min-width: 140px; padding: 0 28px; border: 1px solid var(--border); border-radius: 8px 8px 0 0; background: #F3F3F3;
+.sva-tab { height: 56px; min-width: 140px; padding: 0 28px; border: 1px solid var(--border); border-radius: 8px 8px 0 0; background: var(--surface);   /* white, selected or not */
   font: 400 18px Roboto, sans-serif; color: #707070; cursor: pointer; }   /* non-selected: full border incl. a bottom line */
 .sva-tab[aria-selected="true"] { height: 64px; background: var(--surface); color: var(--primary); font-weight: 700; border-color: var(--primary); border-bottom: 0; box-shadow: inset 0 -3px 0 var(--primary); }
 .sva-tab:hover:not([aria-selected="true"]) { color: #A33E0B; background: #FBEEE8; }
