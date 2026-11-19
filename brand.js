@@ -102,8 +102,9 @@
   var doSheets = function () { for (var i = 0; i < document.styleSheets.length; i++) { try { doRules(document.styleSheets[i].cssRules); } catch (e) { /* cross-origin (fonts) */ } } };
 
   /* ---------- markup made by the scripts (inline styles, SVG fill / stroke) ---------- */
-  // Illustrations (empty-state box, no-results box) keep their own colours in every theme: only interface colours follow the theme
-  var ART = '.es-art, .es-art-new, .es-art-search';
+  // Themed illustrations (config cards, dashboard, landing page, form empty state, No results found) follow the theme.
+  // Only the older orange "nothing created yet" box keeps its own colours.
+  var ART = '.es-art-new';
   var doEl = function (el) {
     if (el.nodeType !== 1 || (el.closest && el.closest(ART))) return;
     ['fill', 'stroke', 'stop-color', 'color'].forEach(function (a) { var v = el.getAttribute(a); if (v) { var nv = swap(v); if (nv !== v) el.setAttribute(a, nv); } });
