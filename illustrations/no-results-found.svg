@@ -1,0 +1,7 @@
+<!-- Empty state: No results found (search / filters return nothing)
+     Theme colours only: #C84C0E = Primary 1, #0B4B66 = Primary 2; #FBEEE8 / #F2C3AB = Primary 1 tints; rgba(11, 75, 102, x) = Primary 2 tints; white. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="130" viewBox="0 0 200 130" fill="none"><ellipse cx="100" cy="66" rx="64" ry="56" fill="#FBEEE8"/><ellipse cx="100" cy="122" rx="54" ry="4" fill="rgba(11, 75, 102, 0.1)"/>
+<path d="M66 18h40l14 14v76a4 4 0 0 1-4 4H66a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M106 18v10a4 4 0 0 0 4 4h10" fill="rgba(11, 75, 102, 0.12)" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="72" y="44" width="36" height="4" rx="2" fill="rgba(11, 75, 102, 0.2)"/><rect x="72" y="54" width="28" height="4" rx="2" fill="rgba(11, 75, 102, 0.2)"/><rect x="72" y="64" width="32" height="4" rx="2" fill="rgba(11, 75, 102, 0.2)"/>
+<path d="M141 92l16 16" stroke="#0B4B66" stroke-width="6" stroke-linecap="round"/><circle cx="126" cy="76" r="20" fill="#fff" stroke="#C84C0E" stroke-width="3.5"/>
+<path d="M119 69l14 14M133 69l-14 14" stroke="rgba(11, 75, 102, 0.45)" stroke-width="3" stroke-linecap="round"/></svg>

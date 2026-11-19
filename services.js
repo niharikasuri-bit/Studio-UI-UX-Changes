@@ -229,10 +229,11 @@
         </section>
       </div>
       ${popups()}
-      <dialog class="modal um-alert sv-dlg" id="sva-del" aria-labelledby="sva-del-t" aria-describedby="sva-del-d">
-        <div class="um-alert-head"><svg class="um-alert-ico" aria-hidden="true" focusable="false" width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#B91900" stroke-width="2.2"/><path d="M12 7v6" stroke="#B91900" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1.4" fill="#B91900"/></svg><h2 class="um-alert-title" id="sva-del-t">Delete service?</h2></div>
-        <p class="um-alert-desc" id="sva-del-d">The service and all its versions will be deleted. This action cannot be undone.</p>
-        <div class="um-alert-actions"><button type="button" class="btn btn-secondary" data-close>Cancel</button><button type="button" class="btn btn-primary" id="sva-del-ok">Delete</button></div>
+      <dialog class="modal pfc sv-dlg" id="sva-del" aria-labelledby="sva-del-t" aria-describedby="sva-del-d">
+        <div class="pfc-icon" aria-hidden="true"><svg viewBox="0 0 48 44" width="48" height="48"><path d="M24 2L46 42H2z" fill="#B91900"/><rect x="21.5" y="15" width="5" height="15" rx="1.5" fill="#fff"/><circle cx="24" cy="35.5" r="2.8" fill="#fff"/></svg></div>
+        <h2 class="pfc-title" id="sva-del-t">Delete service?</h2>
+        <p class="pfc-desc" id="sva-del-d">Everything you have created in this service, including its modules and their settings, will be deleted. This action cannot be undone.</p>
+        <div class="pfc-actions"><button type="button" class="btn btn-secondary" data-close>Cancel</button><button type="button" class="btn btn-primary" id="sva-del-ok">Delete</button></div>
       </dialog>
       <dialog class="modal um-alert sva-choicew" id="sva-choice" aria-labelledby="sva-choice-t" aria-describedby="sva-choice-d">
         <button type="button" class="icon-btn modal-close" data-close aria-label="Close">${svg(I.x, 20)}</button>
@@ -319,7 +320,7 @@
     if (ex) { const r = (ALL.tab === 'published' ? ALL.list : ALL.drafts)[+ex.dataset.exp]; closeMenus(); window.Studio?.toast?.(`${r.name} exported`); return; }
     const dl = e.target.closest('[data-del]');
     if (dl) { closeMenus(); ALL.delAt = +dl.dataset.del; const r = (ALL.tab === 'published' ? ALL.list : ALL.drafts)[ALL.delAt];
-      $('sva-del-t').textContent = `Delete ${r.name}?`; $('sva-del-d').innerHTML = `Are you sure you want to delete <strong>${esc(r.name)}</strong>? The service and all its versions will be deleted. This action cannot be undone.`; open('sva-del', dl.closest('.sva-menu-wrap').querySelector('.sva-kebab')); return; }
+      $('sva-del-t').textContent = `Delete ${r.name}?`; $('sva-del-d').innerHTML = `Are you sure you want to delete <strong>${esc(r.name)}</strong>? Everything you have created in this service, including its modules and their settings, will be deleted. This action cannot be undone.`; open('sva-del', dl.closest('.sva-menu-wrap').querySelector('.sva-kebab')); return; }
     if (e.target.closest('#sva-del-ok')) { const rows = ALL.tab === 'published' ? ALL.list : ALL.drafts, r = rows.splice(ALL.delAt, 1)[0];
       $('sva-del').close(); landingAll('#sva-import'); window.Studio?.toast?.(`${r.name} deleted`); return; }
     const ed = e.target.closest('[data-svaedit]');

@@ -8,14 +8,15 @@
   const $ = id => document.getElementById(id);
   const KEY = 'studio-prototype.roles.v1';
   const ACCESS = [
-    { v: 'VIEWER', t: 'Viewer', d: 'Can view everything in the service. Cannot edit anything or add anything new.' },
-    { v: 'EDITOR', t: 'Editor', d: 'Can edit anything that was already created in the service. Cannot add anything new.' },
-    { v: 'CREATOR', t: 'Creator', d: 'Can add new things to the service, and view and edit everything in the service. Has full access.' },
+    { v: 'VIEWER', t: 'Viewer', d: 'Can view everything in the service. Every role has this access.' },   // always included, can't be unticked
+    { v: 'EDITOR', t: 'Editor', d: 'Can edit what has already been made in the service.' },
+    { v: 'CREATOR', t: 'Creator', d: 'Can create the service and publish it as well.' },
   ];
   let roles = [{ code: 'CITIZEN', name: 'Citizen', fixed: true, desc: 'Access citizen services through portal', access: ['VIEWER'] }];
   try { const saved = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(saved) && saved.length) roles = saved; } catch (e) {}
   // Citizen starts as View only; its access can be changed later
   roles.forEach(r => { if (r.code === 'CITIZEN') { r.desc = r.desc || 'Access citizen services through portal'; if (!r.access || !r.access.length) r.access = ['VIEWER']; } });
+  roles.forEach(r => { if (Array.isArray(r.access) && !r.access.includes('VIEWER')) r.access.unshift('VIEWER'); });
   const TAG = { CREATOR: ['Create', 'rt-create'], EDITOR: ['Edit', 'rt-edit'], VIEWER: ['View', 'rt-view'] };
   const TINTS = ['#FAF5F0', '#EEF5F7', '#F3F4FC', '#EFF7F0'];
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(roles)); } catch (e) {} };
@@ -82,7 +83,7 @@
             <legend class="label">What kind of access do you want to give the role? <span class="req" aria-hidden="true">*</span></legend>
             ${ACCESS.map(a => `
             <label class="rm-card">
-              <input type="checkbox" name="role-access" value="${a.v}">
+              <input type="checkbox" name="role-access" value="${a.v}"${a.v === 'VIEWER' ? ' checked disabled' : ''}>
               <span class="rm-box" aria-hidden="true"></span>
               <span><span class="rm-label">${a.t}</span><span class="rm-text">${a.d}</span></span>
             </label>`).join('')}
@@ -146,7 +147,7 @@
     nameEl.value = r ? r.name : '';
     nameEl.readOnly = fixed;                        // Citizen keeps its name …
     $('role-desc').value = r ? (r.desc || '') : '';
-    boxes().forEach(c => { c.checked = r ? r.access.includes(c.value) : c.value === 'VIEWER'; });
+    boxes().forEach(c => { c.checked = c.value === 'VIEWER' || !!(r && r.access.includes(c.value)); });
     nameErr(''); $('role-access-err').hidden = true;
     dlg.showModal(); (fixed ? $('role-desc') : nameEl).focus();
   }
@@ -161,11 +162,8 @@
     if (v && v[0] !== v[0].toLocaleUpperCase()) { const a = nameEl.selectionStart; nameEl.value = v[0].toLocaleUpperCase() + v.slice(1); nameEl.setSelectionRange(a, a); }
     if (nameEl.value.trim()) nameErr('');
   });
-  // Access builds up: Editor includes Viewer, Creator includes all three. Unticking a level unticks the ones above it.
-  boxes().forEach((c, i, all) => c.addEventListener('change', () => {
-    all.forEach((x, j) => { if (c.checked && j < i) x.checked = true; if (!c.checked && j > i) x.checked = false; });
-    if (c.checked) $('role-access-err').hidden = true;
-  }));
+  // Viewer is always on; Editor and Creator are ticked on their own (no level ticks another)
+  boxes().forEach(c => c.addEventListener('change', () => { if (c.checked) $('role-access-err').hidden = true; }));
   $('role-form').addEventListener('submit', e => {
     e.preventDefault();
     const name = nameEl.value.trim().replace(/\s+/g, ' '), code = toCode(name);

@@ -1440,6 +1440,8 @@ button { cursor: pointer; }
 .doc-wiz-err { margin-top: 12px; text-align: center; }
 .doc-choice .nf-box + .nf-box { margin-top: 16px; }
 .doc-choice select:disabled { background: #F5F5F5; color: #363636; }
+/* Create New Role: Viewer is always included; looks like any selected access, it just can't be unticked */
+.role-access .radio-card:has(input:disabled), .role-access .radio-card input:disabled { cursor: default; opacity: 1; }
 .doc-choice .radio-card.is-disabled { opacity: 1; cursor: not-allowed; border-color: #D6D5D4; background: #FAFAFA; }
 .doc-choice .radio-card.is-disabled .radio-card__label, .doc-choice .radio-card.is-disabled .radio-card__text { color: #707070; }
 

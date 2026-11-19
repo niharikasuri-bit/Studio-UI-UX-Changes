@@ -1,0 +1,7 @@
+<!-- Module dashboard: Documents card
+     Theme colours only: #C84C0E = Primary 1, #0B4B66 = Primary 2; #FBEEE8 / #F2C3AB = Primary 1 tints; rgba(11, 75, 102, x) = Primary 2 tints; white. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="130" viewBox="0 0 200 130" fill="none"><ellipse cx="100" cy="66" rx="64" ry="56" fill="#FBEEE8"/><ellipse cx="100" cy="122" rx="54" ry="4" fill="rgba(11, 75, 102, 0.1)"/>
+<rect x="56" y="26" width="62" height="82" rx="6" fill="rgba(11, 75, 102, 0.12)" stroke="#0B4B66" stroke-width="2" transform="rotate(-8 87 67)"/>
+<path d="M80 16h44l16 16v80a4 4 0 0 1-4 4H80a4 4 0 0 1-4-4V20a4 4 0 0 1 4-4z" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M124 16v12a4 4 0 0 0 4 4h12" fill="rgba(11, 75, 102, 0.12)" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="86" y="30" width="28" height="6" rx="3" fill="#0B4B66"/><rect x="86" y="46" width="44" height="4" rx="2" fill="rgba(11, 75, 102, 0.3)"/><rect x="86" y="56" width="44" height="4" rx="2" fill="rgba(11, 75, 102, 0.3)"/><rect x="86" y="66" width="30" height="4" rx="2" fill="rgba(11, 75, 102, 0.3)"/><rect x="86" y="80" width="22" height="4" rx="2" fill="rgba(11, 75, 102, 0.2)"/>
+<circle cx="126" cy="98" r="12" fill="#C84C0E" stroke="#fff" stroke-width="3"/><circle cx="126" cy="98" r="6" stroke="#fff" stroke-width="2"/></svg>

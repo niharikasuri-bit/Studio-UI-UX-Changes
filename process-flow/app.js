@@ -895,16 +895,9 @@
     roleName.focus();
   }
   roleName.addEventListener('input', () => roleName.value.trim() && clError(roleName, ''));
-  // Access builds up: Editor includes Viewer, Creator includes all three.
-  // Ticking a level ticks the ones below it; unticking a level unticks the ones above it.
-  roleAccessInputs().forEach((c, i, all) =>
-    c.addEventListener('change', () => {
-      all.forEach((x, j) => {
-        if (c.checked && j < i) x.checked = true;
-        if (!c.checked && j > i) x.checked = false;
-      });
-      if (c.checked) $('#roleAccessErr').hidden = true;
-    })
+  // Viewer is always on (locked); Editor and Creator are ticked on their own (no level ticks another)
+  roleAccessInputs().forEach((c) =>
+    c.addEventListener('change', () => { if (c.checked) $('#roleAccessErr').hidden = true; })
   );
   $('#roleConfirm').addEventListener('click', () => {
     if (!roleCtx) return;

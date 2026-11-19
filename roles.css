@@ -168,3 +168,6 @@
 .rm-body { position: static; }
 .rm-body > .modal-head { position: sticky; top: -24px; z-index: 2; margin: -24px -24px -8px; padding: 24px 56px 8px 24px; background: #fff; }
 .role-modal .modal-close { z-index: 3; background: #fff; }
+
+/* Viewer: always included; looks like any selected access, it just can't be unticked */
+.rm-card:has(input:disabled) { cursor: default; }

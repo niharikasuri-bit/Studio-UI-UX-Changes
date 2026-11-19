@@ -74,6 +74,10 @@
   .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
   .subbar { height: 56px; background: var(--subbar); border-bottom: 1px solid #C7DBF0; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+  /* blue header and breadcrumbs stay in place while the page scrolls (under the 64px white header) */
+  .subbar { position: sticky; top: 64px; z-index: 14; }
+  .form-view > .subbar { top: 0; }   /* builder / designer screens scroll inside themselves: the bar sits at their top, as before */
+  .digit-crumbs { position: sticky; top: 120px; z-index: 13; background: var(--page-bg); }
 
   /* ---------- Buttons (h = 32) ---------- */
   .btn {
@@ -356,12 +360,12 @@
   select:not([multiple]):not([size]):disabled { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z' fill='%23B1B4B6'/%3E%3C/svg%3E") !important; }
 </style>
 <link rel="stylesheet" href="form.css?v=1795090026" />
-<link rel="stylesheet" href="roles.css?v=17944720800" />
+<link rel="stylesheet" href="roles.css?v=1795092489" />
 <link rel="stylesheet" href="notifications.css?v=1794479799" />
 <link rel="stylesheet" href="checklists.css?v=17944720800" />
 <style>
   /* DIGIT Breadcrumbs: orange links, grey "/" separators, current page grey (#505A5F for contrast on the grey page) */
-  .digit-crumbs { margin: -10px 0 12px; }   /* closer to the blue header, clear gap above the page title */
+  .digit-crumbs { margin: -22px -24px 0; padding: 12px 24px; }   /* same place as before; the padding is the sticky band's background */   /* closer to the blue header, clear gap above the page title */
   .subbar > .btn:last-child { margin-left: auto; }   /* Tutorials and Guides stays right when there is no back button */   /* sits close above the page title */
   .digit-crumbs ol { display: flex; flex-wrap: wrap; align-items: center; margin: 0; padding: 0; list-style: none; font-size: 16px; line-height: 1.37; }
   .digit-crumbs li { display: flex; align-items: center; }
@@ -375,7 +379,7 @@
   .digit-crumbs-back:hover { color: #A33E0B; }
   .digit-crumbs-back:focus-visible { outline: 2px solid var(--heading); outline-offset: 2px; border-radius: 2px; }
 </style>
-<link rel="stylesheet" href="payments.css?v=1795001890" />
+<link rel="stylesheet" href="payments.css?v=1795093095" />
 <link rel="stylesheet" href="documents.css?v=1795091184" />
 <link rel="stylesheet" href="landing.css?v=1794989059" />
 <link rel="stylesheet" href="citizen-landing.css?v=1794989059" />
@@ -384,8 +388,8 @@
 <link rel="stylesheet" href="dashboard.css?v=1795005710" />
 <link rel="stylesheet" href="guides.css?v=1794987504" />
 <link rel="stylesheet" href="viewmode.css?v=1795085782" />
-<link rel="stylesheet" href="services.css?v=1795090989" />
-<link rel="stylesheet" href="published.css?v=1795084069" />
+<link rel="stylesheet" href="services.css?v=1795093095" />
+<link rel="stylesheet" href="published.css?v=1795093151" />
 </head>
 <body>
 <a class="skip" href="#content">Skip to main content</a>
@@ -469,16 +473,7 @@
               <p class="card-desc">Configure the content applicants see and information they need before starting an application.</p>
             </div>
             <div class="card-visual" aria-hidden="true">
-              <svg aria-hidden="true" focusable="false" width="140" height="100" viewBox="0 0 140 100" fill="none">
-                <g stroke="#D6D5D4" stroke-width="1.5" fill="#fff">
-                  <path d="M30 18l10-6 10 6v12l-10 6-10-6z"/><path d="M60 18l10-6 10 6v12l-10 6-10-6z" stroke="#8B7CF6"/><path d="M90 18l10-6 10 6v12l-10 6-10-6z"/>
-                </g>
-                <path d="M65 22h10M65 25h10M65 28h10" stroke="#8B7CF6" stroke-width="1.5"/>
-                <circle cx="70" cy="48" r="5" fill="#2F2E41"/>
-                <path d="M63 56h14l-2 22h-10z" fill="#2F2E41"/>
-                <path d="M65 78l-1 16M75 78l1 16" stroke="#2F2E41" stroke-width="4"/>
-                <path d="M40 95h60" stroke="#D6D5D4"/>
-              </svg>
+              <svg aria-hidden="true" focusable="false" width="150" height="98" viewBox="0 0 200 130" fill="none"><ellipse cx="100" cy="66" rx="64" ry="56" fill="#FBEEE8"/><ellipse cx="100" cy="122" rx="54" ry="4" fill="rgba(11, 75, 102, 0.1)"/><rect x="72" y="10" width="56" height="108" rx="10" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="92" y="15" width="16" height="3" rx="1.5" fill="#0B4B66"/><rect x="78" y="23" width="44" height="26" rx="4" fill="rgba(11, 75, 102, 0.12)"/><rect x="83" y="29" width="26" height="4" rx="2" fill="#0B4B66"/><rect x="83" y="36" width="20" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.35)"/><rect x="83" y="42" width="14" height="4" rx="2" fill="#C84C0E"/><rect x="78" y="54" width="20" height="18" rx="3" fill="#FBEEE8"/><rect x="102" y="54" width="20" height="18" rx="3" fill="#FBEEE8"/><circle cx="88" cy="63" r="3.5" fill="#C84C0E"/><circle cx="112" cy="63" r="3.5" fill="#C84C0E"/><rect x="78" y="78" width="44" height="10" rx="2" fill="#fff" stroke="rgba(11, 75, 102, 0.25)" stroke-width="1.5"/><rect x="78" y="92" width="44" height="10" rx="2" fill="#fff" stroke="rgba(11, 75, 102, 0.25)" stroke-width="1.5"/><rect x="82" y="81.5" width="24" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.35)"/><rect x="82" y="95.5" width="20" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.35)"/><path d="M140 30l3 6 6 3-6 3-3 6-3-6-6-3 6-3z" fill="#F2C3AB"/><circle cx="58" cy="92" r="4" fill="rgba(11, 75, 102, 0.2)"/></svg>
             </div>
             <div class="card-foot">
               <a class="btn btn-primary" id="cta-landing" href="#/landing">Configure Landing Page</a>
@@ -494,16 +489,7 @@
               <p class="card-desc">Configure analytics and reporting to monitor service activity, performance, and key information.</p>
             </div>
             <div class="card-visual" aria-hidden="true">
-              <svg aria-hidden="true" focusable="false" width="140" height="100" viewBox="0 0 140 100" fill="none">
-                <rect x="30" y="14" width="66" height="46" rx="2" fill="#fff" stroke="#2F2E41" stroke-width="3"/>
-                <path d="M38 26h10M38 32h10M38 38h10" stroke="#D6D5D4" stroke-width="1.5"/>
-                <path d="M56 24v26M60 44l8-6 6 4 10-10" stroke="#8B7CF6" stroke-width="1.5"/>
-                <path d="M58 60l-4 10h18l-4-10" fill="#D6D5D4"/>
-                <circle cx="106" cy="40" r="4" fill="#2F2E41"/>
-                <path d="M101 47h10v20h-10z" fill="#8B7CF6"/>
-                <path d="M103 67v16M109 67v16" stroke="#2F2E41" stroke-width="3"/>
-                <path d="M24 86h96" stroke="#D6D5D4"/>
-              </svg>
+              <svg aria-hidden="true" focusable="false" width="150" height="98" viewBox="0 0 200 130" fill="none"><ellipse cx="100" cy="66" rx="64" ry="56" fill="#FBEEE8"/><ellipse cx="100" cy="122" rx="54" ry="4" fill="rgba(11, 75, 102, 0.1)"/><rect x="28" y="14" width="144" height="100" rx="8" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="38" y="24" width="38" height="22" rx="4" fill="#FBEEE8"/><rect x="44" y="30" width="18" height="5" rx="2.5" fill="#C84C0E"/><rect x="44" y="39" width="26" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.3)"/><rect x="81" y="24" width="38" height="22" rx="4" fill="rgba(11, 75, 102, 0.1)"/><rect x="87" y="30" width="18" height="5" rx="2.5" fill="#0B4B66"/><rect x="87" y="39" width="26" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.3)"/><rect x="124" y="24" width="38" height="22" rx="4" fill="rgba(11, 75, 102, 0.1)"/><rect x="130" y="30" width="18" height="5" rx="2.5" fill="#0B4B66"/><rect x="130" y="39" width="26" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.3)"/><rect x="40" y="80" width="9" height="24" rx="2" fill="rgba(11, 75, 102, 0.3)"/><rect x="53" y="66" width="9" height="38" rx="2" fill="#0B4B66"/><rect x="66" y="86" width="9" height="18" rx="2" fill="rgba(11, 75, 102, 0.3)"/><rect x="79" y="60" width="9" height="44" rx="2" fill="#F2C3AB"/><path d="M100 104V92l14-12 12 6 16-20 18 8v30z" fill="#FBEEE8"/><path d="M100 92l14-12 12 6 16-20 18 8" stroke="#C84C0E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="142" cy="66" r="3.5" fill="#fff" stroke="#C84C0E" stroke-width="2"/></svg>
             </div>
             <div class="card-foot">
               <a class="btn btn-primary" id="cta-dashboard" href="#/dashboard">Configure Dashboard</a>
@@ -740,7 +726,7 @@
     `<svg aria-hidden="true" focusable="false" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${ico[name]}</svg>`;
 
   /* Decorative illustrations (hidden from screen readers) */
-  const P = '#2F2E41', V = '#6C63FF', G = '#D6D5D4';
+  const P = '#0B4B66', V = '#C84C0E', G = '#858B8F';
   const person = (x, y, shirt = V) =>
     `<circle cx="${x}" cy="${y}" r="5" fill="${P}"/><path d="M${x - 6} ${y + 7}h12l-1 20h-10z" fill="${shirt}"/><path d="M${x - 3} ${y + 27}v18M${x + 3} ${y + 27}v18" stroke="${P}" stroke-width="3"/>`;
   const art = {
@@ -752,15 +738,12 @@
     roles: `<div class="art-roles">${[['Citizen', '#E3FAF8'], ['Approver', '#FDEDED']].map(([t, bg]) => `
               <div class="art-role"><div class="art-role-top" style="background:${bg}">${svg('user', 16)}</div><div>${t}</div></div>`).join('')}
             </div>`,
-    flow: `<svg width="140" height="110" viewBox="0 0 140 110" fill="none"><rect x="58" y="6" width="22" height="28" fill="#fff" stroke="${P}"/><rect x="62" y="12" width="6" height="6" fill="${V}"/><rect x="62" y="22" width="6" height="6" fill="#E85A71"/>
-             <rect x="22" y="34" width="22" height="26" fill="#fff" stroke="${P}"/><rect x="26" y="40" width="6" height="4" fill="${V}"/><path d="M34 42h6" stroke="${V}"/>
-             <rect x="94" y="34" width="22" height="26" fill="#fff" stroke="${P}"/><path d="M98 42h14M98 47h14M98 52h14" stroke="${G}"/>
-             <path d="M44 34l12-14M82 20l12 14" stroke="${P}" stroke-dasharray="2 2"/>${person(69, 52, '#E8E8E8')}</svg>`,
-    checklist: `<svg width="150" height="100" viewBox="0 0 150 100" fill="none"><rect x="58" y="34" width="70" height="34" fill="#fff" stroke="${P}"/><circle cx="72" cy="51" r="7" stroke="${V}" stroke-width="1.5"/><path d="m69 51 2 2 4-4" stroke="${V}" stroke-width="1.5"/><path d="M84 47h36M84 55h36" stroke="${V}" stroke-width="3"/>${person(36, 30, '#E8E8E8')}<path d="M40 40l16 8" stroke="${P}" stroke-width="2"/><path d="M14 92h70" stroke="${G}"/></svg>`,
-    bell: `<svg width="120" height="110" viewBox="0 0 120 110" fill="none"><rect x="54" y="6" width="44" height="94" rx="7" fill="#fff" stroke="${P}" stroke-width="3"/><path d="M68 9h16" stroke="${P}" stroke-width="3"/><rect x="58" y="30" width="36" height="7" rx="2" stroke="${G}"/><rect x="58" y="42" width="36" height="7" rx="2" stroke="${G}"/><rect x="58" y="54" width="36" height="7" rx="2" stroke="${G}"/><path d="M62 33h20M62 45h20M62 57h20" stroke="${V}"/>${person(30, 34)}</svg>`,
-    fees: `<svg width="150" height="100" viewBox="0 0 150 100" fill="none"><ellipse cx="75" cy="92" rx="62" ry="6" fill="#E8E8E8"/><rect x="40" y="36" width="70" height="34" rx="2" fill="${P}"/><rect x="52" y="10" width="46" height="28" fill="#fff" stroke="${G}"/><rect x="52" y="64" width="46" height="22" fill="#fff" stroke="${G}"/><rect x="69" y="70" width="12" height="9" rx="2" fill="${V}"/>${person(26, 32)}${person(124, 40)}</svg>`,
-    pay: `<svg width="120" height="110" viewBox="0 0 120 110" fill="none"><rect x="54" y="4" width="46" height="98" rx="7" fill="#fff" stroke="${P}" stroke-width="3"/><path d="M70 7h14" stroke="${P}" stroke-width="3"/><rect x="62" y="16" width="30" height="12" fill="#E8E8E8"/><path d="M62 40h30M62 48h30M62 56h30M62 64h30M62 72h30" stroke="${G}"/><rect x="32" y="34" width="34" height="20" rx="3" fill="${V}" transform="rotate(-12 49 44)"/>${person(20, 30, '#E8E8E8')}</svg>`,
-    docs: `<svg width="150" height="100" viewBox="0 0 150 100" fill="none"><path d="M30 94h100" stroke="${G}"/><path d="M36 44h40l6 8h12v42H36z" fill="#fff" stroke="${P}"/><rect x="50" y="18" width="36" height="44" fill="#fff" stroke="${G}" transform="rotate(-18 68 40)"/><rect x="58" y="22" width="12" height="12" fill="${V}" transform="rotate(-18 64 28)"/><path d="M44 78h16M44 84h20" stroke="${V}" stroke-width="2"/>${person(112, 34, '#3F3D56')}<path d="M106 42l-14-8" stroke="${P}" stroke-width="2"/></svg>`,
+    flow: `<svg aria-hidden="true" focusable="false" width="150" height="98" viewBox="0 0 200 130" fill="none"><ellipse cx="100" cy="66" rx="64" ry="56" fill="#FBEEE8"/><ellipse cx="100" cy="122" rx="54" ry="4" fill="rgba(11, 75, 102, 0.1)"/><rect x="18" y="50" width="46" height="30" rx="8" fill="#fff" stroke="#C84C0E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 61h26M28 69h16" stroke="#F2C3AB" stroke-width="3" stroke-linecap="round"/><path d="M66 65h20" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M82 60l6 5-6 5" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="90" y="50" width="46" height="30" rx="8" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M100 61h26M100 69h16" stroke="rgba(11, 75, 102, 0.35)" stroke-width="3" stroke-linecap="round"/><path d="M138 58c8 0 6-21 14-21" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M148 32l6 5-6 5" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M138 72c8 0 6 21 14 21" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M148 88l6 5-6 5" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="156" y="24" width="30" height="26" rx="7" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M164 37l4 4 8-8" stroke="#C84C0E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="156" y="80" width="30" height="26" rx="7" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M164 90h14M164 96h9" stroke="rgba(11, 75, 102, 0.35)" stroke-width="3" stroke-linecap="round"/></svg>`,
+    checklist: `<svg aria-hidden="true" focusable="false" width="150" height="98" viewBox="0 0 200 130" fill="none"><ellipse cx="100" cy="66" rx="64" ry="56" fill="#FBEEE8"/><ellipse cx="100" cy="122" rx="54" ry="4" fill="rgba(11, 75, 102, 0.1)"/><rect x="64" y="20" width="76" height="96" rx="8" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="86" y="13" width="32" height="13" rx="4" fill="#0B4B66"/><rect x="76" y="40" width="14" height="14" rx="3" fill="#C84C0E"/><path d="M79.5 47l2.5 2.5 5-5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><rect x="98" y="42" width="32" height="4" rx="2" fill="rgba(11, 75, 102, 0.35)"/><rect x="98" y="49" width="20" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.18)"/><rect x="76" y="62" width="14" height="14" rx="3" fill="#C84C0E"/><path d="M79.5 69l2.5 2.5 5-5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><rect x="98" y="64" width="32" height="4" rx="2" fill="rgba(11, 75, 102, 0.35)"/><rect x="98" y="71" width="20" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.18)"/><rect x="76" y="84" width="14" height="14" rx="3" fill="#fff" stroke="rgba(11, 75, 102, 0.45)" stroke-width="2"/><rect x="98" y="86" width="32" height="4" rx="2" fill="rgba(11, 75, 102, 0.35)"/><rect x="98" y="93" width="20" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.18)"/><circle cx="142" cy="106" r="12" fill="#C84C0E" stroke="#fff" stroke-width="3"/><path d="M136.5 106l3.5 3.5 7-7" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    bell: `<svg aria-hidden="true" focusable="false" width="150" height="98" viewBox="0 0 200 130" fill="none"><ellipse cx="100" cy="66" rx="64" ry="56" fill="#FBEEE8"/><ellipse cx="100" cy="122" rx="54" ry="4" fill="rgba(11, 75, 102, 0.1)"/><rect x="72" y="12" width="60" height="106" rx="10" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="92" y="18" width="20" height="4" rx="2" fill="#0B4B66"/><rect x="80" y="32" width="44" height="18" rx="4" fill="#FBEEE8"/><circle cx="88" cy="41" r="4" fill="#C84C0E"/><rect x="96" y="37" width="22" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.4)"/><rect x="96" y="43" width="14" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.2)"/><rect x="80" y="56" width="44" height="18" rx="4" fill="rgba(11, 75, 102, 0.1)"/><circle cx="88" cy="65" r="4" fill="#0B4B66"/><rect x="96" y="61" width="22" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.4)"/><rect x="96" y="67" width="14" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.2)"/><rect x="80" y="80" width="44" height="18" rx="4" fill="rgba(11, 75, 102, 0.06)"/><circle cx="88" cy="89" r="4" fill="rgba(11, 75, 102, 0.35)"/><rect x="96" y="85" width="22" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.4)"/><rect x="96" y="91" width="14" height="3" rx="1.5" fill="rgba(11, 75, 102, 0.2)"/><path d="M140 46c0-4 3-6 3-13a9 9 0 0 1 18 0c0 7 3 9 3 13z" fill="#0B4B66"/><path d="M148 49a4 4 0 0 0 8 0" fill="#0B4B66"/><circle cx="160" cy="24" r="6" fill="#C84C0E" stroke="#fff" stroke-width="2"/><path d="M170 30q4 6 0 12M175 26q7 10 0 20" stroke="#C84C0E" stroke-width="2" stroke-linecap="round"/></svg>`,
+    fees: `<svg width="150" height="100" viewBox="0 0 150 100" fill="none"><ellipse cx="75" cy="92" rx="62" ry="6" fill="#858B8F"/><rect x="40" y="36" width="70" height="34" rx="2" fill="${P}"/><rect x="52" y="10" width="46" height="28" fill="#fff" stroke="${G}"/><rect x="52" y="64" width="46" height="22" fill="#fff" stroke="${G}"/><rect x="69" y="70" width="12" height="9" rx="2" fill="${V}"/>${person(26, 32)}${person(124, 40)}</svg>`,
+    pay: `<svg aria-hidden="true" focusable="false" width="150" height="98" viewBox="0 0 200 130" fill="none"><ellipse cx="100" cy="66" rx="64" ry="56" fill="#FBEEE8"/><ellipse cx="100" cy="122" rx="54" ry="4" fill="rgba(11, 75, 102, 0.1)"/><g transform="rotate(-10 92 40)"><rect x="62" y="22" width="62" height="34" rx="4" fill="#FBEEE8" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="93" cy="39" r="7" fill="#fff" stroke="#C84C0E" stroke-width="1.8"/></g><g transform="rotate(8 116 44)"><rect x="92" y="28" width="56" height="34" rx="5" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="100" y="36" width="12" height="9" rx="2" fill="#F2C3AB"/></g><rect x="50" y="50" width="100" height="64" rx="11" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M50 64h100" stroke="rgba(11, 75, 102, 0.2)" stroke-width="2"/><path d="M124 76h32v22h-32a11 11 0 0 1 0-22z" fill="#FBEEE8" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="127" cy="87" r="4.5" fill="#C84C0E"/></svg>`,
+    docs: `<svg aria-hidden="true" focusable="false" width="150" height="98" viewBox="0 0 200 130" fill="none"><ellipse cx="100" cy="66" rx="64" ry="56" fill="#FBEEE8"/><ellipse cx="100" cy="122" rx="54" ry="4" fill="rgba(11, 75, 102, 0.1)"/><rect x="56" y="26" width="62" height="82" rx="6" fill="rgba(11, 75, 102, 0.12)" stroke="#0B4B66" stroke-width="2" transform="rotate(-8 87 67)"/><path d="M80 16h44l16 16v80a4 4 0 0 1-4 4H80a4 4 0 0 1-4-4V20a4 4 0 0 1 4-4z" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M124 16v12a4 4 0 0 0 4 4h12" fill="rgba(11, 75, 102, 0.12)" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="86" y="30" width="28" height="6" rx="3" fill="#0B4B66"/><rect x="86" y="46" width="44" height="4" rx="2" fill="rgba(11, 75, 102, 0.3)"/><rect x="86" y="56" width="44" height="4" rx="2" fill="rgba(11, 75, 102, 0.3)"/><rect x="86" y="66" width="30" height="4" rx="2" fill="rgba(11, 75, 102, 0.3)"/><rect x="86" y="80" width="22" height="4" rx="2" fill="rgba(11, 75, 102, 0.2)"/><circle cx="126" cy="98" r="12" fill="#C84C0E" stroke="#fff" stroke-width="3"/><circle cx="126" cy="98" r="6" stroke="#fff" stroke-width="2"/></svg>`,
   };
 
   const CONFIG_CARDS = [
@@ -804,23 +787,7 @@
   };
   /* Reusable "No results found" state: white container, 160×131 illustration (smaller so it doesn't overpower), title, two-line text, optional primary CTA.
      Usage: Studio.emptyState({ id, title, text, ctaId, ctaLabel })  → HTML string. Generic art (no role/person). */
-  const EMPTY_ART = `<svg class="es-art" aria-hidden="true" focusable="false" width="160" height="131" viewBox="0 0 220 180" fill="none">
-      <ellipse cx="110" cy="164" rx="88" ry="7" fill="#E8E8E8"/>
-      <path d="M76 58h68l6 20H70z" fill="#D6D5D4"/>
-      <path d="M70 78h80l14 20H56z" fill="#2F2E41"/>
-      <path d="M78 84h64l6 10H72z" fill="#45435A"/>
-      <path d="M70 78 56 98 28 86l18-22z" fill="#F3F3F3"/>
-      <path d="M150 78l14 20 28-12-18-22z" fill="#ECECEC"/>
-      <path d="M56 98h108v50a6 6 0 0 1-6 6H62a6 6 0 0 1-6-6z" fill="#E8E8E8"/>
-      <path d="M56 98h108v6H56z" fill="#DCDCDC"/>
-      <path d="M110 104v50" stroke="#DCDCDC" stroke-width="2"/>
-      <circle cx="160" cy="40" r="16" fill="#fff" stroke="#6C63FF" stroke-width="5"/>
-      <path d="M148 52l-12 13" stroke="#2F2E41" stroke-width="6" stroke-linecap="round"/>
-      <path d="M153 35a8 8 0 0 1 11-2" stroke="#C9C5FF" stroke-width="3" stroke-linecap="round"/>
-      <circle cx="44" cy="40" r="4" fill="#E8E8E8"/>
-      <circle cx="198" cy="112" r="3" fill="#E8E8E8"/>
-      <path d="M100 30h10M105 25v10" stroke="#D6D5D4" stroke-width="2.5" stroke-linecap="round"/>
-    </svg>`;
+  const EMPTY_ART = `<svg class="es-art" aria-hidden="true" focusable="false" width="140" height="91" viewBox="0 0 200 130" fill="none"><ellipse cx="100" cy="66" rx="64" ry="56" fill="#FBEEE8"/><ellipse cx="100" cy="122" rx="54" ry="4" fill="rgba(11, 75, 102, 0.1)"/><path d="M66 18h40l14 14v76a4 4 0 0 1-4 4H66a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#fff" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M106 18v10a4 4 0 0 0 4 4h10" fill="rgba(11, 75, 102, 0.12)" stroke="#0B4B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="72" y="44" width="36" height="4" rx="2" fill="rgba(11, 75, 102, 0.2)"/><rect x="72" y="54" width="28" height="4" rx="2" fill="rgba(11, 75, 102, 0.2)"/><rect x="72" y="64" width="32" height="4" rx="2" fill="rgba(11, 75, 102, 0.2)"/><path d="M141 92l16 16" stroke="#0B4B66" stroke-width="6" stroke-linecap="round"/><circle cx="126" cy="76" r="20" fill="#fff" stroke="#C84C0E" stroke-width="3.5"/><path d="M119 69l14 14M133 69l-14 14" stroke="rgba(11, 75, 102, 0.45)" stroke-width="3" stroke-linecap="round"/></svg>`;
   /* First use (nothing created yet): a simple open, EMPTY box (unDraw style, brand orange), 128px wide */
   const NEW_ART = `<svg class="es-art es-art-new" aria-hidden="true" focusable="false" width="128" height="104" viewBox="0 0 160 130" fill="none">
       <ellipse cx="80" cy="121" rx="62" ry="6" fill="#EEEEEE"/>
@@ -1188,7 +1155,7 @@
       return;
     }
     if (flow) {
-      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1795087731';   // version forces a fresh copy after edits
+      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1795093095';   // version forces a fresh copy after edits
       if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
       frame.title = `Process flow designer for ${m.name}`;
       document.title = `Process Flow – ${m.name} – Studio Prototype – Studio`;
@@ -1366,7 +1333,7 @@
   route();
 })();
 </script>
-<script src="roles.js?v=1795087829"></script>
+<script src="roles.js?v=1795092349"></script>
 <script src="notifications.js?v=1795085404"></script>
 <script src="checklists.js?v=1795085404"></script>
 <script src="payments.js?v=1795086053"></script>
@@ -1380,7 +1347,7 @@
 <script src="preview.js?v=1"></script>
 <script src="dashboard.js?v=1795004373"></script>
 <script src="form.js?v=1795090026"></script>
-<script src="services.js?v=1795090875"></script>
+<script src="services.js?v=1795091321"></script>
 <script src="published.js?v=1795087411"></script>
 
 <script src="guides.js?v=1794987504"></script>
