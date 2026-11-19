@@ -1525,6 +1525,10 @@ select:not([multiple]):not([size]):disabled { background-image: url("data:image/
 .modal.is-view .digit-dropdown-select:disabled { background-color: #F5F5F5 !important; border-color: #D6D5D4 !important; color: #363636 !important; }
 .modal.is-view .nf-row:has(#nfVars) { display: none; }   /* variables are only for writing the message */
 .view-choice { width: min(640px, calc(100vw - 32px)); }
+/* document page preview (595 x 842 at 62%) on a grey stage */
+.view-page { display: grid; place-items: center; padding: 16px; background: #EEEEEE; border-radius: 8px; }
+.view-page[hidden] { display: none; }
+.view-page iframe { display: block; width: 369px; height: 522px; border: 0; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 4px 16px rgba(0,0,0,.06); }
 .pay-view-ask { margin: 0 16px 0 0; align-self: center; font-size: 16px; font-weight: 700; color: #0B4B66; }
 .pay-choice.is-view .modal__foot { justify-content: flex-start; }   /* question + button together on the left */
 .pay-view-ask[hidden], .pay-view-link[hidden] { display: none; }

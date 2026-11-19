@@ -155,7 +155,7 @@
         <div class="pb-panel" id="pb-panel" role="tabpanel" aria-labelledby="${tab === 'users' ? 'pb-tab-users' : 'pb-tab-tr'}">
           ${tab === 'users' ? `
             <h2 class="pb-h"><span class="card-icon pb-ic-lg">${ic(I.idcard, 24)}</span>Manage User</h2>
-            <p class="card-desc">Add the people who will use this service and give them roles to decide what each person can do.</p>
+            <p class="card-desc">Add the users who will work on this service and give them roles to decide what each user can do.</p>
             ${n ? `<ul class="pb-ucount" aria-label="Users by role">${roles.map(([r, c]) => `<li><b>${c} ${c === 1 ? 'User' : 'Users'}</b><span>${esc(r)}</span></li>`).join('')}</ul>
             <div class="pb-foot"><a class="btn btn-secondary" href="#/users">${ic(I.idcard, 16)} Manage Users</a><a class="btn btn-primary" href="#/users/new">${ic('<path d="M12 5v14M5 12h14" stroke-width="2.4"/>', 16)} Add User</a></div>`
             : `<p class="pb-note">${ic(I.alert, 18)} Users yet to be added</p>
@@ -168,8 +168,9 @@
         </div>
       </section>
 
-      <section class="section" aria-labelledby="pb-mod-t">
-        <div class="pb-sec-head"><h2 class="section-title" id="pb-mod-t">Service modules</h2></div>
+      <section class="section" aria-labelledby="pb-mod-t" aria-describedby="pb-mod-d">
+        <div class="pb-sec-head pb-sec-head--desc"><h2 class="section-title" id="pb-mod-t">Service modules</h2>
+          <p class="section-desc" id="pb-mod-d">These are the service modules you have added. Each module represents a different use case your service can support.</p></div>
         <div class="module-toggle pb-modtabs" role="tablist" aria-label="Modules">${ms.map(x => `
           <button type="button" class="module-tab" role="tab" id="pb-mt-${x.id}" data-mod="${x.id}" aria-selected="${x.id === modId}" aria-controls="pb-mod-panel" tabindex="${x.id === modId ? 0 : -1}">${esc(x.name)}</button>`).join('')}</div>
         <div class="pb-mod-panel" id="pb-mod-panel" role="tabpanel" aria-labelledby="pb-mt-${modId}">${m ? moduleBlock(m) : ''}</div>

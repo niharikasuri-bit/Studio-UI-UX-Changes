@@ -562,8 +562,15 @@
   }
   // Documents have no details popup here: a small read-only one
   const viewDialog = $('#viewDialog');
-  function openViewDialog({ title, noun, rows }) {
+  function openViewDialog({ title, noun, rows = [], page }) {
     $('#viewTitle').textContent = title;
+    // a document page: drawn in a frame with Studio's document styles, scaled to fit
+    $('#viewPage').hidden = !page; $('#viewRows').closest('.nf-fields').hidden = !!page;
+    if (page) {
+      const base = new URL('../', location.href).href;
+      $('#viewPageFrame').srcdoc = `<!doctype html><html><head><base href="${base}"><link rel="stylesheet" href="documents.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"><style>:root{--primary:#C84C0E;--heading:#0B4B66;--text:#363636}*{box-sizing:border-box}html,body{margin:0;background:transparent;overflow:hidden;font-family:Roboto,sans-serif;color:#363636}.dp-page{transform:scale(.62);transform-origin:0 0;box-shadow:none}</style></head><body>${page}</body></html>`;
+    }
     $('#viewRows').replaceChildren(...rows.map(([label, value], i) => el('div', { class: 'nf-row' },
       el('div', { class: 'digit-label-row' }, el('label', { class: 'digit-label', for: `viewF${i}` }, label)),
       el('div', { class: 'nf-control' }, el('div', { class: 'digit-text-input-field' },
@@ -2273,6 +2280,11 @@
           item.channel ||= 'SMS';
           return chooseAdd({ key, sources: [], stateName: s.name, uniqueName: () => item.name, edit: item, view: true, onSave: () => {} });
         }
+        // the document's page (rendered by Studio Documents), not its details; details only when Studio isn't around
+        const CAT = { 'Application Details': 'application', Certificate: 'certificate', 'Invoice / Receipt': 'invoice', 'Demand / Bill': 'demand' };
+        let page = '';
+        try { page = window.parent !== window && window.parent.Studio?.docPreviewHTML?.(STUDIO_MODULE, item.docId || item.id, CAT[docTypeOf(item)] || 'application') || ''; } catch { /* other site */ }
+        if (page) return openViewDialog({ title: item.name, noun: 'Document', page });
         const on = wf.states.filter((st) => st.docs?.items.some((x) => (item.docId ? x.docId === item.docId : x.id === item.id))).map((st) => st.name);
         openViewDialog({ title: item.name, noun: 'Document', rows: [['Document name', item.name], ['Document type', docTypeOf(item)], ['Used in states', on.join(', ') || s.name]] });
       };

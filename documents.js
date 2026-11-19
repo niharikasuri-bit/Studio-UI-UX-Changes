@@ -208,6 +208,14 @@
     </div>`;
   }
   const pageHTML = d => d.kind === 'UPLOAD' ? uploadPage(d, 0, false) : templatePage(d);
+  // The process flow (in an iframe) shows a document's page in its read-only view popup.
+  // Saved document first; else the template for its type.
+  S.docPreviewHTML = (moduleId, docId, cat) => {
+    let d = null;
+    try { d = ((JSON.parse(localStorage.getItem(KEY)) || {})[moduleId] || []).find(x => x.id === docId) || null; } catch (e) {}
+    if (!d && BODY[cat]) d = { kind: 'TEMPLATE', cat, els: allOn(cat) };
+    return d ? pageHTML(d) : '';
+  };
 
   /* ---------- Shell ---------- */
   const view = $('view-documents');

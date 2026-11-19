@@ -36,8 +36,10 @@
 
 /* Service modules: tabs → activation state → configuration cards */
 .pb-sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.pb-sec-head--desc { display: block; margin-bottom: 24px; }   /* title, then its description, then the module toggle */
+.pb-sec-head--desc .section-desc { margin: 8px 0 0; }
 .pb-count { font-size: var(--bodyS); color: #707070; white-space: nowrap; }
-.pb-modtabs { margin-bottom: 16px; }
+.pb-modtabs { margin-bottom: 24px; }
 .pb-mod-panel { display: grid; gap: 24px; }
 .pb-activation { box-shadow: none !important; border: 1px solid var(--border); }
 .pb-act { border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--surface); }
