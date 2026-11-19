@@ -270,6 +270,60 @@
   });
   const refocusSwitch = id => $('um-body').querySelector(`[data-um-sw="${id}"]`)?.focus();
 
+  /* Reason dropdowns (activate / deactivate): a native select opens up or down as the browser likes,
+     so each one is shown as a button + list that always opens downward. The hidden select keeps the value,
+     the change event and aria-invalid, so the rest of the code works on it as before. */
+  function downDropdown(sel) {
+    const wrap = document.createElement('div'); wrap.className = 'um-dd';
+    sel.parentNode.insertBefore(wrap, sel); wrap.append(sel); sel.hidden = true; sel.tabIndex = -1;
+    const lab = document.querySelector(`label[for="${sel.id}"]`); lab.id ||= sel.id + '-l'; lab.htmlFor = sel.id + '-btn';
+    const btn = document.createElement('button');
+    Object.assign(btn, { type: 'button', className: 'input um-ms-btn um-dd-btn', id: sel.id + '-btn' });
+    btn.setAttribute('aria-haspopup', 'listbox'); btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', sel.id + '-list');
+    btn.setAttribute('aria-describedby', sel.getAttribute('aria-describedby'));
+    btn.innerHTML = `<span class="um-dd-val"></span>${I.chev}`;
+    const list = document.createElement('ul');
+    Object.assign(list, { className: 'um-ms-list um-dd-list', id: sel.id + '-list', tabIndex: -1, hidden: true });
+    list.setAttribute('role', 'listbox'); list.setAttribute('aria-labelledby', lab.id);
+    const opts = [...sel.options].filter(o => o.value || o.text !== 'Select').filter(o => o.text !== 'Select');
+    list.innerHTML = opts.map((o, i) => `<li role="option" id="${sel.id}-o${i}" class="um-opt um-dd-opt" data-v="${esc(o.text)}">${esc(o.text)}</li>`).join('');
+    wrap.append(btn, list);
+    let act = 0;
+    const sync = () => {
+      const v = sel.value; btn.querySelector('.um-dd-val').textContent = v || 'Select';
+      btn.querySelector('.um-dd-val').classList.toggle('is-ph', !v);
+      list.querySelectorAll('.um-opt').forEach(o => o.setAttribute('aria-selected', String(o.dataset.v === v)));
+    };
+    const mark = () => { list.querySelectorAll('.um-opt').forEach((o, i) => o.classList.toggle('is-active', i === act));
+      list.setAttribute('aria-activedescendant', `${sel.id}-o${act}`); list.querySelector('.is-active')?.scrollIntoView({ block: 'nearest' }); };
+    const open = on => { list.hidden = !on; btn.setAttribute('aria-expanded', String(on));
+      // fits in the space below the field (scrolls inside), so it never has to open upward
+      if (on) { list.style.maxHeight = Math.max(120, Math.min(264, innerHeight - btn.getBoundingClientRect().bottom - 16)) + 'px';
+        act = Math.max(0, opts.findIndex(o => o.text === sel.value)); mark(); list.focus(); } else btn.focus(); };
+    const pick = i => { sel.value = opts[i].text; sync(); sel.dispatchEvent(new Event('change', { bubbles: true })); open(false); };
+    btn.addEventListener('click', () => open(list.hidden));
+    list.addEventListener('click', e => { const o = e.target.closest('.um-opt'); if (o) pick([...list.children].indexOf(o)); });
+    list.addEventListener('keydown', e => {
+      const n = opts.length;
+      if (e.key === 'ArrowDown') { e.preventDefault(); act = (act + 1) % n; mark(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); act = (act - 1 + n) % n; mark(); }
+      else if (e.key === 'Home') { e.preventDefault(); act = 0; mark(); }
+      else if (e.key === 'End') { e.preventDefault(); act = n - 1; mark(); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(act); }
+      else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); open(false); }
+      else if (e.key === 'Tab') open(false);
+    });
+    document.addEventListener('pointerdown', e => { if (!list.hidden && !wrap.contains(e.target)) { list.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
+    // code elsewhere sets .value / focuses / marks the select invalid: mirror that on the button
+    const desc = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+    Object.defineProperty(sel, 'value', { get() { return desc.get.call(this); }, set(v) { desc.set.call(this, v); sync(); list.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
+    sel.focus = () => btn.focus();
+    new MutationObserver(() => { const inv = sel.getAttribute('aria-invalid'); inv ? btn.setAttribute('aria-invalid', inv) : btn.removeAttribute('aria-invalid'); })
+      .observe(sel, { attributes: true, attributeFilter: ['aria-invalid'] });
+    sync();
+  }
+  ['um-c-reason', 'um-a-reason'].forEach(id => downDropdown($(id)));
+
   /* Activate: same popup as Deactivate without the alert icon; asks for the reason */
   const act = $('um-activate'); let actTarget = null;
   function askActivate(u) {

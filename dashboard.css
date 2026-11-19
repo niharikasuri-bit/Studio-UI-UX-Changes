@@ -468,3 +468,4 @@ circle.db-mark.is-hot { opacity: 1; }
    Preview has no toolbars, so it keeps 16px between rows. */
 .db-grid { row-gap: 32px; }
 .db-previewing .db-grid { row-gap: 16px; }
+.db-kb-dlg .dc-vd-title .dc-vd-ico svg { width: 28px; height: 28px; }   /* icon in scale with the 32px popup title */

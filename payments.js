@@ -294,9 +294,9 @@
     const blank = { name: nextName(), state: '', feeName: '', fee: '', amount: '', min: '', max: '', endpoint: '', method: '', online: false, gateway: '', offline: false, after: '' };
     const draft = p ? JSON.parse(JSON.stringify(p)) : blank;
     if (copy) { delete draft.id; let n = `${p.name} (copy)`, k = 2; while (list.some(x => x.name === n)) n = `${p.name} (copy ${k++})`; draft.name = n; }
-    // Step 1 asks the state + next step (edit too, so the state can be changed). First payment: step 1 → Set Up Payment.
+    // Edit opens Set Up Payment only. New: step 1 (state + next step) → Set Up Payment.
     // Once payments exist: step 1 → how to create → [Select Payment, when using an existing one] → Set Up Payment.
-    D = { edit: copy ? null : p, draft, path: p ? ['after', 'fee'] : list.length ? ['after', 'how', 'fee'] : ['after', 'fee'], i: 0, how: '', pick: '' };
+    D = { edit: copy ? null : p, draft, path: p && !copy ? ['fee'] : p ? ['after', 'fee'] : list.length ? ['after', 'how', 'fee'] : ['after', 'fee'], i: 0, how: '', pick: '' };
     ['after', 'how', 'pick', 'state'].forEach(k => { $('pyw-err-' + k).hidden = true; });
     $('pyw-state').removeAttribute('aria-invalid');
     dlg.showModal(); showStep();
