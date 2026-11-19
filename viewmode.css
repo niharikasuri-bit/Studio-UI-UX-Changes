@@ -37,3 +37,14 @@ body.view-mode :is(#view-form, #view-documents, #view-landing, #view-dashboard, 
 body.view-mode :is(#view-landing, #view-citizen) .lp-li-open.vm-hide { display: block !important; }
 /* dashboard: with Keyboard Shortcuts hidden, Tutorials and Guides stays on the right */
 body.view-mode #view-dashboard .db-topbar .db-guides { margin-left: auto !important; }
+/* dashboard view only: the designer itself (not Preview Dashboard) — palette can't add, preview/save/keyboard buttons gone */
+body.view-mode #view-dashboard .db-palette :is(button, [role="button"], [draggable]) { pointer-events: none !important; }
+body.view-mode #view-dashboard :is(#db-view, #db-save, #db-kb-open, .db-sel + *, #db-rename) { display: none !important; }
+/* the floating card sits centred over the main area only — never over a side panel (properties, palette) */
+body.view-mode .view-banner { left: calc(48px + var(--vb-l, 0px) + 16px); right: calc(var(--vb-r, 0px) + 16px); transform: none; margin: 0 auto; width: fit-content; max-width: none; white-space: normal; }
+body.view-mode:has(#view-flow:not([hidden])) { --vb-r: 340px; }
+body.view-mode:has(#view-form:not([hidden])) { --vb-r: 380px; }
+body.view-mode:has(:is(#view-landing, #view-citizen):not([hidden])) { --vb-r: 380px; }
+body.view-mode:has(#view-dashboard:not([hidden])) { --vb-l: 280px; --vb-r: 360px; }
+@media (max-width: 760px) { body.view-mode .view-banner { left: 16px; right: 16px; } }
+.view-banner .vb-tag, .view-banner .vb-back { flex: none; white-space: nowrap; }   /* tag + button never wrap; only the message does */

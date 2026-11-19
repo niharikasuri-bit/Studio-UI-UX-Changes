@@ -569,7 +569,7 @@
     if (page) {
       const base = new URL('../', location.href).href;
       $('#viewPageFrame').srcdoc = `<!doctype html><html><head><base href="${base}"><link rel="stylesheet" href="documents.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"><style>:root{--primary:#C84C0E;--heading:#0B4B66;--text:#363636}*{box-sizing:border-box}html,body{margin:0;background:transparent;overflow:hidden;font-family:Roboto,sans-serif;color:#363636}.dp-page{transform:scale(.62);transform-origin:0 0;box-shadow:none}</style></head><body>${page}</body></html>`;
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"><style>:root{--primary:#C84C0E;--heading:#0B4B66;--text:#363636}*{box-sizing:border-box}html,body{margin:0;background:transparent;overflow:hidden;font-family:Roboto,sans-serif;color:#363636}.dp-page{transform-origin:0 0;box-shadow:none}</style></head><body>${page}<script>const p=document.querySelector('.dp-page');const f=()=>{p.style.transform='scale('+(innerHeight/842)+')'};f();addEventListener('resize',f)<\/script></body></html>`;   // the whole page always fits: scaled to the frame's height
     }
     $('#viewRows').replaceChildren(...rows.map(([label, value], i) => el('div', { class: 'nf-row' },
       el('div', { class: 'digit-label-row' }, el('label', { class: 'digit-label', for: `viewF${i}` }, label)),
@@ -679,7 +679,8 @@
     const from = payCtx.fromPayment || payCtx.view;
     $('#payLock').hidden = true;   // no note (user): the fee is just shown read-only
     $('#payFeeBox').classList.toggle('is-locked', !!from);
-    Object.values(payAmounts).concat(payHost, payFeeName).forEach((i) => { i.readOnly = !!from; });
+    Object.values(payAmounts).concat(payHost).forEach((i) => { i.readOnly = !!from; });
+    payFeeName.readOnly = !!payCtx.view;   // fee name stays editable when a fee is reused (an older payment may have none)
     ['#payFeeSlot', '#payMethodSlot'].forEach((s) => { const b = $(`${s} .digit-dropdown-select`); if (b) b.disabled = !!from; });
     // view: payment mode + integration are read-only too
     payDialog.querySelectorAll('input[name="payMode"]').forEach((c) => { c.disabled = payCtx.view; });
@@ -815,7 +816,7 @@
     const [amount, min, max] = [payAmounts.amount, payAmounts.min, payAmounts.max].map(num);
     // Set Up Payment ('details'): the fee first, then the payment mode below
     if (cur === 'details') {
-      clError(payFeeName, payFeeName.value.trim() || ctx.fromPayment ? '' : 'Enter the fee name.');
+      clError(payFeeName, payFeeName.value.trim() ? '' : 'Enter the fee name.');
       payError('payFeeErr', fee ? '' : 'Select the fee.');
       clError(payAmounts.amount, fee === 'FIXED' && amount === null ? 'Enter the fee amount.' : '');
       clError(payAmounts.min, fee === 'USER' && min === null ? 'Enter the minimum amount.' : '');
@@ -823,7 +824,7 @@
       clError(payHost, calc && !payHost.value.trim() ? 'Enter the host endpoint.' : '');
       payError('payMethodErr', calc && !ctx.method ? 'Select the method type.' : '');
       const badFee = [
-        !payFeeName.value.trim() && !ctx.fromPayment && payFeeName,
+        !payFeeName.value.trim() && payFeeName,
         !fee && $('#payFeeSlot .digit-dropdown-select'),
         ...Object.values(payAmounts).filter((input) => input.getAttribute('aria-invalid')),
         calc && !payHost.value.trim() && payHost,
@@ -3211,6 +3212,7 @@
   document.addEventListener('click', () => !menu.hidden && setMenu(false));
 
   $('#clearBtn').addEventListener('click', () => {
+    if (viewOnly()) return;   // view only: the canvas can't be cleared
     if (!wf.states.length) {
       toast('The canvas is already empty.');
       return;

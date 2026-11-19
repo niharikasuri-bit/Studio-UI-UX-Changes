@@ -98,7 +98,9 @@
       <div class="modal-body">
         <button type="button" class="icon-btn modal-close" data-close aria-label="Close">${svg(I.x, 20)}</button>
         <div class="modal-head"><h2 class="modal-title sv-dlg-t" id="${id}-t">${title}</h2><p class="modal-desc" id="${id}-d">${desc}</p></div>
-        <div class="sv-note is-${kind}">${svg(kind === 'warn' ? I.warn : I.info, 20)}<div><p class="sv-note-t">${boxTitle}</p><p>${boxText}</p></div></div>
+        ${kind === 'info'   // the Studio Info card (same as the dashboard's, without its button)
+          ? `<div class="db-sample sv-info" role="note" aria-labelledby="${id}-it"><p class="db-sample-t" id="${id}-it"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M12 11v6M12 7.5v.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg> ${boxTitle}</p><p class="db-sample-d">${boxText}</p></div>`
+          : `<div class="sv-note is-${kind}">${svg(I.warn, 20)}<div><p class="sv-note-t">${boxTitle}</p><p>${boxText}</p></div></div>`}
         <div class="sv-dlg-acts"><button type="button" class="btn btn-secondary" data-close>Back</button><button type="button" class="btn btn-primary" data-proceed>Proceed</button></div>
       </div>
     </dialog>`;
@@ -114,9 +116,10 @@
 
   let opener = null;
   const open = (id, from) => { opener = from; const d = $(id); d.showModal(); d.querySelector('[data-close]:not(.modal-close)').focus(); };
+  let editVer = 'V2';   // the new version being edited: the published version + 1
   const toDraft = fresh => {
-    try { sessionStorage.setItem('studio-draft', 'V2'); } catch (e) {}
-    window.Studio?.toast?.(fresh ? 'A new draft was made from the published version' : 'Editing the V2 draft');
+    try { sessionStorage.setItem('studio-draft', editVer); } catch (e) {}
+    window.Studio?.toast?.(fresh ? 'A new draft was made from the published version' : `Editing new version (${editVer}). Update any module, then republish the service.`);
     const first = (window.Studio && window.Studio.modules()[0]) || { id: 'application' };
     location.hash = '#/module/' + encodeURIComponent(first.id);   // lands on the module page, like the reference
   };
@@ -131,7 +134,12 @@
     if (ch) { if (ch.dataset.choice === 'continue') toDraft(false); else open('sv-fresh', ch); return; }
     const d = e.target.closest('dialog');
     if (d && e.target.closest('[data-close]')) { d.close(); return; }
-    if (d && e.target.closest('[data-proceed]')) { d.close(); toDraft(d.id === 'sv-fresh'); return; }
+    if (d && e.target.closest('[data-proceed]')) {
+      d.close();
+      const r = mode === 'all' && ALL.editRow;
+      if (r) { ALL.drafts = ALL.drafts.filter(x => x.name !== r.name); ALL.drafts.unshift({ name: r.name, date: today(), ver: editVer }); }
+      toDraft(d.id === 'sv-fresh'); return;
+    }
     if (d && e.target === d) d.close();
   });
   document.addEventListener('close', e => { if (e.target.classList?.contains('sv-dlg') && opener && document.contains(opener)) opener.focus(); }, true);
@@ -221,20 +229,72 @@
         </section>
       </div>
       ${popups()}
-      <dialog class="modal pfc sv-dlg" id="sva-del" aria-labelledby="sva-del-t" aria-describedby="sva-del-d">
-        <div class="pfc-icon" aria-hidden="true"><svg viewBox="0 0 48 44" width="48" height="48"><path d="M24 2L46 42H2z" fill="#B91900"/><rect x="21.5" y="15" width="5" height="15" rx="1.5" fill="#fff"/><circle cx="24" cy="35.5" r="2.8" fill="#fff"/></svg></div>
-        <h2 class="pfc-title" id="sva-del-t">Delete service?</h2>
-        <p class="pfc-desc" id="sva-del-d">The service and all its versions will be deleted. This action cannot be undone.</p>
-        <div class="pfc-actions"><button type="button" class="btn btn-secondary" data-close>Cancel</button><button type="button" class="btn btn-primary" id="sva-del-ok">Delete</button></div>
+      <dialog class="modal um-alert sv-dlg" id="sva-del" aria-labelledby="sva-del-t" aria-describedby="sva-del-d">
+        <div class="um-alert-head"><svg class="um-alert-ico" aria-hidden="true" focusable="false" width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#B91900" stroke-width="2.2"/><path d="M12 7v6" stroke="#B91900" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1.4" fill="#B91900"/></svg><h2 class="um-alert-title" id="sva-del-t">Delete service?</h2></div>
+        <p class="um-alert-desc" id="sva-del-d">The service and all its versions will be deleted. This action cannot be undone.</p>
+        <div class="um-alert-actions"><button type="button" class="btn btn-secondary" data-close>Cancel</button><button type="button" class="btn btn-primary" id="sva-del-ok">Delete</button></div>
       </dialog>
-      <dialog class="modal sv-dlg" id="sva-imp" aria-labelledby="sva-imp-t" aria-describedby="sva-imp-d">
-        <div class="modal-body">
-          <button type="button" class="icon-btn modal-close" data-close aria-label="Close">${svg(I.x, 20)}</button>
-          <div class="modal-head"><h2 class="modal-title sv-dlg-t" id="sva-imp-t">Import Service</h2><p class="modal-desc" id="sva-imp-d">Upload a service file exported from DIGIT Studio. It will be added to your published services.</p></div>
-          <div class="field"><label class="label" for="sva-file">Service file<span class="req" aria-hidden="true"> *</span></label>
-            <input class="input sva-file" id="sva-file" type="file" accept=".json,.zip" aria-describedby="sva-file-err">
-            <p class="error" id="sva-file-err" hidden>Select a service file to import.</p></div>
-          <div class="sv-dlg-acts"><button type="button" class="btn btn-secondary" data-close>Cancel</button><button type="button" class="btn btn-primary" id="sva-imp-ok">Import Service</button></div>
+      <dialog class="modal um-alert sva-choicew" id="sva-choice" aria-labelledby="sva-choice-t" aria-describedby="sva-choice-d">
+        <button type="button" class="icon-btn modal-close" data-close aria-label="Close">${svg(I.x, 20)}</button>
+        <div class="um-alert-head"><svg class="um-alert-ico" aria-hidden="true" focusable="false" width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#B91900" stroke-width="2.2"/><path d="M12 7v6" stroke="#B91900" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1.4" fill="#B91900"/></svg><h2 class="um-alert-title" id="sva-choice-t">Draft in Progress</h2></div>
+        <p class="um-alert-desc" id="sva-choice-d">You already have a draft for this service. You can continue working on it or start fresh from the live version.</p>
+        <fieldset class="ntw-tiles"><legend class="sr-only">How do you want to continue editing?</legend>
+            <label class="ntw-tile"><input type="radio" name="sva-choice" value="continue" checked>
+              <span class="ntw-tile-ico" aria-hidden="true">${svg(I.draft, 24)}</span>
+              <span class="ntw-tile-title">Continue Draft</span><span class="ntw-tile-text">Pick up where you left off. Your changes are saved.</span></label>
+            <label class="ntw-tile"><input type="radio" name="sva-choice" value="fresh">
+              <span class="ntw-tile-ico" aria-hidden="true">${svg(I.fresh, 24)}</span>
+              <span class="ntw-tile-title">Start Again From Scratch</span><span class="ntw-tile-text">Discard the draft and start again from the published version.</span></label>
+          </fieldset>
+        <div class="ntw-foot"><button type="button" class="btn btn-secondary" data-close>Cancel</button><button type="button" class="btn btn-primary" id="sva-choice-ok">Continue</button></div>
+      </dialog>
+      <dialog class="modal" id="sva-dup" aria-labelledby="sva-dup-t" aria-describedby="sva-dup-d">
+        <form id="sva-dup-form" novalidate>
+          <div class="modal-body">
+            <button type="button" class="icon-btn modal-close" data-close aria-label="Close">${svg(I.x, 20)}</button>
+            <div class="modal-head"><h2 class="modal-title sva-dup-title" id="sva-dup-t">${MS('copy').replace(/width="18" height="18"/, 'width="28" height="28"')}Duplicate Service</h2><p class="modal-desc" id="sva-dup-d"></p></div>
+            <div class="field"><label class="label" for="sva-dup-name">Service name <span class="req" aria-hidden="true">*</span></label>
+              <input class="input" id="sva-dup-name" type="text" required aria-required="true" autocomplete="off" maxlength="60" aria-describedby="sva-dup-err">
+              <p class="error" id="sva-dup-err" hidden><svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-2h2zm0-4h-2V7h2z"/></svg><span></span></p></div>
+          </div>
+          <div class="modal-foot">
+            <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+            <button type="submit" class="btn btn-primary">Duplicate Service</button>
+          </div>
+        </form>
+      </dialog>
+      <dialog class="modal ntw sva-impw" id="sva-imp" aria-labelledby="sva-imp-t1">
+        <div class="ntw-body">
+          <button type="button" class="icon-btn ntw-close" data-close aria-label="Close">${svg(I.x, 20)}</button>
+          <div class="ntw-bars-wrap"><span class="sr-only" id="sva-imp-step">Step 1 of 2</span><span class="ntw-bars" id="sva-imp-bars" aria-hidden="true"><span class="on"></span><span></span></span></div>
+          <section id="sva-imp-p1">
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="sva-imp-t1">Name Your Service</h2>
+            <p class="ntw-desc">Enter a name for the service you are importing.</p></div>
+            <div class="ntw-fields"><div class="ntw-row sva-imp-row">
+              <label class="ntw-label" for="sva-imp-name">Service name&nbsp;<span class="req" aria-hidden="true">*</span></label>
+              <div class="ntw-control"><input class="input" id="sva-imp-name" type="text" required aria-required="true" autocomplete="off" maxlength="60" aria-describedby="sva-imp-name-err">
+                <p class="error" id="sva-imp-name-err" hidden></p></div>
+            </div></div>
+          </section>
+          <section id="sva-imp-p2" hidden>
+            <div class="ntw-head ntw-head--step"><h2 class="ntw-title" id="sva-imp-t2">Upload Service File</h2>
+            <p class="ntw-desc">Upload the service as a JSON file. It will be added to your draft services.</p></div>
+            <div class="ntw-fields"><div class="ntw-box sva-up">
+              <span class="pf-doc-title" id="sva-file-t">Service file <span class="req" aria-hidden="true">*</span></span>
+              <div class="pf-drop" id="sva-drop">
+                <span class="pf-drop-icon" aria-hidden="true"><svg aria-hidden="true" focusable="false" width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 5 10h4v6h6v-6h4z"/><rect x="5" y="18.5" width="14" height="2" rx="1"/></svg></span>
+                <span class="pf-drop-text">Drag and drop your file or <label class="pf-browse" for="sva-file">browse in my files</label></span>
+                <span class="pf-drop-meta">Accepted: JSON</span>
+                <input class="sr-only" type="file" id="sva-file" accept=".json,application/json" aria-labelledby="sva-file-t" aria-describedby="sva-file-err">
+              </div>
+              <div id="sva-file-row"></div>
+              <p class="error" id="sva-file-err" hidden>Select a service file to import.</p>
+            </div></div>
+          </section>
+        </div>
+        <div class="ntw-foot">
+          <button type="button" class="btn btn-secondary" id="sva-imp-prev">Cancel</button>
+          <button type="button" class="btn btn-primary" id="sva-imp-ok">Next</button>
         </div>
       </dialog>`;
     if (focus) view.querySelector(focus === true ? '.page-title' : focus)?.focus();
@@ -249,35 +309,123 @@
     const d = e.target.closest('[data-dup]');
     if (d) {
       const rows = ALL.tab === 'published' ? ALL.list : ALL.drafts, src = rows[+d.dataset.dup];
-      const copy = { name: `DupService ${code()}`, date: today(), ver: 'V1' };
-      ALL.list.unshift(copy); ALL.tab = 'published';
-      landingAll('.sva-card .sva-kebab');
-      window.Studio?.toast?.(`${src.name} duplicated as ${copy.name}`); window.Studio?.announce?.(`${src.name} duplicated as ${copy.name}.`);
+      closeMenus(); ALL.dupSrc = src;
+      $('sva-dup-d').innerHTML = `Make a copy of <strong>${esc(src.name)}</strong> with all its modules and settings. Give the copy its own name.`;
+      const n = $('sva-dup-name'); n.value = `Copy of ${src.name}`; n.removeAttribute('aria-invalid'); $('sva-dup-err').hidden = true;
+      opener = d.closest('.sva-menu-wrap').querySelector('.sva-kebab'); $('sva-dup').showModal(); n.focus(); n.select();
       return;
     }
     const ex = e.target.closest('[data-exp]');
     if (ex) { const r = (ALL.tab === 'published' ? ALL.list : ALL.drafts)[+ex.dataset.exp]; closeMenus(); window.Studio?.toast?.(`${r.name} exported`); return; }
     const dl = e.target.closest('[data-del]');
     if (dl) { closeMenus(); ALL.delAt = +dl.dataset.del; const r = (ALL.tab === 'published' ? ALL.list : ALL.drafts)[ALL.delAt];
-      $('sva-del-t').textContent = `Delete ${r.name}?`; open('sva-del', dl.closest('.sva-menu-wrap').querySelector('.sva-kebab')); return; }
+      $('sva-del-t').textContent = `Delete ${r.name}?`; $('sva-del-d').innerHTML = `Are you sure you want to delete <strong>${esc(r.name)}</strong>? The service and all its versions will be deleted. This action cannot be undone.`; open('sva-del', dl.closest('.sva-menu-wrap').querySelector('.sva-kebab')); return; }
     if (e.target.closest('#sva-del-ok')) { const rows = ALL.tab === 'published' ? ALL.list : ALL.drafts, r = rows.splice(ALL.delAt, 1)[0];
       $('sva-del').close(); landingAll('#sva-import'); window.Studio?.toast?.(`${r.name} deleted`); return; }
-    const ed = e.target.closest('[data-svaedit]'); if (ed) { open('sv-edit', ed); return; }
+    const ed = e.target.closest('[data-svaedit]');
+    if (ed && ALL.tab === 'drafts') { location.hash = '#/'; return; }   // a draft is already a separate version: open it, no popup
+    if (ed) {
+      const r = ALL.list[+ed.dataset.svaedit]; ALL.editRow = r;
+      const draft = ALL.drafts.find(x => x.name === r.name);
+      if (draft) {   // clicked Edit again: a draft of this service is already there
+        editVer = draft.ver; opener = ed;
+        $('sva-choice-d').innerHTML = `<strong>${esc(r.name)}</strong> already has a draft that hasn't been published yet. Choose how you want to continue.`;
+        const dlg = $('sva-choice'); dlg.querySelector('input[value="continue"]').checked = true;
+        dlg.showModal(); dlg.querySelector('input[value="continue"]').focus(); return;
+      }
+      editVer = 'V' + ((parseInt(String(r && r.ver).replace(/\D/g, ''), 10) || 1) + 1); open('sv-edit', ed); return;
+    }
+    if (e.target.closest('#sva-choice-ok')) {
+      const how = $('sva-choice').querySelector('input[name="sva-choice"]:checked').value;
+      $('sva-choice').close();
+      if (how === 'continue') toDraft(false); else open('sv-fresh', ALL.editRow && [...view.querySelectorAll('[data-svaedit]')].find(b => ALL.list[+b.dataset.svaedit] === ALL.editRow));
+      return;
+    }
+    if (e.target.closest('#sva-choice [data-close]')) { $('sva-choice').close(); return; }
     const tp = e.target.closest('[data-tpl]');
     if (tp) { window.Studio?.toast?.(`New service created from the ${TEMPLATES[+tp.dataset.tpl].name} template`); location.hash = '#/'; return; }   // Use Template
-    if (e.target.closest('#sva-import')) { const f = $('sva-file'); f.value = ''; f.removeAttribute('aria-invalid'); $('sva-file-err').hidden = true; open('sva-imp', e.target.closest('#sva-import')); return; }
-    if (e.target.closest('#sva-imp-ok')) {
-      const f = $('sva-file');
-      if (!f.files.length) { $('sva-file-err').hidden = false; f.setAttribute('aria-invalid', 'true'); f.focus(); return; }
-      const name = `ImpService ${code()}`; ALL.list.unshift({ name, date: today(), ver: 'V1' }); ALL.tab = 'published';
-      $('sva-imp').close(); landingAll('#sva-import'); window.Studio?.toast?.(`${name} imported successfully`); return;
+    if (e.target.closest('#sva-import')) {
+      const n = $('sva-imp-name'), f = $('sva-file');
+      n.value = ''; f.value = ''; $('sva-file-row').innerHTML = ''; $('sva-drop').hidden = false; [n, f].forEach(x => x.removeAttribute('aria-invalid')); $('sva-imp-name-err').hidden = $('sva-file-err').hidden = true;
+      opener = e.target.closest('#sva-import'); impStep(1); $('sva-imp').showModal(); n.focus(); return;
     }
+    if (e.target.closest('#sva-imp-prev')) { if (ALL.impStep === 2) { impStep(1); $('sva-imp-name').focus(); } else $('sva-imp').close(); return; }
+    if (e.target.closest('#sva-imp-ok')) { impNext(); return; }
     if (!e.target.closest('.sva-menu-wrap')) closeMenus();
   });
   document.addEventListener('keydown', e => {
     if (mode !== 'all') return;
     if (e.key === 'Escape') { const open1 = document.querySelector('#view-services .sva-menu:not([hidden])'); if (open1) { e.preventDefault(); closeMenus(); open1.previousElementSibling.focus(); } }
   });
+  // Duplicate Service popup: name (required, unique) + description
+  const dupErr = msg => { const n = $('sva-dup-name'), er = $('sva-dup-err'); er.querySelector('span').textContent = msg; er.hidden = false; n.setAttribute('aria-invalid', 'true'); n.focus(); };
+  document.addEventListener('submit', e => {
+    if (e.target.id !== 'sva-dup-form') return;
+    e.preventDefault();
+    const name = $('sva-dup-name').value.trim(), src = ALL.dupSrc;
+    if (!name) return dupErr('Enter a service name.');
+    if ([...ALL.list, ...ALL.drafts].some(r => r.name.toLowerCase() === name.toLowerCase())) return dupErr('A service with this name already exists. Enter a different name.');
+    ALL.list.unshift({ name, date: today(), ver: 'V1' }); ALL.tab = 'published';
+    $('sva-dup').close(); landingAll('.sva-card .sva-kebab');
+    window.Studio?.toast?.(`${src.name} duplicated as ${name}`); window.Studio?.announce?.(`${src.name} duplicated as ${name}.`);
+  });
+  document.addEventListener('input', e => { if (e.target.id === 'sva-dup-name') { e.target.removeAttribute('aria-invalid'); $('sva-dup-err').hidden = true; } });
+  // Import Service wizard: step 1 = name the service, step 2 = upload the service file
+  function impStep(n) {
+    ALL.impStep = n;
+    $('sva-imp-step').textContent = `Step ${n} of 2`;
+    $('sva-imp-bars').querySelectorAll('span').forEach((x, i) => x.classList.toggle('on', i < n));
+    $('sva-imp-p1').hidden = n !== 1; $('sva-imp-p2').hidden = n !== 2;
+    $('sva-imp').setAttribute('aria-labelledby', `sva-imp-t${n}`);
+    $('sva-imp-prev').textContent = n === 1 ? 'Cancel' : 'Back';
+    $('sva-imp-ok').textContent = n === 1 ? 'Next' : 'Import Service';
+    window.Studio?.announce?.(`Step ${n} of 2`);
+  }
+  function impNext() {
+    if (ALL.impStep === 1) {
+      const n = $('sva-imp-name'), name = n.value.trim(), er = $('sva-imp-name-err');
+      const msg = !name ? 'Enter a service name.' : [...ALL.list, ...ALL.drafts].some(r => r.name.toLowerCase() === name.toLowerCase()) ? 'A service with this name already exists. Enter a different name.' : '';
+      if (msg) { er.textContent = msg; er.hidden = false; n.setAttribute('aria-invalid', 'true'); n.focus(); return; }
+      impStep(2); $('sva-file').focus(); return;
+    }
+    const f = $('sva-file');
+    if (!f.files.length) { $('sva-file-err').hidden = false; f.setAttribute('aria-invalid', 'true'); f.focus(); return; }
+    const name = $('sva-imp-name').value.trim(); ALL.drafts.unshift({ name, date: today(), ver: 'V1' }); ALL.tab = 'drafts';   // imported services start as drafts
+    $('sva-imp').close(); landingAll('#sva-import'); window.Studio?.toast?.(`${name} imported successfully`);
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'sva-imp-name') { e.preventDefault(); impNext(); } });
+  // service names start with a capital letter (Import + Duplicate), as people type
+  document.addEventListener('input', e => {
+    const el = e.target; if (el.id !== 'sva-imp-name' && el.id !== 'sva-dup-name') return;
+    const v = el.value, up = v.charAt(0).toUpperCase() + v.slice(1);
+    if (up !== v) { const a = el.selectionStart, b = el.selectionEnd; el.value = up; el.setSelectionRange(a, b); }
+  });
+  document.addEventListener('input', e => { if (e.target.id === 'sva-imp-name') { e.target.removeAttribute('aria-invalid'); $('sva-imp-name-err').hidden = true; } });
+  const fileRowHTML = file => {
+    const ext = (file.name.split('.').pop() || 'file').slice(0, 4).toLowerCase();
+    return `<div class="pf-file">
+      <span class="pf-file-icon" aria-hidden="true"><svg width="32" height="40" viewBox="0 0 32 40"><path d="M3 1h18l8 8v28a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z" fill="#FCEDEA" stroke="#E7B7AE"/><path d="M21 1v8h8" fill="#F6D5CE" stroke="#E7B7AE"/><rect x="-1" y="22" width="26" height="11" rx="2" fill="#B91900"/><text x="12" y="30.5" text-anchor="middle" font-family="Roboto, sans-serif" font-size="7.5" font-weight="700" fill="#fff">.${esc(ext)}</text></svg></span>
+      <span class="pf-file-name" title="${esc(file.name)}">${esc(file.name)}</span>
+      <span class="pf-file-actions">
+        <button type="button" class="btn btn-secondary" data-svareup><svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5M7 10l5-5 5 5M5 20h14"/></svg> Re-Upload</button>
+        <button type="button" class="btn btn-secondary" data-svadl><svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg> Download</button>
+      </span>
+      <button type="button" class="pf-file-x" data-svarm aria-label="Remove ${esc(file.name)}"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>`;
+  };
+  const showFile = () => { const f = $('sva-file'); let file = f.files[0];
+    if (file && !/\.json$/i.test(file.name)) { f.value = ''; file = null; $('sva-file-row').innerHTML = ''; const er = $('sva-file-err'); er.textContent = 'Upload a JSON file.'; er.hidden = false; f.setAttribute('aria-invalid', 'true'); return; }
+    $('sva-file-err').textContent = 'Select a service file to import.'; $('sva-file-row').innerHTML = file ? fileRowHTML(file) : ''; $('sva-drop').hidden = !!file; /* once a file is added, only its row shows */ if (file) { f.removeAttribute('aria-invalid'); $('sva-file-err').hidden = true; window.Studio?.announce?.(`${file.name} added.`); } };
+  document.addEventListener('change', e => { if (e.target.id === 'sva-file') showFile(); });
+  document.addEventListener('click', e => {
+    if (!e.target.closest || !e.target.closest('#sva-imp')) return;
+    if (e.target.closest('[data-svareup]')) $('sva-file').click();
+    if (e.target.closest('[data-svarm]')) { const f = $('sva-file'), nm = f.files[0] && f.files[0].name; f.value = ''; $('sva-file-row').innerHTML = ''; $('sva-drop').hidden = false; window.Studio?.announce?.(`${nm || 'File'} removed.`); f.focus(); }
+  });
+  ['dragover', 'drop'].forEach(t => document.addEventListener(t, e => {
+    const z = e.target.closest && e.target.closest('#sva-drop'); if (!z) return;
+    e.preventDefault(); if (t === 'drop' && e.dataTransfer.files.length) { const dt = new DataTransfer(); dt.items.add(e.dataTransfer.files[0]); $('sva-file').files = dt.files; showFile(); }
+  }));
   document.addEventListener('change', e => { if (e.target.id === 'sva-file' && e.target.files.length) { e.target.removeAttribute('aria-invalid'); $('sva-file-err').hidden = true; } });
 
   /* ---------- #/services/template/<n>: Template Overview (opened from View Template) ----------
@@ -301,10 +449,10 @@
       <div class="subbar"><a class="btn btn-secondary" href="#/services/all">${svg(I.back)} <span>Back</span></a>
         <button type="button" class="btn btn-secondary">${svg(I.guides)} Tutorials and Guides</button></div>
       <div class="sv-body tov">
-        <div class="tov-titlerow"><h1 class="page-title" id="tov-t" tabindex="-1">${esc(t.name)}</h1><span class="tag tag-info tov-tag">Template</span></div>
+        <div class="tov-titlerow"><h1 class="page-title" id="tov-t" tabindex="-1">${esc(t.name)}</h1><span class="tag tag-info tov-tag">Template</span><span class="tag tag-warn tov-tag tov-cfg"><svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-120v-240h80v80h320v80H520v80h-80Zm-320-80v-80h240v80H120Zm160-160v-80H120v-80h160v-80h80v240h-80Zm160-80v-80h400v80H440Zm160-160v-240h80v80h160v80H680v80h-80Zm-480-80v-80h400v80H120Z"/></svg>Fully configurable</span></div>
 
         <section class="section pb-urls" aria-labelledby="tov-det-t">
-          <h2 class="section-title" id="tov-det-t">Template Details</h2>
+          <h2 class="section-title" id="tov-det-t">About the Template</h2>
           <p class="tov-desc">${esc(t.desc)}</p>
           <div class="tov-facts">
             ${[['Modules', meta.modules.join(', ')], ['Workflow states', meta.states], ['Configured roles', meta.roles], ['Notifications', meta.notifications], ['Additional features', meta.features]]
@@ -313,8 +461,8 @@
         </section>
 
         <section class="section" aria-labelledby="tov-mod-t">
-          <div class="pb-sec-head pb-sec-head--desc"><h2 class="section-title" id="tov-mod-t">Service modules</h2>
-            <p class="section-desc">These are the modules that come with this template. You can change any of them once you use the template.</p></div>
+          <div class="pb-sec-head pb-sec-head--desc"><h2 class="section-title" id="tov-mod-t">Service Modules</h2>
+            <p class="section-desc">These are the modules that come with this template. Each module represents a different use case the service supports.</p></div>
           ${mods.length > 1 ? `<div class="module-toggle pb-modtabs" role="tablist" aria-label="Modules">${mods.map((x, i) => `
             <button type="button" class="module-tab" role="tab" data-tovmod="${i}" aria-selected="${i === tovMod}" aria-controls="tov-mod-panel" tabindex="${i === tovMod ? 0 : -1}">${esc(x.name)}</button>`).join('')}</div>` : ''}
           <div class="pb-mod-panel" id="tov-mod-panel" role="tabpanel">${m && P ? P.moduleBlock(m) : ''}</div>

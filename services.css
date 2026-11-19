@@ -123,3 +123,44 @@
 .tov .pb-view { height: 32px !important; min-height: 32px !important; min-width: 240px; padding: 0 16px !important; font-size: 14px !important; gap: 6px; }
 .tov-foot { position: sticky; bottom: 0; justify-content: flex-end; gap: 16px; }   /* Preview + Use Template, like Preview + Publish Service */
 .tov-foot .btn { gap: 8px; }
+
+/* Template Overview: two white containers; inside the second, Service modules + Service configuration in #FAFAFA boxes.
+   Hierarchy: page title 40 · container heading 28 (orange icon, no tint) · box heading 22 · card titles 20 · text 16 */
+.tov-card { padding: 24px !important; }
+.tov-h2 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 28px; line-height: 1.25; font-weight: 700; color: #0B4B66; }
+.tov-ic { flex: none; display: inline-grid; color: #C84C0E; }
+.tov-ic svg { width: 28px; height: 28px; }
+.tov-card > .tov-desc { margin: 8px 0 0; }
+.tov-card .tov-facts { margin-top: 20px; }
+.tov-sub { margin-top: 28px; }   /* no box: sections sit straight in the white container (page > container > cards) */
+.tov-sep { margin: 32px 0 0; border: 0; border-top: 1px solid #D6D5D4; }
+.tov-h3 { margin: 0; font-size: 22px; line-height: 1.3; font-weight: 700; color: #0B4B66; }
+.tov-sub-d { margin: 6px 0 20px; font-size: 16px; line-height: 1.5; color: #505A5F; }
+.tov-sub .pb-modtabs { margin-bottom: 20px; }
+
+.tov-cfg { display: inline-flex; align-items: center; gap: 6px; }   /* amber, same as the secondary activation state tag */
+.tov .pb-urls .section-title { margin: 0; }
+
+
+/* Duplicate Service popup: copy icon before the title */
+.sva-dup-title { display: flex; align-items: center; gap: 8px; }
+.sva-dup-title svg { flex: none; color: var(--primary); }
+
+/* Import Service wizard: same popup as the Payment / Notification wizards (notifications.css .ntw) */
+.modal.sva-impw { width: min(640px, calc(100vw - 32px)); }
+.sva-up { gap: 12px; }
+.sva-up .pf-drop { background: #fff; }
+/* Import step 1: name field without the grey box; dark label (box headings only are blue) */
+.sva-imp-row .ntw-label { color: #363636; }
+.sva-imp-row { padding: 12px 4px 4px 0; }   /* room for the focus ring: the sticky title band no longer covers its top edge */
+#sva-imp .pf-file-x:hover { background: none; }   /* Service file: the black × has no hover fill */
+/* "A Draft Already Exists" popup: Deactivate User alert layout (icon + title, no ×, two full-width buttons) with the
+   Select Notification Type tiles */
+.modal.um-alert.sva-choicew { width: min(600px, calc(100vw - 32px)); }
+.sva-choicew .ntw-tiles { margin: 4px 0 0; gap: 16px; }
+.sva-choicew .ntw-tile { flex: 1 1 220px; }
+.sva-choicew .modal-close { position: absolute; top: 12px; right: 12px; }
+.sva-choicew .um-alert-head { padding-right: 32px; }
+.sva-choicew .ntw-foot { margin: 12px -24px -24px; }   /* footer bar: divider, Cancel + Continue on the right */
+.sv-dlg .sv-info.db-sample { margin-top: 0; }   /* description → Info = Info → buttons (16px) */
+#sv-edit .sv-dlg-acts { margin-top: 0; }

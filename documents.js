@@ -10,6 +10,8 @@
    Dashboard cards: page thumbnail · name · process flow state tag · type tag · Delete | Copy · Edit
    ========================================================== */
 (() => {
+  // opened view only from a template: show the template's own sample content, never the person's saved data
+  const tplView = () => { try { return document.body.classList.contains('view-mode') && /^tpl:/.test(sessionStorage.getItem('studio-view-mode') || ''); } catch (e) { return false; } };
   const S = window.Studio, { esc } = S;
   const $ = id => document.getElementById(id);
   const KEY = 'studio-prototype.documents.v1';
@@ -850,7 +852,7 @@
         ${src
           ? `<div class="dc-logo-tile"><img src="${src}" alt="Uploaded logo"><button type="button" class="dc-logo-x" id="dc-logo-rm" aria-label="Remove logo">${I.close}</button></div>`
           : `<div class="dc-logo-drop" id="dc-logo-drop"><span class="dc-logo-ico" aria-hidden="true">${I.upload}</span>
-              <p>Drag and drop your logo or <button type="button" class="dc-browse" id="dc-logo-up" aria-describedby="dc-logo-l">Browse in my files</button></p></div>`}
+              <p>Drag and drop your logo or <button type="button" class="dc-browse" id="dc-logo-up" aria-describedby="dc-logo-l">browse in my files</button></p></div>`}
         <p class="error" id="dc-logo-err" role="alert" hidden></p>
         <input type="file" id="dc-logo-file" accept="image/png,image/svg+xml,image/jpeg" tabindex="-1" aria-hidden="true" hidden></div>`;
     }
@@ -1019,7 +1021,7 @@
     $('dc-stage').innerHTML = d.pages.length ? uploadPage(d, W.page, true)
       : `<div class="dc-drop" id="dc-drop">
           <span class="dc-drop-ico">${I.upload}</span>
-          <p class="dc-drop-text">Drag and drop your files or <button type="button" class="dc-browse" id="dc-browse">Browse in my files</button></p>
+          <p class="dc-drop-text">Drag and drop your files or <button type="button" class="dc-browse" id="dc-browse">browse in my files</button></p>
           <p class="dc-drop-hint">Upload one image for each page. Accepted: PNG, JPG</p>
           <p class="error" id="dc-drop-err" hidden>Add at least one page.</p>
         </div>`;
@@ -1206,7 +1208,11 @@
     const ok = [...files].filter(f2 => /^image\/(png|jpeg)$/.test(f2.type));
     if (!ok.length) { S.announce('Only PNG and JPG images can be added.'); return; }
     const first = W.doc.pages.length;
-    for (const file of ok) { const src = await readImage(file); if (src) W.doc.pages.push({ src, label: file.name.replace(/\.[^.]+$/, '') }); }
+    // same loader as the Attendance register's upload: staged messages while the images are read
+    const read = async () => { for (const file of ok) { const src = await readImage(file); if (src) W.doc.pages.push({ src, label: file.name.replace(/\.[^.]+$/, '') }); } };
+    const one = ok.length === 1;
+    if (S.loader) await S.loader([[one ? 'Preparing your file for upload…' : 'Preparing your files for upload…', 1200], [one ? 'Uploading your file. This will take a moment…' : 'Uploading your files. This will take a moment…', 1800]], read);
+    else await read();
     S.announce(`${ok.length} page${ok.length === 1 ? '' : 's'} added.`);
     if (screen === 'arrange') { drawArrange(); $('dc-ar-grid').querySelector(`[data-ar-i="${first}"] .dc-ar-thumb`)?.focus(); return; }
     W.page = first; drawPages(); drawStage(); drawUpProps();
@@ -1374,7 +1380,7 @@
     render(m, focus) {
       mod = m;
       if (!store[m.id]) { store[m.id] = seed(); save(); }
-      list = store[m.id];
+      list = tplView() ? seed() : store[m.id];
       pf = null;
       let h = null; try { h = JSON.parse(sessionStorage.getItem('studio.docHandoff')); } catch (e) {}
       if (h && h.module === m.id) {

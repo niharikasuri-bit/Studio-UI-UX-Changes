@@ -339,7 +339,7 @@
         ${uploaded
           ? `<div class="dc-logo-tile lp-bg-tile"><img src="${bg}" alt="Uploaded background image"><button type="button" class="dc-logo-x" id="lp-bg-rm" aria-label="Remove background image">${I.close}</button></div>`
           : `<div class="dc-logo-drop${linked ? ' is-disabled' : ''}" id="lp-bg-drop"${linked ? ' inert aria-disabled="true"' : ''}><span class="dc-logo-ico" aria-hidden="true">${I.upload}</span>
-              <p>Drag and drop your image or <button type="button" class="dc-browse" id="lp-bg-up" aria-describedby="lp-bg-l">Browse in my files</button></p></div>
+              <p>Drag and drop your image or <button type="button" class="dc-browse" id="lp-bg-up" aria-describedby="lp-bg-l">browse in my files</button></p></div>
              ${linked ? '<p class="lp-off-hint">Clear the image link to upload a file instead.</p>' : ''}`}
         <p class="error" id="lp-bg-err" role="alert"${bgErr ? '' : ' hidden'}>${esc(bgErr)}</p>
         <input type="file" id="lp-bg-file" accept="image/png,image/svg+xml,image/jpeg" tabindex="-1" aria-hidden="true" hidden>

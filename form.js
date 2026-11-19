@@ -206,7 +206,7 @@
           <div class="pf-drop">
             <span class="pf-drop-icon" aria-hidden="true">${ICON.upload}</span>
             <span class="pf-drop-text">Drag and drop your file or
-              <label class="pf-browse" for="${id}">Browse in my files</label></span>
+              <label class="pf-browse" for="${id}">browse in my files</label></span>
             ${f.doc && f.doc.on && f.doc.types.length ? `<span class="pf-drop-meta">Accepted: ${f.doc.types.map(x => (FILE_TYPES.find(t => t[0] === x) || [x, x])[1]).join(', ')}</span>` : ''}
             <input class="sr-only" type="file" id="${id}"${req} aria-describedby="${id}-title" data-upload="${f.id}"${f.doc && f.doc.on && f.doc.types.length ? ` accept="${f.doc.types.map(x => ({ pdf: '.pdf', jpg: '.jpg,.jpeg', png: '.png', doc: '.doc,.docx', xls: '.xls,.xlsx' })[x]).join(',')}"` : ''}>
           </div>
@@ -1095,11 +1095,16 @@
   dlg.addEventListener('close', () => { if (!view.hidden && document.activeElement === document.body) $('add-section-btn').focus(); });
 
   /* ---------- Public: called by the router ---------- */
+  let openEmpty = /[?&]form=empty(&|$)/.test(location.search);
+  if (openEmpty) { history.replaceState(null, '', location.pathname + location.hash);
+    window.addEventListener('hashchange', () => { openEmpty = false; }, { once: true }); }
   window.StudioForm = {
     render(m, focus) {
       const fresh = mod !== m;
       mod = m; form = ensureForm(m);
       if (fresh) active = 0;
+      // Studio Index "Form Empty State": open on the first section that has no fields yet (?form=empty)
+      if (openEmpty && fresh) { const i = form.sections.findIndex(x => !(x.fields || []).length); if (i >= 0) active = i; }
       $('form-title').textContent = `${m.name} Form`;
       const back = '#/module/' + encodeURIComponent(m.id);
       $('form-back-top').href = back;

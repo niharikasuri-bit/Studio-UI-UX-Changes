@@ -355,7 +355,7 @@
     background-position: right 8px center !important; background-size: 24px 24px !important; }
   select:not([multiple]):not([size]):disabled { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z' fill='%23B1B4B6'/%3E%3C/svg%3E") !important; }
 </style>
-<link rel="stylesheet" href="form.css?v=1794983684" />
+<link rel="stylesheet" href="form.css?v=1795090026" />
 <link rel="stylesheet" href="roles.css?v=17944720800" />
 <link rel="stylesheet" href="notifications.css?v=1794479799" />
 <link rel="stylesheet" href="checklists.css?v=17944720800" />
@@ -366,21 +366,25 @@
   .digit-crumbs ol { display: flex; flex-wrap: wrap; align-items: center; margin: 0; padding: 0; list-style: none; font-size: 16px; line-height: 1.37; }
   .digit-crumbs li { display: flex; align-items: center; }
   .digit-crumbs li + li::before { content: "/"; margin: 0 10px; color: #707070; }
-  .digit-crumbs a { color: var(--primary); text-decoration: none; }
+  .digit-crumbs a { display: inline-flex; align-items: center; min-height: 24px; padding: 2px 0; color: var(--primary); text-decoration: none; }   /* 24px+ click target, same look */
   .digit-crumbs a:hover { text-decoration: underline; text-underline-offset: 2px; }
   .digit-crumbs a:focus-visible { outline: 2px solid var(--heading); outline-offset: 2px; border-radius: 2px; }
   .digit-crumbs [aria-current] { color: #505A5F; }
+  .digit-crumbs { display: flex; align-items: center; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; }
+  .digit-crumbs-back { display: inline-flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 500; color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+  .digit-crumbs-back:hover { color: #A33E0B; }
+  .digit-crumbs-back:focus-visible { outline: 2px solid var(--heading); outline-offset: 2px; border-radius: 2px; }
 </style>
 <link rel="stylesheet" href="payments.css?v=1795001890" />
-<link rel="stylesheet" href="documents.css?v=1795084209" />
+<link rel="stylesheet" href="documents.css?v=1795091184" />
 <link rel="stylesheet" href="landing.css?v=1794989059" />
 <link rel="stylesheet" href="citizen-landing.css?v=1794989059" />
 <link rel="stylesheet" href="users.css?v=1795006817" />
 <link rel="stylesheet" href="preview.css?v=1" />
 <link rel="stylesheet" href="dashboard.css?v=1795005710" />
 <link rel="stylesheet" href="guides.css?v=1794987504" />
-<link rel="stylesheet" href="viewmode.css?v=1795085065" />
-<link rel="stylesheet" href="services.css?v=1795085231" />
+<link rel="stylesheet" href="viewmode.css?v=1795085782" />
+<link rel="stylesheet" href="services.css?v=1795090989" />
 <link rel="stylesheet" href="published.css?v=1795084069" />
 </head>
 <body>
@@ -437,7 +441,7 @@
       <!-- Service modules -->
       <section class="section" aria-labelledby="modules-title">
         <div class="section-head">
-          <h2 class="section-title" id="modules-title">Service modules</h2>
+          <h2 class="section-title" id="modules-title">Service Modules</h2>
           <p class="section-desc">These are the service modules you have added. Each module represents a different use case your service can support.</p>
         </div>
         <div class="grid grid-modules" id="module-grid">
@@ -1033,7 +1037,7 @@
       if (mb) { const t = [...mb.childNodes].reverse().find(n => n.nodeType === 3 && n.textContent.trim()); if (t) { mb.dataset.orig ||= t.textContent;
         t.textContent = on ? ' ' + (/^tpl:/.test(viewFrom()) ? 'Back to Template Overview' : 'Back to Published Service') + ' ' : mb.dataset.orig; } }
       if (on && !d.getElementById('vm-style')) { const st = d.createElement('style'); st.id = 'vm-style';
-        st.textContent = 'body.view-mode #saveBtn, body.view-mode .sidebar--left, body.view-mode .toolbar button:not([aria-label*="oom" i]):not([id*="zoom" i]):not([id*="fit" i]), body.view-mode .footer, body.view-mode #backBtn, body.view-mode #headerHelpBtn, body.view-mode .stats__health, body.view-mode .stats__sep:has(+ .stats__health), body.view-mode .node__issue, body.view-mode .node__handle, body.view-mode .nudges, body.view-mode .todo-box, body.view-mode .issues, body.view-mode .danger-zone, body.view-mode .inner-card__add, body.view-mode .logic-item__btn, body.view-mode #inspector .btn--secondary:not(.logic-item__open), body.view-mode .stepper__btn { display: none !important; } body.view-mode .layout { grid-template-columns: 1fr !important; } body.view-mode .layout.has-inspector { grid-template-columns: 1fr 340px !important; } body.view-mode #inspector :is(input, textarea, select, .switch, .digit-dropdown-select, .segmented label, .role-check) { pointer-events: none !important; } body.view-mode #inspector :is(input:not([type=checkbox]):not([type=radio]), textarea, .digit-dropdown-select) { background: #FAFAFA !important; } body.view-mode .topbar__guides { margin-left: auto !important; } body.view-mode { --footer-h: 0px; } body.view-mode .zoom { bottom: 96px !important; } body.view-mode #inspector { padding-bottom: 96px; }';
+        st.textContent = 'body.view-mode #saveBtn, body.view-mode .sidebar--left, body.view-mode .toolbar button:not([aria-label*="oom" i]):not([id*="zoom" i]):not([id*="fit" i]), body.view-mode .footer, body.view-mode #backBtn, body.view-mode #headerHelpBtn, body.view-mode .stats__health, body.view-mode .stats__sep:has(+ .stats__health), body.view-mode .node__issue, body.view-mode .node__handle, body.view-mode .nudges, body.view-mode .todo-box, body.view-mode .issues, body.view-mode .danger-zone, body.view-mode .inner-card__add, body.view-mode .logic-item__btn, body.view-mode #inspector .btn--secondary:not(.logic-item__open), body.view-mode .stepper__btn { display: none !important; } body.view-mode .layout { grid-template-columns: 1fr !important; } body.view-mode .layout.has-inspector { grid-template-columns: 1fr 340px !important; } body.view-mode #inspector :is(input, textarea, select, .switch, .digit-dropdown-select, .segmented label, .role-check) { pointer-events: none !important; } body.view-mode #inspector :is(input:not([type=checkbox]):not([type=radio]), textarea, .digit-dropdown-select) { background: #FAFAFA !important; } body.view-mode .topbar__guides { margin-left: auto !important; } body.view-mode { --footer-h: 0px; } body.view-mode .zoom .menu-anchor, body.view-mode .zoom .zoom__divider:nth-last-child(2) { display: none !important; } body.view-mode .stepper { display: block !important; background: #FAFAFA !important; } body.view-mode .stepper__input { display: block; width: 100% !important; height: 100% !important; text-align: left !important; padding: 0 12px !important; background: transparent !important; border: 0 !important; } body.view-mode .zoom { bottom: 96px !important; } body.view-mode #inspector { padding-bottom: 96px; }';
         d.head.appendChild(st); } } catch (e) {} };
     apply(); fr.addEventListener('load', apply, { once: true });
   }
@@ -1107,7 +1111,7 @@
     if (dbView) {
       if (!window.StudioDashboard) { addEventListener('load', route, { once: true }); return; }
       window.StudioDashboard.render(started);
-      if (viewMode) { let n = 0; const go = () => { const v = $('db-view'); if (!document.querySelector('#view-dashboard .db-rz')) { if (n++ < 20) setTimeout(go, 100); return; } if (v && !v.disabled) v.click(); else if (n++ < 20) setTimeout(go, 100); }; setTimeout(go, 50); }   // view mode: the dashboard opens in its read-only view
+      // view only: the dashboard opens as itself (not Preview Dashboard); nothing on it can be changed
       document.title = 'Dashboard – Studio Prototype – Studio';
       started = true;
       return;
@@ -1184,7 +1188,7 @@
       return;
     }
     if (flow) {
-      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1795085188';   // version forces a fresh copy after edits
+      const src = 'process-flow/index.html?module=' + encodeURIComponent(m.id) + '&v=1795087731';   // version forces a fresh copy after edits
       if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
       frame.title = `Process flow designer for ${m.name}`;
       document.title = `Process Flow – ${m.name} – Studio Prototype – Studio`;
@@ -1362,20 +1366,22 @@
   route();
 })();
 </script>
-<script src="roles.js?v=1795080279"></script>
-<script src="notifications.js?v=1795080279"></script>
-<script src="checklists.js?v=1795080279"></script>
-<script src="payments.js?v=1795080279"></script>
-<script src="breadcrumbs.js?v=1795085065"></script>
-<script src="documents.js?v=1795080279"></script>
-<script src="landing.js?v=1794995571"></script>
-<script src="citizen-landing.js?v=1794995571"></script>
+<script src="roles.js?v=1795087829"></script>
+<script src="notifications.js?v=1795085404"></script>
+<script src="checklists.js?v=1795085404"></script>
+<script src="payments.js?v=1795086053"></script>
+<script src="breadcrumbs.js?v=1795087829"></script>
+<script src="form-empty.js?v=1795091111"></script>
+<script src="loader.js?v=1795089385"></script>
+<script src="documents.js?v=1795089385"></script>
+<script src="landing.js?v=1795089385"></script>
+<script src="citizen-landing.js?v=1795089385"></script>
 <script src="users.js?v=1795006840"></script>
 <script src="preview.js?v=1"></script>
 <script src="dashboard.js?v=1795004373"></script>
-<script src="form.js?v=1794983704"></script>
-<script src="services.js?v=1795085231"></script>
-<script src="published.js?v=1795084069"></script>
+<script src="form.js?v=1795090026"></script>
+<script src="services.js?v=1795090875"></script>
+<script src="published.js?v=1795087411"></script>
 
 <script src="guides.js?v=1794987504"></script>
 <script src="brand.js?v=1794995280"></script>

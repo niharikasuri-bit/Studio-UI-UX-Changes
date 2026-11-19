@@ -1528,7 +1528,7 @@ select:not([multiple]):not([size]):disabled { background-image: url("data:image/
 /* document page preview (595 x 842 at 62%) on a grey stage */
 .view-page { display: grid; place-items: center; padding: 16px; background: #EEEEEE; border-radius: 8px; }
 .view-page[hidden] { display: none; }
-.view-page iframe { display: block; width: 369px; height: 522px; border: 0; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 4px 16px rgba(0,0,0,.06); }
+.view-page iframe { display: block; height: min(522px, calc(100vh - 300px)); min-height: 240px; aspect-ratio: 595 / 842; width: auto; border: 0; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 4px 16px rgba(0,0,0,.06); }
 .pay-view-ask { margin: 0 16px 0 0; align-self: center; font-size: 16px; font-weight: 700; color: #0B4B66; }
 .pay-choice.is-view .modal__foot { justify-content: flex-start; }   /* question + button together on the left */
 .pay-view-ask[hidden], .pay-view-link[hidden] { display: none; }
@@ -1543,3 +1543,12 @@ select:not([multiple]):not([size]):disabled { background-image: url("data:image/
 /* How would you like to create your payment? — same square-ish tiles as the document popup: title on one line, text wraps */
 .pay-choice .type-tiles__grid > .type-tile { flex: 0 1 300px; }   /* height follows the content */
 .pay-choice .type-tile__label { white-space: nowrap; }
+
+#payFeeBox.is-locked #payFeeName:not([readonly]) { background: var(--surface); border-color: var(--muted); }   /* fee name stays editable when the fee is reused */
+/* view popups: the item name is a 32px title, same as Notification 1 / Checklist 1 */
+.view-choice #viewTitle, .pay-choice.is-view #payDetailsTitle { font-size: 32px; line-height: 1.25; }
+/* locked dropdowns look the same everywhere: grey box, grey arrow */
+.modal.is-view .digit-dropdown-select:disabled { background: #F5F5F5 !important; }
+.modal.is-view .digit-dropdown-select:disabled svg path { fill: #B1B4B6; }
+.view-choice .view-page { margin-top: 16px; border: 1px solid var(--border); }   /* clear of the sticky title (its -8px margin hid the top corners); same border as the other grey boxes */
+.modal.is-view .cl-opts { border-bottom: 0; }   /* view only: nothing below the options to divide from (Add option / delete are hidden) */

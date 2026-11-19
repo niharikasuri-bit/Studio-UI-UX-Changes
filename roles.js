@@ -187,8 +187,19 @@
   dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
   dlg.addEventListener('close', () => { if (!view.hidden && document.activeElement === document.body) (opener && document.contains(opener) ? opener : $('new-role-btn')).focus(); editing = -1; });
 
+  // template view only: the template's sample roles (the person's own roles come back afterwards)
+  const TPL_ROLES = [
+    { code: 'CITIZEN', name: 'Citizen', fixed: true, desc: 'Access citizen services through portal', access: ['VIEWER'] },
+    { code: 'DOC_VERIFIER', name: 'Document Verifier', desc: 'Checks the documents attached to each application', access: ['EDITOR', 'VIEWER'] },
+    { code: 'FIELD_INSPECTOR', name: 'Field Inspector', desc: 'Visits the site and records the inspection', access: ['EDITOR', 'VIEWER'] },
+    { code: 'APPROVER', name: 'Approver', desc: 'Approves or rejects the application', access: ['EDITOR', 'VIEWER'] },
+  ];
+  let ownRoles = null;
   window.StudioRoles = {
     render(m, focus) {
+      const tpl = document.body.classList.contains('view-mode') && /^tpl:/.test((() => { try { return sessionStorage.getItem('studio-view-mode') || ''; } catch (e) { return ''; } })());
+      if (tpl && !ownRoles) { ownRoles = roles; roles = JSON.parse(JSON.stringify(TPL_ROLES)); }
+      else if (!tpl && ownRoles) { roles = ownRoles; ownRoles = null; }
       const back = '#/module/' + encodeURIComponent(m.id);
       ($('roles-back-top') || {}).href = back;
       render();

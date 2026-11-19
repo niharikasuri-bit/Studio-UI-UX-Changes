@@ -5,6 +5,8 @@
    currency + amount or range, host endpoint + method, payment modes (Online + integration / Offline), next step.
    ========================================================== */
 (() => {
+  // opened view only from a template: show the template's own sample content, never the person's saved data
+  const tplView = () => { try { return document.body.classList.contains('view-mode') && /^tpl:/.test(sessionStorage.getItem('studio-view-mode') || ''); } catch (e) { return false; } };
   const S = window.Studio, { esc } = S;
   const $ = id => document.getElementById(id);
   const KEY = 'studio-prototype.payments.v1';
@@ -230,7 +232,7 @@
       // read-only (grey); no note — the fee simply can't be edited
       const ro = (id, t, v) => row(`<label for="${id}">${t}</label>`, `<input class="input pyw-locked" id="${id}" type="text" value="${esc(v)}" readonly>`);
       h += `<div class="ntw-box">
-        ${d.presetFrom ? `${ro('pyw-feename', 'Fee name', feeNameOf(d))}${ro('pyw-fee', 'Fee', FEES[d.fee])}
+        ${d.presetFrom ? `${row(lab('pyw-feename', 'Fee name'), `<input class="input" id="pyw-feename" type="text" placeholder="Enter fee name" data-k="feeName" value="${esc(d.feeName || '')}" autocomplete="off"${inv('feeName')}>${errP('feeName')}`)}${ro('pyw-fee', 'Fee', FEES[d.fee])}
         ${d.fee === 'FIXED' ? ro('pyw-amount', 'Fee amount', money('INR', d.amount || 0)) : ''}
         ${d.fee === 'USER' ? ro('pyw-min', 'Minimum amount', money('INR', d.min || 0)) + ro('pyw-max', 'Maximum amount', money('INR', d.max || 0)) : ''}
         ${d.fee === 'CALC' ? ro('pyw-endpoint', 'Host endpoint', d.endpoint) + ro('pyw-method', 'Method type', d.method) : ''}` : ''}
@@ -284,7 +286,7 @@
     if (st === 'fee') fields();
     const firstOf = n => dlg.querySelector(`input[name="${n}"]:checked`) || dlg.querySelector(`input[name="${n}"]`);
     if (focus) ({ how: () => firstOf('pyw-how'), after: () => $('pyw-state'), pick: () => firstOf('pyw-pick') || $('pyw-q'),
-      fee: () => (D.draft.presetFrom ? dlg.querySelector('[data-k="online"]') : $('pyw-feename')) })[st]()?.focus();
+      fee: () => (D.draft.presetFrom && D.draft.feeName ? dlg.querySelector('[data-k="online"]') : $('pyw-feename')) })[st]()?.focus();
     $('pyw-body').scrollTop = 0;
   }
   // copy = card Copy: straight to the details, prefilled, named "… (copy)"; nothing is added until Save
@@ -367,7 +369,7 @@
     // No name field (same as the process flow): new payments are called "Payment N"
     const nm = d.name || nextName();
     // Set Up Payment: fee + payment mode on one screen
-    if (!d.presetFrom && !(d.feeName || '').trim()) errs.feeName = 'Enter the fee name.';
+    if (!(d.feeName || '').trim()) errs.feeName = 'Enter the fee name.';   // also when the fee is reused: an older payment may have no fee name
     if (!d.fee) errs.fee = 'Select the fee type.';
     if (d.fee === 'FIXED' && !(+d.amount > 0)) errs.amount = 'Enter the fee amount.';
     if (d.fee === 'USER') { if (d.min === '') errs.min = 'Enter the minimum amount.'; if (!(+d.max > 0)) errs.max = 'Enter the maximum amount.'; else if (+d.max < +d.min) errs.max = 'The maximum amount must be more than the minimum amount.'; }
@@ -418,7 +420,7 @@
     render(m, focus) {
       mod = m;
       if (!store[m.id]) { store[m.id] = seed(); save(); }
-      list = store[m.id];
+      list = tplView() ? seed() : store[m.id];
       ($('py-back-top') || {}).href = '#/module/' + encodeURIComponent(m.id);
       render();
       if (focus) $('py-title').focus();

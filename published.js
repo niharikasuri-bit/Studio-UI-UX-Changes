@@ -170,7 +170,7 @@
       </section>
 
       <section class="section" aria-labelledby="pb-mod-t" aria-describedby="pb-mod-d">
-        <div class="pb-sec-head pb-sec-head--desc"><h2 class="section-title" id="pb-mod-t">Service modules</h2>
+        <div class="pb-sec-head pb-sec-head--desc"><h2 class="section-title" id="pb-mod-t">Service Modules</h2>
           <p class="section-desc" id="pb-mod-d">These are the service modules you have added. Each module represents a different use case your service can support.</p></div>
         <div class="module-toggle pb-modtabs" role="tablist" aria-label="Modules">${ms.map(x => `
           <button type="button" class="module-tab" role="tab" id="pb-mt-${x.id}" data-mod="${x.id}" aria-selected="${x.id === modId}" aria-controls="pb-mod-panel" tabindex="${x.id === modId ? 0 : -1}">${esc(x.name)}</button>`).join('')}</div>

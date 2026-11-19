@@ -5,6 +5,8 @@
    Builder: name + pencil, Action *, Description, question cards (text, answer type, options, required).
    ========================================================== */
 (() => {
+  // opened view only from a template: show the template's own sample content, never the person's saved data
+  const tplView = () => { try { return document.body.classList.contains('view-mode') && /^tpl:/.test(sessionStorage.getItem('studio-view-mode') || ''); } catch (e) { return false; } };
   const S = window.Studio, { esc } = S;
   const $ = id => document.getElementById(id);
   const KEY = 'studio-prototype.checklists.v1';
@@ -359,7 +361,7 @@
     render(m, focus) {
       mod = m;
       if (!store[m.id]) { store[m.id] = seed(); save(); }
-      list = store[m.id];
+      list = tplView() ? seed() : store[m.id];
       list.forEach(c => { delete c.desc; c.questions.forEach(normQ); });
       ($('cl-back-top') || {}).href = '#/module/' + encodeURIComponent(m.id);
       render();
