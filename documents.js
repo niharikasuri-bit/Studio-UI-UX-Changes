@@ -1025,7 +1025,7 @@
           <div class="dc-ar-names"><h3 class="dc-ar-fname" title="${esc(p.label)}">${esc(p.label)}</h3></div>
           <button type="button" class="icon-btn dc-ar-rm" data-rm="${i}" aria-label="Delete file ${i + 1}, ${esc(p.label)}">${I.trash}</button>
         </div>
-      </li>`).join('') : `<li class="field-empty dc-pages-empty"><svg class="field-empty-ico" aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4M4 13l2.5-7h11L20 13v5a1 1 0 01-1 1H5a1 1 0 01-1-1z"/></svg><span>You have no uploaded docs yet.</span></li>`;
+      </li>`).join('') : `<li class="field-empty dc-pages-empty"><svg class="field-empty-ico" aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4M4 13l2.5-7h11L20 13v5a1 1 0 01-1 1H5a1 1 0 01-1-1z"/></svg><span>You have no uploaded documents yet.</span></li>`;
   }
   function drawStage() {
     const d = W.doc;
