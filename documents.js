@@ -705,12 +705,9 @@
     };
     $('dc-name-edit').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); endEdit(true); } else if (e.key === 'Escape') { e.preventDefault(); endEdit(false); } });
     $('dc-name-edit').addEventListener('blur', () => endEdit(true));
-    // Back from the canvas (blue header): "Save changes?" first, same popup as the form builder; then the previous step or the list
+    // Back from the canvas (blue header): "Save changes?" first, same popup as the form builder; then the Documents list (not the create steps)
     $('dc-ed-back').addEventListener('click', () => {
-      const ctx = W.ctx, doc = W.doc, back = ctx.edit && ctx.edit.id;
-      const go = ctx.from === 'arrange' && !ctx.edit ? () => showArrange(doc, { prev: ctx.prev })
-        : ctx.from === 'details' && !ctx.edit ? () => showDetails(doc, { from: ctx.prev })
-        : () => showList(back);
+      const back = W.ctx.edit && W.ctx.edit.id, go = () => showList(back);
       window.StudioLeave ? window.StudioLeave.ask(go) : go();
     });
     $('dc-ed-save').addEventListener('click', saveDoc);
