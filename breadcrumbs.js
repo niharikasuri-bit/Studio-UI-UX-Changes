@@ -2,19 +2,32 @@
    (module dashboard AND process flow): Payment, Checklists, Notifications, Roles, Documents (+ the Documents create steps).
    Not on screens with a left panel (form builder, process flow, dashboard designer, document editor) or the landing page designers.
    Screens with a breadcrumb have no top-left Back; screens without one keep it.
-   Trail = where the page lives: Home / Service Dashboard / Module Dashboard / <Current>. No extra "Back to …" link:
-   the breadcrumb is the only way back on these screens. */
+   Trail = Home / Service Dashboard / Module Dashboard / <Current>. Opened from the module's process flow, the trail
+   includes it: … / Module Dashboard / Process Flow / <Current>. No extra "Back to …" link. */
 (() => {
   const TITLES = ['py-title', 'cl-title', 'nt-title', 'roles-title', 'dc-title'];
   const DOC_STEPS = ['dc-ch-title', 'dc-dt-title', 'dc-ar-title'];   // … / Documents / <step>
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const SMALL = new Set(['a', 'an', 'and', 'as', 'at', 'by', 'for', 'in', 'of', 'on', 'or', 'the', 'to', 'with']);
   const titleCase = t => t.trim().split(/\s+/).map((w, i) => (i && SMALL.has(w.toLowerCase())) ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-      function crumbsFor(title) {
+  // opened from the module's process flow → remember it (survives a reload of the same page)
+  const KEY = 'studio-crumb-from';
+  const MANAGE = /^#\/module\/([^/]+)\/(payments|checklists|notifications|roles|documents)$/;
+  window.addEventListener('hashchange', e => {
+    const from = '#' + (e.oldURL.split('#')[1] || ''), to = location.hash, tm = to.match(MANAGE);
+    if (!tm || from === to) return;
+    try {
+      if (from === '#/module/' + tm[1] + '/process-flow') sessionStorage.setItem(KEY, JSON.stringify({ to }));
+      else sessionStorage.removeItem(KEY);
+    } catch (er) {}
+  });
+  const fromFlow = () => { try { const s = JSON.parse(sessionStorage.getItem(KEY)); return !!s && s.to === location.hash; } catch (er) { return false; } };
+  function crumbsFor(title) {
     const m = location.hash.match(/^#\/module\/([^/]+)\//); if (!m) return null;
     const id = decodeURIComponent(m[1]);
     // screen names, not the service / module names
     const items = [['Home', '#/services/all'], ['Service Dashboard', '#/'], ['Module Dashboard', '#/module/' + encodeURIComponent(id)]];
+    if (fromFlow()) items.push(['Process Flow', '#/module/' + encodeURIComponent(id) + '/process-flow']);
     if (DOC_STEPS.includes(title.id)) items.push(['Documents', '#/module/' + encodeURIComponent(id) + '/documents', 'docs']);
     const nav = document.createElement('nav');
     nav.className = 'digit-crumbs'; nav.setAttribute('aria-label', 'Breadcrumb');
