@@ -355,7 +355,7 @@
             <label class="ntw-tile"><input type="radio" name="dc-how" value="TEMPLATE"><span class="ntw-tile-ico">${I.tplTile}</span>
               <span class="ntw-tile-title">Predefined Document Template</span><span class="ntw-tile-text">Start from a ready-made template and customize it.</span></label>
             <label class="ntw-tile"><input type="radio" name="dc-how" value="UPLOAD"><span class="ntw-tile-ico">${I.upTile}</span>
-              <span class="ntw-tile-title">Upload Your Own Design</span><span class="ntw-tile-text">Upload an image of each page and set it up in the designer.</span></label>
+              <span class="ntw-tile-title">Upload Your Own Design</span><span class="ntw-tile-text">Upload a file for each page and set it up in the designer.</span></label>
           </fieldset>
           <p class="error dc-how-err" id="dc-how-err" hidden>Select how you would like to create your document.</p>
         </div>
@@ -563,7 +563,7 @@
     view.innerHTML = `${subbar}
     <main class="content dc-arrange">
       <h1 class="page-title" id="dc-ar-title" tabindex="-1">Upload and Arrange Documents</h1>
-      <p class="dc-ch-desc" id="dc-ar-desc">Upload an image for each page of your document and put the files in order.</p>
+      <p class="dc-ch-desc" id="dc-ar-desc">Upload a file for each page of your document and put the files in order.</p>
       <section class="section dc-ar-card" aria-labelledby="dc-ar-title" aria-describedby="dc-ar-desc">
         <div id="dc-ar-body"></div>
       </section>
@@ -596,7 +596,7 @@
         <span class="dc-ar-ico" aria-hidden="true">${I.upload}</span>
         <div class="dc-ar-droptext">
           <p class="dc-ar-text">Drag and drop your files or <button type="button" class="dc-browse" id="dc-ar-browse">browse in my files</button></p>
-          <p class="dc-ar-hint">One image for each page. Accepted: PNG, JPG</p>
+          <p class="dc-ar-hint">One file for each page. Accepted: PNG, JPG</p>
         </div>
         <p class="error" id="dc-ar-err" hidden>Add at least one file.</p>
       </div>
@@ -1033,7 +1033,7 @@
       : `<div class="dc-drop" id="dc-drop">
           <span class="dc-drop-ico">${I.upload}</span>
           <p class="dc-drop-text">Drag and drop your files or <button type="button" class="dc-browse" id="dc-browse">browse in my files</button></p>
-          <p class="dc-drop-hint">Upload one image for each page. Accepted: PNG, JPG</p>
+          <p class="dc-drop-hint">Upload one file for each page. Accepted: PNG, JPG</p>
           <p class="error" id="dc-drop-err" hidden>Add at least one page.</p>
         </div>`;
     fitTemplate();
@@ -1217,7 +1217,7 @@
   async function addFiles(files) {
     if (!W || W.doc.kind !== 'UPLOAD') return;
     const ok = [...files].filter(f2 => /^image\/(png|jpeg)$/.test(f2.type));
-    if (!ok.length) { S.announce('Only PNG and JPG images can be added.'); return; }
+    if (!ok.length) { S.announce('Only PNG and JPG files can be added.'); return; }
     const first = W.doc.pages.length;
     // same loader as the Attendance register's upload: staged messages while the images are read
     const read = async () => { for (const file of ok) { const src = await readImage(file); if (src) W.doc.pages.push({ src, label: file.name.replace(/\.[^.]+$/, '') }); } };
