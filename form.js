@@ -156,6 +156,17 @@
       </div>
     </dialog>
 
+    <dialog class="modal pfc" id="leave-form-dialog" aria-labelledby="lf-title" aria-describedby="lf-desc">
+      <button type="button" class="icon-btn pfc-close" id="lf-close" aria-label="Close"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <div class="pfc-icon" aria-hidden="true"><svg viewBox="0 0 48 44" width="48" height="48" focusable="false"><path d="M24 2L46 42H2z" fill="#B91900"/><rect x="21.5" y="15" width="5" height="15" rx="1.5" fill="#fff"/><circle cx="24" cy="35.5" r="2.8" fill="#fff"/></svg></div>
+      <h2 class="pfc-title" id="lf-title">Save your progress?</h2>
+      <p class="pfc-desc" id="lf-desc">You have changes to this form that are not saved. Save them before you leave, or leave without saving and lose the changes.</p>
+      <div class="pfc-actions">
+        <button type="button" class="btn btn-secondary" id="lf-discard">Leave Without Saving</button>
+        <button type="button" class="btn btn-primary" id="lf-save">Save and Leave</button>
+      </div>
+    </dialog>
+
     <dialog class="modal add-section" id="add-section-dialog" aria-labelledby="as-title">
       <div class="as-head">
         <h2 class="modal-title" id="as-title">Add Section</h2>
@@ -1042,7 +1053,51 @@
     if (fromCanvas) $('canvas-add-field').focus();
   }
 
-  $('form-save').addEventListener('click', () => { S.saveModules(); S.announce('Form saved.'); S.toast?.('Form saved'); });
+  $('form-save').addEventListener('click', () => { S.saveModules(); snap = snapshot(); S.announce('Form saved.'); S.toast?.('Form saved'); });
+
+  /* ---------- Leaving with unsaved changes: ask to save first ----------
+     Edits are kept as they are made, so "unsaved" = different from the form as it was when opened (or last saved).
+     Leave Without Saving puts the form back to that version. */
+  let snap = null, inForm = false, pendingLeave = null, leaving = false;
+  const snapshot = () => JSON.stringify(form);
+  const formRoute = h => /^#\/module\/[^/]+\/form$/.test(h);
+  const isDirty = () => inForm && snap !== null && snapshot() !== snap;
+  const lfDlg = $('leave-form-dialog');
+  function askLeave(go) {
+    pendingLeave = go;
+    lfDlg.showModal(); $('lf-save').focus();
+  }
+  function leaveNow(save) {
+    const go = pendingLeave; pendingLeave = null;
+    if (save) { S.saveModules(); S.toast?.('Form saved'); }
+    else { mod.form = JSON.parse(snap); form = mod.form; S.saveModules(); }
+    snap = snapshot(); leaving = true; lfDlg.close();
+    if (go) go();
+  }
+  $('lf-save').addEventListener('click', () => leaveNow(true));
+  $('lf-discard').addEventListener('click', () => leaveNow(false));
+  $('lf-close').addEventListener('click', () => lfDlg.close());
+  lfDlg.addEventListener('close', () => { if (pendingLeave) { pendingLeave = null; (document.activeElement === document.body ? $('form-title') : document.activeElement)?.focus(); } });
+  // In-app moves (Back to Module Dashboard, side menu, browser Back): undo the hash change, ask, then go
+  // (studio.html runs this before its router, so the form stays on screen behind the popup)
+  window.StudioLeaveGuard = e => {
+    const from = '#' + (e.oldURL.split('#')[1] || ''), to = location.hash;
+    if (leaving) { leaving = false; if (!formRoute(to)) inForm = false; return false; }
+    if (!formRoute(from) || from === to) return false;
+    if (!isDirty()) { if (!formRoute(to)) inForm = false; return false; }
+    history.replaceState(null, '', from);
+    askLeave(() => { location.hash = to; });
+    return true;
+  };
+  // Links to other pages (Studio Index, Home …)
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[href]'); if (!a || !isDirty()) return;
+    const href = a.getAttribute('href'); if (!href || href.startsWith('#') || a.target === '_blank' || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    e.preventDefault(); e.stopPropagation();
+    askLeave(() => { location.href = a.href; });
+  }, true);
+  // Reload / close tab: the browser's own "Leave site?" prompt
+  window.addEventListener('beforeunload', e => { if (isDirty() && !leaving) { e.preventDefault(); e.returnValue = ''; } });
 
   /* ---------- Delete Section (confirm first, like the workflow designer) ---------- */
   const dsDlg = $('del-section-dialog');
@@ -1108,6 +1163,7 @@
       const back = '#/module/' + encodeURIComponent(m.id);
       $('form-back-top').href = back;
       renderAll();
+      if (!inForm || fresh) { snap = snapshot(); inForm = true; }   // the version to go back to if they leave without saving
       if (focus) $('form-title').focus();
     },
   };

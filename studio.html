@@ -1199,6 +1199,8 @@
     }
     started = true;
   }
+  // a screen can hold the move (e.g. the form builder asking to save first): nothing else reacts to the hash change
+  window.addEventListener('hashchange', e => { if (window.StudioLeaveGuard && window.StudioLeaveGuard(e)) e.stopImmediatePropagation(); });
   window.addEventListener('hashchange', route);
   // Inside a module, "Back to Home" returns to the service page
   // Module page -> service page; service page (the first screen of Service Flow) -> the Studio Index. Label stays "Back to Home".
@@ -1346,7 +1348,7 @@
 <script src="users.js?v=1795006840"></script>
 <script src="preview.js?v=1"></script>
 <script src="dashboard.js?v=1795004373"></script>
-<script src="form.js?v=1795090027"></script>
+<script src="form.js?v=1795090030"></script>
 <script src="services.js?v=1795091321"></script>
 <script src="published.js?v=1795087411"></script>
 
