@@ -705,11 +705,13 @@
     };
     $('dc-name-edit').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); endEdit(true); } else if (e.key === 'Escape') { e.preventDefault(); endEdit(false); } });
     $('dc-name-edit').addEventListener('blur', () => endEdit(true));
+    // Back from the canvas (blue header): "Save changes?" first, same popup as the form builder; then the previous step or the list
     $('dc-ed-back').addEventListener('click', () => {
-      if (W.ctx.from === 'arrange' && !W.ctx.edit) return showArrange(W.doc, { prev: W.ctx.prev });
-      if (W.ctx.from === 'details' && !W.ctx.edit) return showDetails(W.doc, { from: W.ctx.prev });
-      const back = W.ctx.edit && W.ctx.edit.id;
-      window.StudioLeave ? window.StudioLeave.ask(() => showList(back)) : showList(back);   // leaving the document: "Save changes?" first
+      const ctx = W.ctx, doc = W.doc, back = ctx.edit && ctx.edit.id;
+      const go = ctx.from === 'arrange' && !ctx.edit ? () => showArrange(doc, { prev: ctx.prev })
+        : ctx.from === 'details' && !ctx.edit ? () => showDetails(doc, { from: ctx.prev })
+        : () => showList(back);
+      window.StudioLeave ? window.StudioLeave.ask(go) : go();
     });
     $('dc-ed-save').addEventListener('click', saveDoc);
     view.querySelectorAll('.tip').forEach(t => { const b2 = t.querySelector('.tip-btn'); if (!b2) return;
