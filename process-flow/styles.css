@@ -580,7 +580,7 @@ button { cursor: pointer; }
   background: var(--surface);
   border-top: 1px solid var(--border);
 }
-.footer__right { display: flex; align-items: center; gap: 16px; }
+.footer__right { display: flex; align-items: center; gap: 16px; margin-left: auto; }   /* no Back in the footer: Save stays right */
 .footer__saved { margin: 0; color: var(--success); font-weight: 500; }
 .btn--large { min-height: 44px; padding: 0 24px; font-size: 16px; }
 .btn--small { gap: 6px; }

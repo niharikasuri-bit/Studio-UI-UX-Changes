@@ -3350,7 +3350,6 @@
   });
 
   /* ================= Footer ================= */
-  $('#backBtn').addEventListener('click', goToModuleDashboard);
   $('#moduleBackBtn').addEventListener('click', goToModuleDashboard);
   // Inside Studio: open Studio's Tutorials and Guides panel; on its own: a note
   $('#guidesBtn').addEventListener('click', () => {

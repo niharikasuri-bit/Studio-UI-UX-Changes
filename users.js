@@ -85,7 +85,6 @@
     </div>
     <div class="um-body" id="um-body"></div>
     <footer class="form-foot" id="um-foot" hidden>
-      <a class="btn btn-secondary" href="#/users">${I.left} Back</a>
       <button type="submit" form="um-form" class="btn btn-primary" id="um-submit">${I.check} Add User</button>
     </footer>
 

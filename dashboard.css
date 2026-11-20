@@ -103,7 +103,7 @@
 .db-filter { display: flex; align-items: flex-end; gap: 8px; padding: 12px; background: #fff; border: 1px solid #D6D5D4; border-radius: 8px; }
 .db-filter-row { flex: 1; min-width: 0; display: grid; gap: 8px; }
 .db-filter-del { flex: none; width: 40px; height: 40px; color: #C84C0E; }
-.db-foot-r { display: flex; gap: 16px; }
+.db-foot-r { display: flex; gap: 16px; margin-left: auto; }   /* no Back in the footer: Preview + Save stay right */
 
 /* View (read-only preview): no side panels, no tools */
 .db-previewing .db-body { grid-template-columns: minmax(0, 1fr); }

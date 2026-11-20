@@ -353,7 +353,6 @@
     </div>
     <div class="db-narrow" role="note"><h2>Use a larger screen</h2><p>The dashboard designer needs a screen at least 1024 pixels wide. Open it on a laptop or desktop.</p></div>
     <footer class="form-foot">
-      <a class="btn btn-secondary" id="db-back" href="#/">${I.left} Back</a>
       <div class="db-foot-r">
         <button type="button" class="btn btn-secondary" id="db-view">${I.eye} Preview Dashboard</button>
         <button type="button" class="btn btn-primary dc-save" id="db-save">${I.check} Save</button>
