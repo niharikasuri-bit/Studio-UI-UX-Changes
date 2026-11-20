@@ -73,7 +73,6 @@
       </aside>
     </div>
     <footer class="form-foot">
-      <a class="btn btn-secondary" href="index.html">${I.left} Back</a>
       <button type="button" class="btn btn-primary dc-save" id="cz-save">${I.check} Save</button>
     </footer>`;
 
