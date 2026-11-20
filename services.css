@@ -123,6 +123,7 @@
 .tov .pb-view { height: 32px !important; min-height: 32px !important; min-width: 240px; padding: 0 16px !important; font-size: 14px !important; gap: 6px; }
 .tov-foot { position: sticky; bottom: 0; justify-content: flex-end; gap: 16px; }   /* Preview + Use Template, like Preview + Publish Service */
 .tov-foot .btn { gap: 8px; }
+.tov-foot .btn-primary { margin-left: 0; }   /* Preview sits right next to Use Template (form.css pushes canvas Save buttons right) */
 
 /* Template Overview: two white containers; inside the second, Service modules + Service configuration in #FAFAFA boxes.
    Hierarchy: page title 40 · container heading 28 (orange icon, no tint) · box heading 22 · card titles 20 · text 16 */
