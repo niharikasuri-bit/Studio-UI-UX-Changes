@@ -669,7 +669,7 @@
 
   /* ---------- 3. Editors ---------- */
   function openEditor(doc, ctx) {
-    W = { doc, ctx, sel: null, page: 0, err: '' };
+    W = { doc, ctx, sel: null, page: 0, err: '', snap: JSON.stringify(doc) };   // snap: the version to compare with when they leave
     doc.kind === 'TEMPLATE' ? showTemplateEditor() : showUploadEditor();
   }
   const editorHead = d => `<div class="form-head dc-ed-head">
@@ -708,7 +708,8 @@
     $('dc-ed-back').addEventListener('click', () => {
       if (W.ctx.from === 'arrange' && !W.ctx.edit) return showArrange(W.doc, { prev: W.ctx.prev });
       if (W.ctx.from === 'details' && !W.ctx.edit) return showDetails(W.doc, { from: W.ctx.prev });
-      showList(W.ctx.edit && W.ctx.edit.id);
+      const back = W.ctx.edit && W.ctx.edit.id;
+      window.StudioLeave ? window.StudioLeave.ask(() => showList(back)) : showList(back);   // leaving the document: "Save changes?" first
     });
     $('dc-ed-save').addEventListener('click', saveDoc);
     view.querySelectorAll('.tip').forEach(t => { const b2 = t.querySelector('.tip-btn'); if (!b2) return;
@@ -731,6 +732,16 @@
     S.announce(`${name} ${was ? 'updated' : 'created'}.`);
     if (!was) S.toast(`${name} created successfully`);
   }
+
+  /* Leaving the document canvas with unsaved changes: "Save changes?" (leave-guard.js).
+     The editor works on a copy, so Discard Changes just leaves it. A new document or a copy is not saved until Save. */
+  window.StudioLeave?.set({
+    what: 'document',
+    active: () => (screen === 'template' || screen === 'upload') && !!W && !view.hidden,
+    isDirty: () => !W.ctx.edit || JSON.stringify(W.doc) !== W.snap,
+    save: () => { const was = screen; saveDoc(); return screen !== was; },   // stays on the canvas if the document cannot be saved yet
+    discard: () => {},
+  });
 
   // 3a. Template editor: preview + Document Properties (no left panel)
   function showTemplateEditor() {
