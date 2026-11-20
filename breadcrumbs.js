@@ -79,8 +79,7 @@
   }
   new MutationObserver(() => place()).observe(document.body, { childList: true, subtree: true });
   window.addEventListener('hashchange', () => setTimeout(place));
-  // Leaving a Documents create step from the breadcrumb: ask first — what they chose and filled in would be lost
-  const onDocStep = () => DOC_STEPS.some(id => { const t = document.getElementById(id); return t && !t.closest('[hidden]'); });
+  // Breadcrumb clicks just go: the only "Save changes?" popup is on the document canvas (leave-guard.js)
   function go(a) {
     if (a.dataset.crumb === 'docs' && window.StudioDocuments) {   // same URL: re-open the list directly
       const id = decodeURIComponent((location.hash.match(/^#\/module\/([^/]+)\//) || [])[1] || '');
@@ -88,28 +87,8 @@
       if (mod) window.StudioDocuments.render(mod, true);
     } else location.hash = a.getAttribute('href');
   }
-  let pending = null;
-  function confirmDiscard(a) {
-    let d = document.getElementById('crumb-discard');
-    if (!d) {
-      d = document.createElement('dialog'); d.id = 'crumb-discard'; d.className = 'modal pfc';
-      d.setAttribute('aria-labelledby', 'crumb-discard-t'); d.setAttribute('aria-describedby', 'crumb-discard-d');
-      d.innerHTML = `<div class="pfc-icon" aria-hidden="true"><svg viewBox="0 0 48 44" width="48" height="48"><path d="M24 2L46 42H2z" fill="#B91900"/><rect x="21.5" y="15" width="5" height="15" rx="1.5" fill="#fff"/><circle cx="24" cy="35.5" r="2.8" fill="#fff"/></svg></div>
-        <h2 class="pfc-title" id="crumb-discard-t">Discard this document?</h2>
-        <p class="pfc-desc" id="crumb-discard-d">You are leaving before the document is created. What you have chosen and filled in so far will not be saved.</p>
-        <div class="pfc-actions"><button type="button" class="btn btn-secondary" data-keep>Keep Editing</button><button type="button" class="btn btn-primary" data-discard>Discard</button></div>`;
-      document.body.appendChild(d);
-      d.addEventListener('click', e => {
-        if (e.target.closest('[data-keep]') || e.target === d) d.close();
-        if (e.target.closest('[data-discard]')) { const t = pending; pending = null; d.close(); if (t) go(t); }
-      });
-      d.addEventListener('close', () => { if (pending && document.contains(pending)) pending.focus(); pending = null; });
-    }
-    pending = a; d.showModal(); d.querySelector('[data-keep]').focus();
-  }
   document.addEventListener('click', e => {
     const a = e.target.closest('.digit-crumbs a'); if (!a) return;
-    if (onDocStep()) { e.preventDefault(); return confirmDiscard(a); }
     if (a.dataset.crumb === 'docs') { e.preventDefault(); go(a); }
   });
   // view only: rows stay visible but nothing can be dragged around
