@@ -2,50 +2,23 @@
    (module dashboard AND process flow): Payment, Checklists, Notifications, Roles, Documents (+ the Documents create steps).
    Not on screens with a left panel (form builder, process flow, dashboard designer, document editor) or the landing page designers.
    Screens with a breadcrumb have no top-left Back; screens without one keep it.
-   Trail = where the page lives: Home / Service Dashboard / Module Dashboard / <Current>. Coming from another screen
-   (e.g. the process flow) adds a separate "Back to …" link on the right, not an extra crumb. */
+   Trail = where the page lives: Home / Service Dashboard / Module Dashboard / <Current>. No extra "Back to …" link:
+   the breadcrumb is the only way back on these screens. */
 (() => {
   const TITLES = ['py-title', 'cl-title', 'nt-title', 'roles-title', 'dc-title'];
   const DOC_STEPS = ['dc-ch-title', 'dc-dt-title', 'dc-ar-title'];   // … / Documents / <step>
-  const KEY = 'studio-crumb-from';
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const SMALL = new Set(['a', 'an', 'and', 'as', 'at', 'by', 'for', 'in', 'of', 'on', 'or', 'the', 'to', 'with']);
   const titleCase = t => t.trim().split(/\s+/).map((w, i) => (i && SMALL.has(w.toLowerCase())) ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-  const service = () => ((document.querySelector('#view-service .page-title') || {}).firstChild || {}).textContent?.trim() || 'Service';
-  const modName = id => (((window.Studio && window.Studio.modules()) || []).find(x => x.id === id) || {}).name || id;
-  const MANAGE = /^#\/module\/([^/]+)\/(payments|checklists|notifications|roles|documents)$/;
-  // where they came from → its crumb (label, link); the module dashboard itself is already in the trail
-  const SUB = { 'process-flow': 'Process Flow', form: 'Form', roles: 'Roles', notifications: 'Notifications', checklists: 'Checklists', payments: 'Payment', documents: 'Documents' };
-  function fromCrumb(hash, id) {
-    const m = hash.match(/^#\/module\/([^/]+)\/([a-z-]+)$/);
-    if (m && SUB[m[2]]) return [SUB[m[2]], hash, decodeURIComponent(m[1]) === id ? null : modName(decodeURIComponent(m[1]))];
-    const top = { '#/published': 'Published Service', '#/landing': 'Service Landing Page', '#/dashboard': 'Dashboard', '#/citizen-landing': 'Citizen Landing' }[hash];
-    return top ? [top, hash] : null;
-  }
-  // remember the screen they came from (survives a reload of the same page)
-  window.addEventListener('hashchange', e => {
-    const from = '#' + (e.oldURL.split('#')[1] || ''), to = location.hash, tm = to.match(MANAGE);
-    if (!tm) return;
-    const fm = from.match(/^#\/module\/([^/]+)/);
-    if (from === to) return;
-    // from the module dashboard or another manage screen (Roles → Payment …): the usual trail
-    if ((fm && from === '#/module/' + fm[1]) || MANAGE.test(from)) { try { sessionStorage.removeItem(KEY); } catch (er) {} return; }
-    try { sessionStorage.setItem(KEY, JSON.stringify({ to, from })); } catch (er) {}
-  });
-  function crumbsFor(title) {
+      function crumbsFor(title) {
     const m = location.hash.match(/^#\/module\/([^/]+)\//); if (!m) return null;
     const id = decodeURIComponent(m[1]);
     // screen names, not the service / module names
     const items = [['Home', '#/services/all'], ['Service Dashboard', '#/'], ['Module Dashboard', '#/module/' + encodeURIComponent(id)]];
-    let saved = null; try { saved = JSON.parse(sessionStorage.getItem(KEY)); } catch (er) {}
-    // came from another screen (process flow, Published Service …): a "Back to …" link on the right
-    const c = saved && saved.to === location.hash ? fromCrumb(saved.from, id) : null;
-    const back = c && c[0] !== titleCase(title.textContent) ? c : null;
     if (DOC_STEPS.includes(title.id)) items.push(['Documents', '#/module/' + encodeURIComponent(id) + '/documents', 'docs']);
     const nav = document.createElement('nav');
     nav.className = 'digit-crumbs'; nav.setAttribute('aria-label', 'Breadcrumb');
-    nav.innerHTML = `<ol>${items.map(([t, h, k]) => `<li><a href="${h}"${k ? ` data-crumb="${k}"` : ''}>${esc(titleCase(t))}</a></li>`).join('')}<li><span aria-current="page">${esc(titleCase(title.textContent))}</span></li></ol>`
-      + (back ? `<a class="digit-crumbs-back" href="${back[1]}"><svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Back to ${esc(back[0])}</a>` : '');
+    nav.innerHTML = `<ol>${items.map(([t, h, k]) => `<li><a href="${h}"${k ? ` data-crumb="${k}"` : ''}>${esc(titleCase(t))}</a></li>`).join('')}<li><span aria-current="page">${esc(titleCase(title.textContent))}</span></li></ol>`;
     return nav;
   }
   // View only (from Published Service or a template): the screen as it is — no breadcrumb; Back in the blue header and in the floating card
