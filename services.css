@@ -154,6 +154,7 @@
 .sva-imp-row .ntw-label { color: #363636; }
 .sva-imp-row { padding: 12px 4px 4px 0; }   /* room for the focus ring: the sticky title band no longer covers its top edge */
 #sva-imp .pf-file-x:hover { background: none; }   /* Service file: the black × has no hover fill */
+#sva-imp .pf-file-x { top: 16px; right: 8px; }   /* × in line with the file name and buttons (first row), not in the top corner */
 /* "A Draft Already Exists" popup: Deactivate User alert layout (icon + title, no ×, two full-width buttons) with the
    Select Notification Type tiles */
 .modal.um-alert.sva-choicew { width: min(600px, calc(100vw - 32px)); }
