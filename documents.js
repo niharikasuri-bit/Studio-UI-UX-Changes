@@ -1073,8 +1073,8 @@
     payment: ['Payment Variable', PAY_VARS, 'payment', 'Details of the payment made, such as the amount paid and the transaction ID.'],
     bill: ['Bill Variable', BILL_VARS, 'bill', 'Details of the bill raised, such as the bill amount and the due date.'],
   };
-  // the last variable deleted -> Personalization Variables switches off and its boxes go away
-  function varsEmpty() { const d = W.doc; if (d.varsOn && !(d.vars || []).length) { d.varsOn = false; return true; } return false; }
+  // deleting the last variable keeps Personalization Variables on (only the switch turns it off), so they can add more straight away
+  function varsEmpty() { return false; }
   function drawUpProps() {
     const d = W.doc, here = (d.vars || []).filter(v => v.page === W.page);
     const group = (kind, title, tipText, all) => {
