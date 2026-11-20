@@ -686,7 +686,7 @@
     </div>`;
   const panelHead = `<div class="fp-head"><h2 class="fp-title dc-panel-title">Document Items</h2></div>`;
   const editorFoot = `<footer class="form-foot">
-      <button type="button" class="btn btn-secondary" id="dc-ed-back">${I.left} Back</button>
+      <button type="button" class="btn btn-secondary" id="dc-ed-back" hidden>${I.left} Back</button>
       <button type="button" class="btn btn-primary dc-save" id="dc-ed-save">${I.check} Save Configuration</button>
     </footer>`;
   function wireEditorCommon() {

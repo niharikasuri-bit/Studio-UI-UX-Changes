@@ -659,5 +659,3 @@ button.dc-fcard-img:focus-visible { outline: none; box-shadow: inset 0 0 0 2px v
 .dc-item:has(> .switch[aria-checked="false"]) .dc-item-btn,
 #dc-up-props .fpp-box-head:has(> .switch[aria-checked="false"]) .fpp-box-title,
 #dc-up-props .fpp-box-head:has(> .switch[aria-checked="false"]) .fpp-box-title button { color: #707070; }   /* same off grey as process flow and landing: 4.6:1 on #FAFAFA, 5.4:1 on white */
-/* Document designer (template / upload editor): no Back in the blue header */
-.dc-editor-view #dc-back-top { display: none; }

@@ -129,7 +129,6 @@
       </aside>
     </div>
     <footer class="form-foot">
-      <a class="btn btn-secondary" id="form-back" href="#">${ICON.left} Back</a>
       <button type="button" class="btn btn-primary" id="form-save">Save</button>
     </footer>
 
@@ -1108,7 +1107,6 @@
       $('form-title').textContent = `${m.name} Form`;
       const back = '#/module/' + encodeURIComponent(m.id);
       $('form-back-top').href = back;
-      $('form-back').href = back;
       renderAll();
       if (focus) $('form-title').focus();
     },

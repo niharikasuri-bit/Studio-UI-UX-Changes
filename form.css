@@ -142,6 +142,8 @@
 .form-foot { flex: none; height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px;
              background: #fff; border-top: 1px solid var(--divider); box-shadow: 0 -2px 6px rgba(0,0,0,.05); position: relative; z-index: 2; }
 .form-foot .btn { height: 40px; min-width: 128px; font-size: var(--buttonM); font-weight: 700; }
+.form-foot .btn[hidden] { display: none; }
+.form-foot .btn-primary { margin-left: auto; }   /* canvas footers (form builder, document editor) have no Back: Save stays on the right */
 
 /* ---------- Add Section popup: click a card to add it; one full-width Cancel ---------- */
 .modal.add-section { width: min(600px, calc(100vw - 32px)); }
