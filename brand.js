@@ -45,7 +45,7 @@
   };
   var P0 = rgb2hsl(hex2rgb(DEF.primary)), P1 = rgb2hsl(hex2rgb(t.primary || DEF.primary));
   // Primary bg from each theme spec (hover backgrounds, selected rows, tag tints): exact, not calculated
-  var PRIMARY_BG = { '#047575': '#E8F0F0', '#0B5FD7': '#E2EAF6', '#B94C1C': '#FBF4F1' };   // Lagoon, Horizon, Ember only; DIGIT Classic is left as it is
+  var PRIMARY_BG = { '#047575': '#E8F0F0', '#0B5FD7': '#E2EAF6', '#B2491B': '#FBF4F1', '#B94C1C': '#FBF4F1' };   // Lagoon, Horizon, Ember (and Ember's older #B94C1C) only; DIGIT Classic is left as it is
   var PBG = PRIMARY_BG[String(t.primary || DEF.primary).toUpperCase()];
   PBG = PBG ? hex2rgb(PBG) : null;
   var PRI = hex2rgb(t.primary || DEF.primary), HEAD = hex2rgb(t.header || DEF.heading), PAGE = hex2rgb(t.background || DEF.page);
